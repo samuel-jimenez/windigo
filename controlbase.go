@@ -367,7 +367,7 @@ func (cba *ControlBase) PreTranslateMessage(msg *w32.MSG) bool {
 	return false
 }
 
-//Events
+// Events
 func (cba *ControlBase) OnCreate() *EventManager {
 	return &cba.onCreate
 }
@@ -442,4 +442,21 @@ func (cba *ControlBase) OnSize() *EventManager {
 
 func (cba *ControlBase) OnKeyUp() *EventManager {
 	return &cba.onKeyUp
+}
+
+// RunMainLoop processes messages in main application loop.
+func (cba *ControlBase) RunMainLoop() int {
+	var m w32.MSG
+
+	for w32.GetMessage(&m, 0, 0, 0) != 0 {
+		if !w32.IsDialogMessage(cba.hwnd, &m) {
+			if !PreTranslateMessage(&m) {
+				w32.TranslateMessage(&m)
+				w32.DispatchMessage(&m)
+			}
+		}
+	}
+
+	w32.GdiplusShutdown()
+	return int(m.WParam)
 }
