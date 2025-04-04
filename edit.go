@@ -5,7 +5,7 @@
 
 package winc
 
-import "github.com/tadvi/winc/w32"
+import "github.com/samuel-jimenez/winc/w32"
 
 type Edit struct {
 	ControlBase

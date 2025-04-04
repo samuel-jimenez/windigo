@@ -1,3 +1,3 @@
-module github.com/tadvi/winc
+module github.com/samuel-jimenez/winc
 
-go 1.12
+go 1.24.2

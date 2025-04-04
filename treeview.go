@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/tadvi/winc/w32"
+	"github.com/samuel-jimenez/winc/w32"
 )
 
 // TreeItem represents an item in a TreeView widget.

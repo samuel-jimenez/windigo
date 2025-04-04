@@ -5,7 +5,7 @@
 
 package winc
 
-import "github.com/tadvi/winc/w32"
+import "github.com/samuel-jimenez/winc/w32"
 
 // Dialog displayed as z-order top window until closed.
 // It also disables parent window so it can not be clicked.

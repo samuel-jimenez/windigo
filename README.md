@@ -146,7 +146,7 @@ This is usually due to string UTF8 and UTF16 conversions. But there are other ty
 
 When developing your own controls you might also need to:
 
-	import "github.com/tadvi/winc/w32"
+	import "github.com/samuel-jimenez/winc/w32"
 
 w32 has Win32 API low level constants and functions.
 

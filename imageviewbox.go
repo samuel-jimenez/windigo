@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/tadvi/winc/w32"
+	"github.com/samuel-jimenez/winc/w32"
 )
 
 type direction int

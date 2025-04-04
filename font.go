@@ -8,7 +8,7 @@ package winc
 import (
 	"syscall"
 
-	"github.com/tadvi/winc/w32"
+	"github.com/samuel-jimenez/winc/w32"
 )
 
 const (
