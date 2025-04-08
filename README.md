@@ -40,7 +40,7 @@ Best way to learn how to use the library is to look at the included **examples**
 1. Make sure you have a working Go installation and build environment, see more for details on page below.
    http://golang.org/doc/install
 
-2. go get github.com/tadvi/winc
+2. go get github.com/samuel-jimenez/winc
 
 ## Icons
 
@@ -94,7 +94,7 @@ Dialog screens are not based on Windows resource files (.rc). They are just wind
 package main
 
 import (
-	"github.com/tadvi/winc"
+	"github.com/samuel-jimenez/winc"
 )
 
 func main() {

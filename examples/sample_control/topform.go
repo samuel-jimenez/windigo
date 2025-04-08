@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/tadvi/winc"
+	"github.com/samuel-jimenez/winc"
 	"github.com/samuel-jimenez/winc/w32"
 )
 

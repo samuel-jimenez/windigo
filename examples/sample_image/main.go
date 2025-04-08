@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/tadvi/winc"
+	"github.com/samuel-jimenez/winc"
 )
 
 func btnOnClick(arg *winc.Event) {
