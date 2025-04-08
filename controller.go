@@ -30,6 +30,7 @@ type Controller interface {
 	SetText(s string)
 	SetEnabled(b bool)
 	SetPos(x, y int)
+	SetPosAfter(x, y int, after Controller)
 	SetSize(w, h int)
 	EnableDragAcceptFiles(b bool)
 	Show()

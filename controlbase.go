@@ -242,6 +242,13 @@ func (cba *ControlBase) SetPos(x, y int) {
 	w32.SetWindowPos(cba.hwnd, w32.HWND_TOP, int(workRect.Left)+x, int(workRect.Top)+y, 0, 0, w32.SWP_NOSIZE)
 }
 
+
+func (cba *ControlBase) SetPosAfter(x, y int, after Controller) {
+	info := getMonitorInfo(cba.hwnd)
+	workRect := info.RcWork
+	w32.SetWindowPos(cba.hwnd, after.Handle(), int(workRect.Left)+x, int(workRect.Top)+y, 0, 0, w32.SWP_NOSIZE)
+}
+
 func (cba *ControlBase) Pos() (x, y int) {
 	rect := w32.GetWindowRect(cba.hwnd)
 	x = int(rect.Left)
