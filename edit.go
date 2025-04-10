@@ -50,6 +50,10 @@ func (ed *Edit) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 	switch msg {
 	case w32.WM_COMMAND:
 		switch w32.HIWORD(uint32(wparam)) {
+		case w32.EN_SETFOCUS:
+			ed.onSetFocus.Fire(NewEvent(ed, nil))
+		case w32.EN_KILLFOCUS:
+			ed.onKillFocus.Fire(NewEvent(ed, nil))
 		case w32.EN_CHANGE:
 			ed.onChange.Fire(NewEvent(ed, nil))
 		}
