@@ -14,6 +14,8 @@ import (
 type ComboBox struct {
 	ControlBase
 	onSelectedChange EventManager
+	onChange         EventManager
+	onUpdate         EventManager
 }
 
 func NewComboBox(parent Controller) *ComboBox {
@@ -79,6 +81,14 @@ func (control *ComboBox) OnSelectedChange() *EventManager {
 	return &control.onSelectedChange
 }
 
+func (control *ComboBox) OnChange() *EventManager {
+	return &control.onChange
+}
+
+func (control *ComboBox) OnUpdate() *EventManager {
+	return &control.onUpdate
+}
+
 // Message processer
 func (control *ComboBox) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 	switch msg {
@@ -88,6 +98,14 @@ func (control *ComboBox) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 		switch code {
 		case w32.CBN_SELCHANGE:
 			control.onSelectedChange.Fire(NewEvent(control, nil))
+		case w32.CBN_SETFOCUS:
+			control.onSetFocus.Fire(NewEvent(control, nil))
+		case w32.CBN_KILLFOCUS:
+			control.onKillFocus.Fire(NewEvent(control, nil))
+		case w32.CBN_EDITUPDATE:
+			control.onUpdate.Fire(NewEvent(control, nil))
+		case w32.CBN_EDITCHANGE:
+			control.onChange.Fire(NewEvent(control, nil))
 		}
 	}
 	return w32.DefWindowProc(control.hwnd, msg, wparam, lparam)
