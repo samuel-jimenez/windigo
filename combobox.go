@@ -19,6 +19,30 @@ type ComboBox struct {
 func NewComboBox(parent Controller) *ComboBox {
 	cb := new(ComboBox)
 
+	cb.InitControl("COMBOBOX", parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_DROPDOWN)
+	RegMsgHandler(cb)
+
+	cb.SetFont(DefaultFont)
+	cb.SetSize(200, 400)
+	return cb
+}
+
+func NewComboBoxWithFlags(parent Controller, style uint) *ComboBox {
+	cb := new(ComboBox)
+
+	cb.InitControl("COMBOBOX", parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_DROPDOWN|style)
+	RegMsgHandler(cb)
+
+	cb.SetFont(DefaultFont)
+	cb.SetSize(200, 400)
+	return cb
+}
+
+
+
+func NewListComboBox(parent Controller) *ComboBox {
+	cb := new(ComboBox)
+
 	cb.InitControl("COMBOBOX", parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_DROPDOWNLIST)
 	RegMsgHandler(cb)
 
@@ -29,6 +53,11 @@ func NewComboBox(parent Controller) *ComboBox {
 
 func (cb *ComboBox) DeleteAllItems() bool {
 	return w32.SendMessage(cb.hwnd, w32.CB_RESETCONTENT, 0, 0) == w32.TRUE
+}
+
+func (cb *ComboBox) AddItem(str string) bool {
+	lp := uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(str)))
+	return w32.SendMessage(cb.hwnd, w32.CB_ADDSTRING, 0, lp) != w32.CB_ERR
 }
 
 func (cb *ComboBox) InsertItem(index int, str string) bool {
