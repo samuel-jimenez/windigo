@@ -16,6 +16,7 @@ type ComboBox struct {
 	onSelectedChange EventManager
 	onChange         EventManager
 	onUpdate         EventManager
+	onSelectedEnd    EventManager
 }
 
 func NewComboBox(parent Controller) *ComboBox {
@@ -69,8 +70,25 @@ func (control *ComboBox) DeleteItem(index int) bool {
 	return w32.SendMessage(control.hwnd, w32.CB_DELETESTRING, uintptr(index), 0) != w32.CB_ERR
 }
 
+func (control *ComboBox) GetItemLength(index int) int {
+	return int(w32.SendMessage(control.hwnd, w32.CB_GETLBTEXTLEN, uintptr(index), 0))
+}
+
+func (control *ComboBox) GetItem(index int) string {
+	textLen := control.GetItemLength(index) + 1
+
+	buf := make([]uint16, textLen)
+
+	w32.SendMessage(control.hwnd, w32.CB_GETLBTEXT, uintptr(index), uintptr(unsafe.Pointer(&buf[0])))
+	return syscall.UTF16ToString(buf)
+}
+
 func (control *ComboBox) SelectedItem() int {
 	return int(int32(w32.SendMessage(control.hwnd, w32.CB_GETCURSEL, 0, 0)))
+}
+
+func (control *ComboBox) GetSelectedItem() string {
+	return control.GetItem(control.SelectedItem())
 }
 
 func (control *ComboBox) SetSelectedItem(value int) bool {
@@ -87,6 +105,10 @@ func (control *ComboBox) OnChange() *EventManager {
 
 func (control *ComboBox) OnUpdate() *EventManager {
 	return &control.onUpdate
+}
+
+func (control *ComboBox) OnSelectedEnd() *EventManager {
+	return &control.onSelectedEnd
 }
 
 // Message processer
@@ -106,6 +128,8 @@ func (control *ComboBox) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 			control.onUpdate.Fire(NewEvent(control, nil))
 		case w32.CBN_EDITCHANGE:
 			control.onChange.Fire(NewEvent(control, nil))
+		case w32.CBN_SELENDOK:
+			control.onSelectedEnd.Fire(NewEvent(control, nil))
 		}
 	}
 	return w32.DefWindowProc(control.hwnd, msg, wparam, lparam)
