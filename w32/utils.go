@@ -76,6 +76,14 @@ func UTF16PtrToString(cstr *uint16) string {
 	return ""
 }
 
+func UTF16PtrFromString(str string) *uint16 {
+	utf16_ptr, err := syscall.UTF16PtrFromString(str)
+	if err != nil {
+		panic("winc: string with NUL passed to UTF16PtrFromString")
+	}
+	return utf16_ptr
+}
+
 func ComAddRef(unknown *IUnknown) int32 {
 	ret, _, _ := syscall.Syscall(unknown.lpVtbl.pAddRef, 1,
 		uintptr(unsafe.Pointer(unknown)),

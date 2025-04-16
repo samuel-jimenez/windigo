@@ -57,12 +57,12 @@ func (control *ComboBox) DeleteAllItems() bool {
 }
 
 func (control *ComboBox) AddItem(str string) bool {
-	lp := uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(str)))
+	lp := uintptr(unsafe.Pointer(w32.UTF16PtrFromString(str)))
 	return w32.SendMessage(control.hwnd, w32.CB_ADDSTRING, 0, lp) != w32.CB_ERR
 }
 
 func (control *ComboBox) InsertItem(index int, str string) bool {
-	lp := uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(str)))
+	lp := uintptr(unsafe.Pointer(w32.UTF16PtrFromString(str)))
 	return w32.SendMessage(control.hwnd, w32.CB_INSERTSTRING, uintptr(index), lp) != w32.CB_ERR
 }
 
