@@ -15,8 +15,23 @@ import (
 	"github.com/samuel-jimenez/windigo/w32"
 )
 
+// Marginal component must satisfy interface to have margins.
+type Marginal interface {
+	MarginTop() int
+	MarginBtm() int
+	MarginLeft() int
+	MarginRight() int
+
+	SetMargins(int)
+	SetMarginTop(int)
+	SetMarginBtm(int)
+	SetMarginLeft(int)
+	SetMarginRight(int)
+}
+
 // Dockable component must satisfy interface to be docked.
 type Dockable interface {
+	Marginal
 	Handle() w32.HWND
 
 	Pos() (x, y int)
@@ -58,13 +73,12 @@ type LayoutControl struct {
 type LayoutControls []*LayoutControl
 
 type SimpleDock struct {
-	parent       DockAllow
-	layoutCtl    LayoutControls
-	loadedState  bool
-	margin_top   int
-	margin_btm   int
-	margin_left  int
-	margin_right int
+	parent      DockAllow
+	layoutCtl   LayoutControls
+	loadedState bool
+
+	margin_top, margin_btm,
+	margin_left, margin_right int
 }
 
 // DockState gets saved and loaded from json
@@ -88,55 +102,55 @@ func NewSimpleDock(parent DockAllow) *SimpleDock {
 }
 
 // Layout management for the child controls.
-func (sd *SimpleDock) Dock(child Dockable, dir Direction) {
-	sd.layoutCtl = append(sd.layoutCtl, &LayoutControl{child, dir})
+func (control *SimpleDock) Dock(child Dockable, dir Direction) {
+	control.layoutCtl = append(control.layoutCtl, &LayoutControl{child, dir})
 }
 
-// margins
-func (sd *SimpleDock) Margin_top() int {
-	return sd.margin_top
+// Marginal
+func (control *SimpleDock) MarginTop() int {
+	return control.margin_top
 }
 
-func (sd *SimpleDock) Margin_btm() int {
-	return sd.margin_btm
+func (control *SimpleDock) MarginBtm() int {
+	return control.margin_btm
 }
-func (sd *SimpleDock) Margin_left() int {
-	return sd.margin_left
+func (control *SimpleDock) MarginLeft() int {
+	return control.margin_left
 }
-func (sd *SimpleDock) Margin_right() int {
-	return sd.margin_right
-}
-
-func (sd *SimpleDock) SetMargins(margin int) {
-	sd.margin_top = margin
-	sd.margin_btm = margin
-	sd.margin_left = margin
-	sd.margin_right = margin
+func (control *SimpleDock) MarginRight() int {
+	return control.margin_right
 }
 
-func (sd *SimpleDock) SetMarginTop(margin int) {
-	sd.margin_top = margin
+func (control *SimpleDock) SetMargins(margin int) {
+	control.margin_top = margin
+	control.margin_btm = margin
+	control.margin_left = margin
+	control.margin_right = margin
 }
 
-func (sd *SimpleDock) SetMarginBtm(margin int) {
-	sd.margin_btm = margin
+func (control *SimpleDock) SetMarginTop(margin int) {
+	control.margin_top = margin
 }
 
-func (sd *SimpleDock) SetMarginLeft(margin int) {
-	sd.margin_left = margin
+func (control *SimpleDock) SetMarginBtm(margin int) {
+	control.margin_btm = margin
 }
 
-func (sd *SimpleDock) SetMarginRight(margin int) {
-	sd.margin_right = margin
+func (control *SimpleDock) SetMarginLeft(margin int) {
+	control.margin_left = margin
+}
+
+func (control *SimpleDock) SetMarginRight(margin int) {
+	control.margin_right = margin
 }
 
 // SaveState of the layout. Only works for Docks with parent set to main form.
-func (sd *SimpleDock) SaveState(w io.Writer) error {
+func (control *SimpleDock) SaveState(w io.Writer) error {
 	var ls LayoutState
 
 	var wp w32.WINDOWPLACEMENT
 	wp.Length = uint32(unsafe.Sizeof(wp))
-	if !w32.GetWindowPlacement(sd.parent.Handle(), &wp) {
+	if !w32.GetWindowPlacement(control.parent.Handle(), &wp) {
 		return fmt.Errorf("GetWindowPlacement failed")
 	}
 
@@ -147,7 +161,7 @@ func (sd *SimpleDock) SaveState(w io.Writer) error {
 		wp.RcNormalPosition.Left, wp.RcNormalPosition.Top,
 		wp.RcNormalPosition.Right, wp.RcNormalPosition.Bottom)
 
-	for _, c := range sd.layoutCtl {
+	for _, c := range control.layoutCtl {
 		x, y := c.child.Pos()
 		w, h := c.child.Width(), c.child.Height()
 
@@ -163,7 +177,7 @@ func (sd *SimpleDock) SaveState(w io.Writer) error {
 }
 
 // LoadState of the layout. Only works for Docks with parent set to main form.
-func (sd *SimpleDock) LoadState(r io.Reader) error {
+func (control *SimpleDock) LoadState(r io.Reader) error {
 	var ls LayoutState
 
 	if err := json.NewDecoder(r).Decode(&ls); err != nil {
@@ -181,18 +195,18 @@ func (sd *SimpleDock) LoadState(r io.Reader) error {
 	}
 	wp.Length = uint32(unsafe.Sizeof(wp))
 
-	if !w32.SetWindowPlacement(sd.parent.Handle(), &wp) {
+	if !w32.SetWindowPlacement(control.parent.Handle(), &wp) {
 		return fmt.Errorf("SetWindowPlacement failed")
 	}
 
 	// if number of controls in the saved layout does not match
 	// current number on screen - something changed and we do not reload
 	// rest of control sizes from json
-	if len(sd.layoutCtl) != len(ls.Controls) {
+	if len(control.layoutCtl) != len(ls.Controls) {
 		return nil
 	}
 
-	for i, c := range sd.layoutCtl {
+	for i, c := range control.layoutCtl {
 		c.child.SetPos(ls.Controls[i].X, ls.Controls[i].Y)
 		c.child.SetSize(ls.Controls[i].Width, ls.Controls[i].Height)
 	}
@@ -200,62 +214,65 @@ func (sd *SimpleDock) LoadState(r io.Reader) error {
 }
 
 // SaveStateFile convenience function.
-func (sd *SimpleDock) SaveStateFile(file string) error {
+func (control *SimpleDock) SaveStateFile(file string) error {
 	f, err := os.Create(file)
 	if err != nil {
 		return err
 	}
-	return sd.SaveState(f)
+	return control.SaveState(f)
 }
 
 // LoadStateFile loads state ignores error if file is not found.
-func (sd *SimpleDock) LoadStateFile(file string) error {
+func (control *SimpleDock) LoadStateFile(file string) error {
 	f, err := os.Open(file)
 	if err != nil {
 		return nil // if file is not found or not accessible ignore it
 	}
-	return sd.LoadState(f)
+	return control.LoadState(f)
 }
 
 // Update is called to resize child items based on layout directions.
-func (sd *SimpleDock) Update() {
-	sort.Stable(sd.layoutCtl)
+func (control *SimpleDock) Update() {
+	sort.Stable(control.layoutCtl)
 
-	x, y := sd.margin_left, sd.margin_top
-	w, h := sd.parent.ClientWidth()-sd.margin_left-sd.margin_right, sd.parent.ClientHeight()-sd.margin_top-sd.margin_btm
-	winw, winh := w, h
+	x, y := control.margin_left, control.margin_top
+	control_width, control_height := control.parent.ClientWidth()-control.margin_left-control.margin_right,
+		control.parent.ClientHeight()-control.margin_top-control.margin_btm
 
-	for _, c := range sd.layoutCtl {
+	for _, c := range control.layoutCtl {
 		// Non visible controls do not preserve space.
 		if !c.child.Visible() {
 			continue
 		}
 
+		child_height := c.child.Height()
+		child_width := c.child.Width()
+		total_child_height := child_height + c.child.MarginTop() + c.child.MarginBtm()
+		total_child_width := child_width + c.child.MarginLeft() + c.child.MarginRight()
+
 		switch c.dir {
 		case Top:
-			c.child.SetPos(x, y)
-			c.child.SetSize(w, c.child.Height())
-			h -= c.child.Height()
-			y += c.child.Height()
+			c.child.SetPos(x, y+c.child.MarginTop())
+			c.child.SetSize(control_width, child_height)
+			control_height -= total_child_height
+			y += total_child_height
 		case Bottom:
-			c.child.SetPos(x, winh-c.child.Height())
-			c.child.SetSize(w, c.child.Height())
-			h -= c.child.Height()
-			winh -= c.child.Height()
+			c.child.SetPos(x, control_height-total_child_height+c.child.MarginTop())
+			c.child.SetSize(control_width, child_height)
+			control_height -= total_child_height
 		case Left:
-			c.child.SetPos(x, y)
-			c.child.SetSize(c.child.Width(), h)
-			w -= c.child.Width()
-			x += c.child.Width()
+			c.child.SetPos(x+c.child.MarginLeft(), y)
+			c.child.SetSize(child_width, control_height)
+			control_width -= total_child_width
+			x += total_child_width
 		case Right:
-			c.child.SetPos(winw-c.child.Width(), y)
-			c.child.SetSize(c.child.Width(), h)
-			w -= c.child.Width()
-			winw -= c.child.Width()
+			c.child.SetPos(control_width-total_child_width+c.child.MarginLeft(), y)
+			c.child.SetSize(child_width, control_height)
+			control_width -= total_child_width
 		case Fill:
 			// fill available space
 			c.child.SetPos(x, y)
-			c.child.SetSize(w, h)
+			c.child.SetSize(control_width, control_height)
 		}
 		//c.child.Invalidate(true)
 	}
