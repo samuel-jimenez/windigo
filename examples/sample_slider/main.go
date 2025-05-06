@@ -3,20 +3,20 @@ package main
 import (
 	"fmt"
 
-	"github.com/samuel-jimenez/winc"
+	"github.com/samuel-jimenez/windigo"
 )
 
-func btnOnClick(arg *winc.Event) {
+func btnOnClick(arg *windigo.Event) {
 	fmt.Println("Button clicked")
 }
 
-func wndOnClose(arg *winc.Event) {
-	winc.Exit()
+func wndOnClose(arg *windigo.Event) {
+	windigo.Exit()
 }
 
 func main() {
-	mainWindow := winc.NewForm(nil)
-	dock := winc.NewSimpleDock(mainWindow)
+	mainWindow := windigo.NewForm(nil)
+	dock := windigo.NewSimpleDock(mainWindow)
 	//mainWindow.SetLayout(dock)
 
 	mainWindow.SetSize(700, 600)
@@ -24,46 +24,46 @@ func main() {
 
 	menu := mainWindow.NewMenu()
 	fileMn := menu.AddSubMenu("File")
-	fileMn.AddItem("New", winc.NoShortcut)
+	fileMn.AddItem("New", windigo.NoShortcut)
 	editMn := menu.AddSubMenu("Edit")
-	cutMn := editMn.AddItem("Cut", winc.Shortcut{winc.ModControl, winc.KeyX})
-	copyMn := editMn.AddItem("Copy", winc.NoShortcut)
-	pasteMn := editMn.AddItem("Paste", winc.NoShortcut)
+	cutMn := editMn.AddItem("Cut", windigo.Shortcut{windigo.ModControl, windigo.KeyX})
+	copyMn := editMn.AddItem("Copy", windigo.NoShortcut)
+	pasteMn := editMn.AddItem("Paste", windigo.NoShortcut)
 	menu.Show()
 	copyMn.SetCheckable(true)
 	copyMn.SetChecked(true)
 	pasteMn.SetEnabled(false)
 
-	cutMn.OnClick().Bind(func(e *winc.Event) {
+	cutMn.OnClick().Bind(func(e *windigo.Event) {
 		println("cut click")
 	})
 
-	imlistTb := winc.NewImageList(16, 16)
+	imlistTb := windigo.NewImageList(16, 16)
 	imlistTb.AddResIcon(10)
 	imlistTb.AddResIcon(12)
 	imlistTb.AddResIcon(15)
 
-	toolbar := winc.NewToolbar(mainWindow)
+	toolbar := windigo.NewToolbar(mainWindow)
 	toolbar.SetImageList(imlistTb)
 	addBtn := toolbar.AddButton("Add", 1)
 	toolbar.AddSeparator()
 	runBtn := toolbar.AddButton("Run Now Fast", 2)
 	toolbar.Show()
 
-	runBtn.OnClick().Bind(func(e *winc.Event) {
+	runBtn.OnClick().Bind(func(e *windigo.Event) {
 		println("runBtn click")
 	})
 
-	dock.Dock(toolbar, winc.Top) // toolbars always dock to the top
-	//dock.Dock(tree, winc.Fill)
+	dock.Dock(toolbar, windigo.Top) // toolbars always dock to the top
+	//dock.Dock(tree, windigo.Fill)
 
-	slide := winc.NewSlider(mainWindow)
+	slide := windigo.NewSlider(mainWindow)
 	slide.SetPos(10, 50)
-	slide.OnScroll().Bind(func(e *winc.Event) {
+	slide.OnScroll().Bind(func(e *windigo.Event) {
 		println(slide.Value())
 	})
 
-	addBtn.OnClick().Bind(func(e *winc.Event) {
+	addBtn.OnClick().Bind(func(e *windigo.Event) {
 		println("addBtn click")
 		slide.SetValue(30)
 	})
@@ -76,5 +76,5 @@ func main() {
 	dock.Update()
 	mainWindow.OnClose().Bind(wndOnClose)
 
-	winc.RunMainLoop()
+	windigo.RunMainLoop()
 }

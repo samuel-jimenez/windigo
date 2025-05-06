@@ -3,15 +3,15 @@ package main
 import (
 	"fmt"
 
-	"github.com/samuel-jimenez/winc"
+	"github.com/samuel-jimenez/windigo"
 )
 
-func btnOnClick(arg *winc.Event) {
+func btnOnClick(arg *windigo.Event) {
 	fmt.Println("Button clicked")
 }
 
-func wndOnClose(arg *winc.Event) {
-	winc.Exit()
+func wndOnClose(arg *windigo.Event) {
+	windigo.Exit()
 }
 
 type Item struct {
@@ -27,20 +27,20 @@ func (item *Item) SetChecked(checked bool) { item.checked = checked }
 func (item Item) ImageIndex() int          { return 0 }
 
 func main() {
-	mainWindow := winc.NewForm(nil)
-	dock := winc.NewSimpleDock(mainWindow)
+	mainWindow := windigo.NewForm(nil)
+	dock := windigo.NewSimpleDock(mainWindow)
 
 	mainWindow.SetSize(700, 600)
 	mainWindow.SetText("Controls Demo")
 
-	none := winc.Shortcut{}
+	none := windigo.Shortcut{}
 
-	imlist := winc.NewImageList(16, 16)
+	imlist := windigo.NewImageList(16, 16)
 	imlist.AddResIcon(16)
 	imlist.AddResIcon(10)
 	imlist.AddResIcon(13)
 
-	ls := winc.NewListView(mainWindow)
+	ls := windigo.NewListView(mainWindow)
 	ls.SetImageList(imlist)
 	ls.EnableEditLabels(false)
 	ls.SetCheckBoxes(true)
@@ -67,38 +67,38 @@ func main() {
 	fileMn := menu.AddSubMenu("File")
 	fileMn.AddItem("New", none)
 	editMn := menu.AddSubMenu("Edit")
-	delMn := editMn.AddItem("Delete", winc.Shortcut{winc.ModControl, winc.KeyX})
+	delMn := editMn.AddItem("Delete", windigo.Shortcut{windigo.ModControl, windigo.KeyX})
 	delAllMn := editMn.AddItem("Delete All", none)
 	menu.Show()
 
-	ls.OnEndLabelEdit().Bind(func(e *winc.Event) {
+	ls.OnEndLabelEdit().Bind(func(e *windigo.Event) {
 		println("edited", e)
 		// acccept label edit event!
-		//d := e.Data.(*winc.LabelEditEventData)
+		//d := e.Data.(*windigo.LabelEditEventData)
 		//d.Item.SetText(d.Text)
 		//fmt.Println(d.Item.Text())
 	})
 
-	delMn.OnClick().Bind(func(e *winc.Event) {
+	delMn.OnClick().Bind(func(e *windigo.Event) {
 		items := ls.SelectedItems()
 		for _, it := range items {
 			fmt.Println(it)
 		}
 	})
 
-	delAllMn.OnClick().Bind(func(e *winc.Event) {
+	delAllMn.OnClick().Bind(func(e *windigo.Event) {
 		ls.DeleteAllItems()
 	})
 
-	ls.OnClick().Bind(func(e *winc.Event) {
+	ls.OnClick().Bind(func(e *windigo.Event) {
 		println("onClick listview")
 	})
 
-	dock.Dock(ls, winc.Fill)
+	dock.Dock(ls, windigo.Fill)
 
 	mainWindow.Center()
 	mainWindow.Show()
 	mainWindow.OnClose().Bind(wndOnClose)
 
-	winc.RunMainLoop()
+	windigo.RunMainLoop()
 }

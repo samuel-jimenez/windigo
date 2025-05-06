@@ -1,4 +1,4 @@
-# winc
+# windigo
 
 Common library for Go GUI apps on Windows. It is for Windows OS only. This makes library smaller than some other UI libraries for Go.
 
@@ -40,7 +40,7 @@ Best way to learn how to use the library is to look at the included **examples**
 1. Make sure you have a working Go installation and build environment, see more for details on page below.
    http://golang.org/doc/install
 
-2. go get github.com/samuel-jimenez/winc
+2. go get github.com/samuel-jimenez/windigo
 
 ## Icons
 
@@ -82,7 +82,7 @@ This is layout with extra control(s) on the left. Left side is usually treeview 
 
 The rule is simple: you either dock controls using SimpleDock OR use SetPos() to set them at fixed positions. That's it.
 
-At some point **winc** may get more sophisticated layout manager.
+At some point **windigo** may get more sophisticated layout manager.
 
 ## Dialog Screens
 
@@ -94,24 +94,24 @@ Dialog screens are not based on Windows resource files (.rc). They are just wind
 package main
 
 import (
-	"github.com/samuel-jimenez/winc"
+	"github.com/samuel-jimenez/windigo"
 )
 
 func main() {
-	mainWindow := winc.NewForm(nil)
+	mainWindow := windigo.NewForm(nil)
 	mainWindow.SetSize(400, 300)  // (width, height)
 	mainWindow.SetText("Hello World Demo")
 
-	edt := winc.NewEdit(mainWindow)
+	edt := windigo.NewEdit(mainWindow)
 	edt.SetPos(10, 20)
 	// Most Controls have default size unless SetSize is called.
 	edt.SetText("edit text")
 
-	btn := winc.NewPushButton(mainWindow)
+	btn := windigo.NewPushButton(mainWindow)
 	btn.SetText("Show or Hide")
 	btn.SetPos(40, 50)	// (x, y)
 	btn.SetSize(100, 40) // (width, height)
-	btn.OnClick().Bind(func(e *winc.Event) {
+	btn.OnClick().Bind(func(e *windigo.Event) {
 		if edt.Visible() {
 			edt.Hide()
 		} else {
@@ -123,11 +123,11 @@ func main() {
 	mainWindow.Show()
 	mainWindow.OnClose().Bind(wndOnClose)
 
-	winc.RunMainLoop() // Must call to start event loop.
+	windigo.RunMainLoop() // Must call to start event loop.
 }
 
-func wndOnClose(arg *winc.Event) {
-	winc.Exit()
+func wndOnClose(arg *windigo.Event) {
+	windigo.Exit()
 }
 ```
 
@@ -146,7 +146,7 @@ This is usually due to string UTF8 and UTF16 conversions. But there are other ty
 
 When developing your own controls you might also need to:
 
-	import "github.com/samuel-jimenez/winc/w32"
+	import "github.com/samuel-jimenez/windigo/w32"
 
 w32 has Win32 API low level constants and functions.
 
@@ -157,11 +157,15 @@ Look at **sample_control** for example of custom built window.
 [Go package for Windows Systray icon, menu and notifications](https://github.com/tadvi/systray)
 
 ## Credits
-
 This library is built on
+
+[Tadvi/winc Common library for Go GUI apps on Windows](https://github.com/tadvi/winc)
+
+
+which in turn is built on
 
 [AllenDang/gform Windows GUI framework for Go](https://github.com/AllenDang/gform)
 
-**winc** takes most design decisions from **gform** and adds many more controls and code samples to it.
+**windigo** takes most design decisions from **winc** and adds QOL improvements and bug fixes.
 
 

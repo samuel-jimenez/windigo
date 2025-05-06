@@ -1,15 +1,15 @@
 /*
- * Copyright (C) 2019 The Winc Authors. All Rights Reserved.
+ * Copyright (C) 2019 The windigo Authors. All Rights Reserved.
  */
 
-package winc
+package windigo
 
 import (
 	"errors"
 	"syscall"
 	"unsafe"
 
-	"github.com/samuel-jimenez/winc/w32"
+	"github.com/samuel-jimenez/windigo/w32"
 )
 
 // TreeItem represents an item in a TreeView widget.
@@ -126,7 +126,7 @@ func (tv *TreeView) InsertItem(item, parent, insertAfter TreeItem) error {
 	} else {
 		info := tv.item2Info[parent]
 		if info == nil {
-			return errors.New("winc: invalid parent")
+			return errors.New("windigo: invalid parent")
 		}
 		tvins.HParent = info.handle
 	}
@@ -136,7 +136,7 @@ func (tv *TreeView) InsertItem(item, parent, insertAfter TreeItem) error {
 	} else {
 		info := tv.item2Info[insertAfter]
 		if info == nil {
-			return errors.New("winc: invalid prev item")
+			return errors.New("windigo: invalid prev item")
 		}
 		tvins.HInsertAfter = info.handle
 	}
@@ -145,7 +145,7 @@ func (tv *TreeView) InsertItem(item, parent, insertAfter TreeItem) error {
 
 	hItem := w32.HTREEITEM(w32.SendMessage(tv.hwnd, w32.TVM_INSERTITEM, 0, uintptr(unsafe.Pointer(&tvins))))
 	if hItem == 0 {
-		return errors.New("winc: TVM_INSERTITEM failed")
+		return errors.New("windigo: TVM_INSERTITEM failed")
 	}
 	tv.item2Info[item] = &treeViewItemInfo{hItem, make(map[TreeItem]w32.HTREEITEM)}
 	tv.handle2Item[hItem] = item

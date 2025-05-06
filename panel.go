@@ -1,13 +1,13 @@
 /*
- * Copyright (C) 2019 The Winc Authors. All Rights Reserved.
+ * Copyright (C) 2019 The windigo Authors. All Rights Reserved.
  */
 
-package winc
+package windigo
 
 import (
 	"fmt"
 
-	"github.com/samuel-jimenez/winc/w32"
+	"github.com/samuel-jimenez/windigo/w32"
 )
 
 type Panel struct {
@@ -18,8 +18,8 @@ type Panel struct {
 func NewPanel(parent Controller) *Panel {
 	pa := new(Panel)
 
-	RegClassOnlyOnce("winc_Panel")
-	pa.hwnd = CreateWindow("winc_Panel", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
+	RegClassOnlyOnce("windigo_Panel")
+	pa.hwnd = CreateWindow("windigo_Panel", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
 	pa.parent = parent
 	RegMsgHandler(pa)
 
@@ -69,9 +69,9 @@ func NewErrorPanel(parent Controller) *ErrorPanel {
 }
 
 func (epa *ErrorPanel) init(parent Controller) {
-	RegClassOnlyOnce("winc_ErrorPanel")
+	RegClassOnlyOnce("windigo_ErrorPanel")
 
-	epa.hwnd = CreateWindow("winc_ErrorPanel", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
+	epa.hwnd = CreateWindow("windigo_ErrorPanel", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
 	epa.parent = parent
 
 	RegMsgHandler(epa)
@@ -130,8 +130,8 @@ type MultiPanel struct {
 func NewMultiPanel(parent Controller) *MultiPanel {
 	mpa := new(MultiPanel)
 
-	RegClassOnlyOnce("winc_MultiPanel")
-	mpa.hwnd = CreateWindow("winc_MultiPanel", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
+	RegClassOnlyOnce("windigo_MultiPanel")
+	mpa.hwnd = CreateWindow("windigo_MultiPanel", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
 	mpa.parent = parent
 	RegMsgHandler(mpa)
 

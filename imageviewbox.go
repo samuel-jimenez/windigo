@@ -1,14 +1,14 @@
 /*
- * Copyright (C) 2019 The Winc Authors. All Rights Reserved.
+ * Copyright (C) 2019 The windigo Authors. All Rights Reserved.
  */
 
-package winc
+package windigo
 
 import (
 	"fmt"
 	"time"
 
-	"github.com/samuel-jimenez/winc/w32"
+	"github.com/samuel-jimenez/windigo/w32"
 )
 
 type direction int
@@ -63,7 +63,7 @@ type ImageViewBox struct {
 func NewImageViewBox(parent Controller) *ImageViewBox {
 	iv := new(ImageViewBox)
 
-	iv.InitWindow("winc_ImageViewBox", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
+	iv.InitWindow("windigo_ImageViewBox", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
 	RegMsgHandler(iv)
 
 	iv.SetFont(DefaultFont)

@@ -1,13 +1,13 @@
 /*
- * Copyright (C) 2019 The Winc Authors. All Rights Reserved.
+ * Copyright (C) 2019 The windigo Authors. All Rights Reserved.
  */
 
-package winc
+package windigo
 
 import (
 	"unsafe"
 
-	"github.com/samuel-jimenez/winc/w32"
+	"github.com/samuel-jimenez/windigo/w32"
 )
 
 type ScrollView struct {
@@ -18,8 +18,8 @@ type ScrollView struct {
 func NewScrollView(parent Controller) *ScrollView {
 	sv := new(ScrollView)
 
-	RegClassOnlyOnce("winc_ScrollView")
-	sv.hwnd = CreateWindow("winc_ScrollView", parent, w32.WS_EX_CONTROLPARENT,
+	RegClassOnlyOnce("windigo_ScrollView")
+	sv.hwnd = CreateWindow("windigo_ScrollView", parent, w32.WS_EX_CONTROLPARENT,
 		w32.WS_CHILD|w32.WS_HSCROLL|w32.WS_VISIBLE|w32.WS_VSCROLL)
 	sv.parent = parent
 	RegMsgHandler(sv)

@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2019 The Winc Authors. All Rights Reserved.
+ * Copyright (C) 2019 The windigo Authors. All Rights Reserved.
  */
 
-package winc
+package windigo
 
-import "github.com/samuel-jimenez/winc/w32"
+import "github.com/samuel-jimenez/windigo/w32"
 
 type Slider struct {
 	ControlBase

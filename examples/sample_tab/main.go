@@ -3,15 +3,15 @@ package main
 import (
 	"fmt"
 
-	"github.com/samuel-jimenez/winc"
+	"github.com/samuel-jimenez/windigo"
 )
 
-func btnOnClick(arg *winc.Event) {
+func btnOnClick(arg *windigo.Event) {
 	fmt.Println("Button clicked")
 }
 
-func wndOnClose(arg *winc.Event) {
-	winc.Exit()
+func wndOnClose(arg *windigo.Event) {
+	windigo.Exit()
 }
 
 type Item struct {
@@ -27,71 +27,71 @@ func (item *Item) SetChecked(checked bool) { item.checked = checked }
 func (item Item) ImageIndex() int          { return 0 }
 
 func main() {
-	mainWindow := winc.NewForm(nil)
-	dock := winc.NewSimpleDock(mainWindow)
+	mainWindow := windigo.NewForm(nil)
+	dock := windigo.NewSimpleDock(mainWindow)
 
 	mainWindow.SetSize(700, 600)
 	mainWindow.SetText("Controls Demo")
 
 	menu := mainWindow.NewMenu()
 	fileMn := menu.AddSubMenu("File")
-	fileMn.AddItem("New", winc.NoShortcut)
+	fileMn.AddItem("New", windigo.NoShortcut)
 	editMn := menu.AddSubMenu("Edit")
-	cutMn := editMn.AddItem("Cut", winc.Shortcut{winc.ModControl, winc.KeyX})
-	copyMn := editMn.AddItem("Copy", winc.NoShortcut)
-	pasteMn := editMn.AddItem("Paste", winc.NoShortcut)
+	cutMn := editMn.AddItem("Cut", windigo.Shortcut{windigo.ModControl, windigo.KeyX})
+	copyMn := editMn.AddItem("Copy", windigo.NoShortcut)
+	pasteMn := editMn.AddItem("Paste", windigo.NoShortcut)
 	menu.Show()
 	copyMn.SetCheckable(true)
 	copyMn.SetChecked(true)
 	pasteMn.SetEnabled(false)
 
-	cutMn.OnClick().Bind(func(e *winc.Event) {
+	cutMn.OnClick().Bind(func(e *windigo.Event) {
 		println("cut click")
 	})
 
-	imlistTb := winc.NewImageList(16, 16)
+	imlistTb := windigo.NewImageList(16, 16)
 	imlistTb.AddResIcon(10)
 	imlistTb.AddResIcon(12)
 	imlistTb.AddResIcon(15)
 
 	// --- Toolbar
-	toolbar := winc.NewToolbar(mainWindow)
+	toolbar := windigo.NewToolbar(mainWindow)
 	toolbar.SetImageList(imlistTb)
 	addBtn := toolbar.AddButton("Add", 1)
 	toolbar.AddSeparator()
 	runBtn := toolbar.AddButton("Run Now Fast", 2)
 	toolbar.Show()
 
-	runBtn.OnClick().Bind(func(e *winc.Event) {
+	runBtn.OnClick().Bind(func(e *windigo.Event) {
 		println("runBtn click")
 	})
 
-	addBtn.OnClick().Bind(func(e *winc.Event) {
+	addBtn.OnClick().Bind(func(e *windigo.Event) {
 		println("addBtn click")
 	})
 
 	// --- Tabs
-	tabs := winc.NewTabView(mainWindow)
+	tabs := windigo.NewTabView(mainWindow)
 	panel1 := tabs.AddPanel("First")
 	panel2 := tabs.AddPanel("Second")
 	panel3 := tabs.AddPanel("Third")
 	panel4 := tabs.AddPanel("Fourth")
 
-	edt := winc.NewEdit(panel1)
+	edt := windigo.NewEdit(panel1)
 	edt.SetPos(100, 10)
 
-	edt2 := winc.NewEdit(panel2)
+	edt2 := windigo.NewEdit(panel2)
 	edt2.SetPos(40, 10)
 
-	btn := winc.NewPushButton(panel3)
-	btn.OnClick().Bind(func(e *winc.Event) {
+	btn := windigo.NewPushButton(panel3)
+	btn.OnClick().Bind(func(e *windigo.Event) {
 		println("click")
 	})
 
-	imlist := winc.NewImageList(16, 16)
+	imlist := windigo.NewImageList(16, 16)
 	imlist.AddResIcon(12)
 
-	ls := winc.NewListView(panel4)
+	ls := windigo.NewListView(panel4)
 	ls.SetImageList(imlist)
 	ls.EnableEditLabels(false)
 	ls.SetCheckBoxes(true)
@@ -115,17 +115,17 @@ func main() {
 	}
 
 	// --- Dock
-	dock2 := winc.NewSimpleDock(panel4)
-	dock2.Dock(ls, winc.Fill)
+	dock2 := windigo.NewSimpleDock(panel4)
+	dock2.Dock(ls, windigo.Fill)
 	tabs.SetCurrent(0)
 
-	dock.Dock(toolbar, winc.Top)        // toolbars always dock to the top
-	dock.Dock(tabs, winc.Top)           // tabs should prefer docking at the top
-	dock.Dock(tabs.Panels(), winc.Fill) // tab panels dock just below tabs and fill area
+	dock.Dock(toolbar, windigo.Top)        // toolbars always dock to the top
+	dock.Dock(tabs, windigo.Top)           // tabs should prefer docking at the top
+	dock.Dock(tabs.Panels(), windigo.Fill) // tab panels dock just below tabs and fill area
 
 	mainWindow.Center()
 	mainWindow.Show()
 	mainWindow.OnClose().Bind(wndOnClose)
 
-	winc.RunMainLoop()
+	windigo.RunMainLoop()
 }

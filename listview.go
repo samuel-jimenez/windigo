@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2019 The Winc Authors. All Rights Reserved.
+ * Copyright (C) 2019 The windigo Authors. All Rights Reserved.
  */
 
-package winc
+package windigo
 
 import (
 	"errors"
@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/samuel-jimenez/winc/w32"
+	"github.com/samuel-jimenez/windigo/w32"
 )
 
 // ListItem represents an item in a ListView widget.

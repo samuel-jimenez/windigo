@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2019 The Winc Authors. All Rights Reserved.
+ * Copyright (C) 2019 The windigo Authors. All Rights Reserved.
  */
 
-package winc
+package windigo
 
-import "github.com/samuel-jimenez/winc/w32"
+import "github.com/samuel-jimenez/windigo/w32"
 
 type ImageView struct {
 	ControlBase
@@ -15,7 +15,7 @@ type ImageView struct {
 func NewImageView(parent Controller) *ImageView {
 	iv := new(ImageView)
 
-	iv.InitWindow("winc_ImageView", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
+	iv.InitWindow("windigo_ImageView", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
 	RegMsgHandler(iv)
 
 	iv.SetFont(DefaultFont)

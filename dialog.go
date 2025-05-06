@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2019 The Winc Authors. All Rights Reserved.
+ * Copyright (C) 2019 The windigo Authors. All Rights Reserved.
  * Copyright (C) 2010-2013 Allen Dang. All Rights Reserved.
  */
 
-package winc
+package windigo
 
-import "github.com/samuel-jimenez/winc/w32"
+import "github.com/samuel-jimenez/windigo/w32"
 
 // Dialog displayed as z-order top window until closed.
 // It also disables parent window so it can not be clicked.
@@ -26,9 +26,9 @@ func NewDialog(parent Controller) *Dialog {
 
 	dlg.isForm = true
 	dlg.isModal = true
-	RegClassOnlyOnce("winc_Dialog")
+	RegClassOnlyOnce("windigo_Dialog")
 
-	dlg.hwnd = CreateWindow("winc_Dialog", parent, w32.WS_EX_CONTROLPARENT, /* IMPORTANT */
+	dlg.hwnd = CreateWindow("windigo_Dialog", parent, w32.WS_EX_CONTROLPARENT, /* IMPORTANT */
 		w32.WS_SYSMENU|w32.WS_CAPTION|w32.WS_THICKFRAME /*|w32.WS_BORDER|w32.WS_POPUP*/)
 	dlg.parent = parent
 

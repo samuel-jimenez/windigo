@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2019 The Winc Authors. All Rights Reserved.
+ * Copyright (C) 2019 The windigo Authors. All Rights Reserved.
  */
 
-package winc
+package windigo
 
 import (
-	"github.com/samuel-jimenez/winc/w32"
+	"github.com/samuel-jimenez/windigo/w32"
 )
 
 type VResizer struct {
@@ -22,8 +22,8 @@ type VResizer struct {
 func NewVResizer(parent Controller) *VResizer {
 	sp := new(VResizer)
 
-	RegClassOnlyOnce("winc_VResizer")
-	sp.hwnd = CreateWindow("winc_VResizer", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
+	RegClassOnlyOnce("windigo_VResizer")
+	sp.hwnd = CreateWindow("windigo_VResizer", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
 	sp.parent = parent
 	sp.mouseLeft = true
 	RegMsgHandler(sp)
@@ -142,8 +142,8 @@ type HResizer struct {
 func NewHResizer(parent Controller) *HResizer {
 	sp := new(HResizer)
 
-	RegClassOnlyOnce("winc_HResizer")
-	sp.hwnd = CreateWindow("winc_HResizer", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
+	RegClassOnlyOnce("windigo_HResizer")
+	sp.hwnd = CreateWindow("windigo_HResizer", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
 	sp.parent = parent
 	sp.mouseLeft = true
 	RegMsgHandler(sp)

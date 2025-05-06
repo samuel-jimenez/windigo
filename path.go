@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2019 The Winc Authors. All Rights Reserved.
+ * Copyright (C) 2019 The windigo Authors. All Rights Reserved.
  * Copyright (C) 2010-2013 Allen Dang. All Rights Reserved.
  */
 
-package winc
+package windigo
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"syscall"
 
-	"github.com/samuel-jimenez/winc/w32"
+	"github.com/samuel-jimenez/windigo/w32"
 )
 
 func knownFolderPath(id w32.CSIDL) (string, error) {

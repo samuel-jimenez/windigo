@@ -3,15 +3,15 @@ package main
 import (
 	"fmt"
 
-	"github.com/samuel-jimenez/winc"
+	"github.com/samuel-jimenez/windigo"
 )
 
-func btnOnClick(arg *winc.Event) {
+func btnOnClick(arg *windigo.Event) {
 	fmt.Println("Button clicked")
 }
 
-func wndOnClose(arg *winc.Event) {
-	winc.Exit()
+func wndOnClose(arg *windigo.Event) {
+	windigo.Exit()
 }
 
 type Item struct {
@@ -22,10 +22,10 @@ func (item Item) Text() string    { return item.T }
 func (item Item) ImageIndex() int { return 0 }
 
 func main() {
-	//winc.Init()
+	//windigo.Init()
 
-	mainWindow := winc.NewForm(nil)
-	dock := winc.NewSimpleDock(mainWindow)
+	mainWindow := windigo.NewForm(nil)
+	dock := windigo.NewSimpleDock(mainWindow)
 	mainWindow.SetLayout(dock)
 
 	mainWindow.SetSize(700, 600)
@@ -33,21 +33,21 @@ func main() {
 
 	menu := mainWindow.NewMenu()
 	fileMn := menu.AddSubMenu("File")
-	fileMn.AddItem("New", winc.NoShortcut)
+	fileMn.AddItem("New", windigo.NoShortcut)
 	editMn := menu.AddSubMenu("Edit")
-	cutMn := editMn.AddItem("Cut", winc.Shortcut{winc.ModControl, winc.KeyX})
-	copyMn := editMn.AddItem("Copy", winc.NoShortcut)
-	pasteMn := editMn.AddItem("Paste", winc.NoShortcut)
+	cutMn := editMn.AddItem("Cut", windigo.Shortcut{windigo.ModControl, windigo.KeyX})
+	copyMn := editMn.AddItem("Copy", windigo.NoShortcut)
+	pasteMn := editMn.AddItem("Paste", windigo.NoShortcut)
 	menu.Show()
 	copyMn.SetCheckable(true)
 	copyMn.SetChecked(true)
 	pasteMn.SetEnabled(false)
 
-	tabs := winc.NewMultiPanel(mainWindow)
+	tabs := windigo.NewMultiPanel(mainWindow)
 	tabs.SetPos(10, 10)
 	tabs.SetSize(100, 92)
 
-	tree := winc.NewTreeView(mainWindow)
+	tree := windigo.NewTreeView(mainWindow)
 	tree.SetPos(10, 80)
 	p := &Item{"First Item"}
 	tree.InsertItem(p, nil, nil)
@@ -67,36 +67,36 @@ func main() {
 		}
 	}
 	tree.Expand(p)
-	tree.OnCollapse().Bind(func(e *winc.Event) {
+	tree.OnCollapse().Bind(func(e *windigo.Event) {
 		println("collapse")
 	})
 
-	cutMn.OnClick().Bind(func(e *winc.Event) {
+	cutMn.OnClick().Bind(func(e *windigo.Event) {
 		println("cut click")
 		ok := tree.EnsureVisible(p)
 		fmt.Println("result of EnsureVisible", ok)
 	})
 
-	panel := winc.NewPanel(tabs)
+	panel := windigo.NewPanel(tabs)
 	tabs.AddPanel(panel)
 
-	panelDock := winc.NewSimpleDock(panel)
+	panelDock := windigo.NewSimpleDock(panel)
 	panel.SetLayout(panelDock)
 	panel.SetPos(0, 0)
 
-	panelErr := winc.NewErrorPanel(panel)
+	panelErr := windigo.NewErrorPanel(panel)
 	panelErr.SetPos(140, 10)
 	panelErr.SetSize(200, 32)
 	panelErr.ShowAsError(false)
 
-	edt := winc.NewEdit(panel)
+	edt := windigo.NewEdit(panel)
 	edt.SetPos(10, 535)
 	edt.SetText("some text")
 
-	btn := winc.NewPushButton(panel)
+	btn := windigo.NewPushButton(panel)
 	btn.SetText("Button")
 	btn.SetSize(100, 40)
-	btn.OnClick().Bind(func(e *winc.Event) {
+	btn.OnClick().Bind(func(e *windigo.Event) {
 		if edt.Visible() {
 			edt.Hide()
 		} else {
@@ -105,16 +105,16 @@ func main() {
 	})
 	btn.SetResIcon(13)
 
-	panelDock.Dock(btn, winc.Top)
-	panelDock.Dock(edt, winc.Top)
-	panelDock.Dock(panelErr, winc.Top)
+	panelDock.Dock(btn, windigo.Top)
+	panelDock.Dock(edt, windigo.Top)
+	panelDock.Dock(panelErr, windigo.Top)
 
-	dock.Dock(tree, winc.Left)
-	dock.Dock(tabs, winc.Top)
+	dock.Dock(tree, windigo.Left)
+	dock.Dock(tabs, windigo.Top)
 
 	mainWindow.Center()
 	mainWindow.Show()
 	mainWindow.OnClose().Bind(wndOnClose)
 
-	winc.RunMainLoop()
+	windigo.RunMainLoop()
 }

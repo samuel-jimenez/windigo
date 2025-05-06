@@ -1,12 +1,12 @@
 /*
- * Copyright (C) 2019 The Winc Authors. All Rights Reserved.
+ * Copyright (C) 2019 The windigo Authors. All Rights Reserved.
  * Copyright (C) 2010-2013 Allen Dang. All Rights Reserved.
  */
 
-package winc
+package windigo
 
 import (
-	"github.com/samuel-jimenez/winc/w32"
+	"github.com/samuel-jimenez/windigo/w32"
 	"unsafe"
 )
 
@@ -29,7 +29,7 @@ type Form struct {
 func NewCustomForm(parent Controller, exStyle int, dwStyle uint) *Form {
 	fm := new(Form)
 
-	RegClassOnlyOnce("winc_Form")
+	RegClassOnlyOnce("windigo_Form")
 
 	fm.isForm = true
 
@@ -41,7 +41,7 @@ func NewCustomForm(parent Controller, exStyle int, dwStyle uint) *Form {
 		dwStyle = w32.WS_OVERLAPPEDWINDOW
 	}
 
-	fm.hwnd = CreateWindow("winc_Form", parent, uint(exStyle), dwStyle)
+	fm.hwnd = CreateWindow("windigo_Form", parent, uint(exStyle), dwStyle)
 	fm.parent = parent
 
 	// this might fail if icon resource is not embedded in the binary
@@ -62,10 +62,10 @@ func NewCustomForm(parent Controller, exStyle int, dwStyle uint) *Form {
 func NewForm(parent Controller) *Form {
 	fm := new(Form)
 
-	RegClassOnlyOnce("winc_Form")
+	RegClassOnlyOnce("windigo_Form")
 
 	fm.isForm = true
-	fm.hwnd = CreateWindow("winc_Form", parent, w32.WS_EX_CONTROLPARENT|w32.WS_EX_APPWINDOW, w32.WS_OVERLAPPEDWINDOW)
+	fm.hwnd = CreateWindow("windigo_Form", parent, w32.WS_EX_CONTROLPARENT|w32.WS_EX_APPWINDOW, w32.WS_OVERLAPPEDWINDOW)
 	fm.parent = parent
 
 	// this might fail if icon resource is not embedded in the binary
