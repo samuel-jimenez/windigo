@@ -58,9 +58,13 @@ type LayoutControl struct {
 type LayoutControls []*LayoutControl
 
 type SimpleDock struct {
-	parent      DockAllow
-	layoutCtl   LayoutControls
-	loadedState bool
+	parent       DockAllow
+	layoutCtl    LayoutControls
+	loadedState  bool
+	margin_top   int
+	margin_btm   int
+	margin_left  int
+	margin_right int
 }
 
 // DockState gets saved and loaded from json
@@ -86,6 +90,44 @@ func NewSimpleDock(parent DockAllow) *SimpleDock {
 // Layout management for the child controls.
 func (sd *SimpleDock) Dock(child Dockable, dir Direction) {
 	sd.layoutCtl = append(sd.layoutCtl, &LayoutControl{child, dir})
+}
+
+// margins
+func (sd *SimpleDock) Margin_top() int {
+	return sd.margin_top
+}
+
+func (sd *SimpleDock) Margin_btm() int {
+	return sd.margin_btm
+}
+func (sd *SimpleDock) Margin_left() int {
+	return sd.margin_left
+}
+func (sd *SimpleDock) Margin_right() int {
+	return sd.margin_right
+}
+
+func (sd *SimpleDock) SetMargins(margin int) {
+	sd.margin_top = margin
+	sd.margin_btm = margin
+	sd.margin_left = margin
+	sd.margin_right = margin
+}
+
+func (sd *SimpleDock) SetMarginTop(margin int) {
+	sd.margin_top = margin
+}
+
+func (sd *SimpleDock) SetMarginBtm(margin int) {
+	sd.margin_btm = margin
+}
+
+func (sd *SimpleDock) SetMarginLeft(margin int) {
+	sd.margin_left = margin
+}
+
+func (sd *SimpleDock) SetMarginRight(margin int) {
+	sd.margin_right = margin
 }
 
 // SaveState of the layout. Only works for Docks with parent set to main form.
@@ -179,8 +221,8 @@ func (sd *SimpleDock) LoadStateFile(file string) error {
 func (sd *SimpleDock) Update() {
 	sort.Stable(sd.layoutCtl)
 
-	x, y := 0, 0
-	w, h := sd.parent.ClientWidth(), sd.parent.ClientHeight()
+	x, y := sd.margin_left, sd.margin_top
+	w, h := sd.parent.ClientWidth()-sd.margin_left-sd.margin_right, sd.parent.ClientHeight()-sd.margin_top-sd.margin_btm
 	winw, winh := w, h
 
 	for _, c := range sd.layoutCtl {
