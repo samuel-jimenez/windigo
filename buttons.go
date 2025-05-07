@@ -16,46 +16,46 @@ type Button struct {
 	onClick EventManager
 }
 
-func (bt *Button) OnClick() *EventManager {
-	return &bt.onClick
+func (control *Button) OnClick() *EventManager {
+	return &control.onClick
 }
 
-func (bt *Button) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
+func (control *Button) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 	switch msg {
 	case w32.WM_COMMAND:
-		bt.onClick.Fire(NewEvent(bt, nil))
+		control.onClick.Fire(NewEvent(control, nil))
 		/*case w32.WM_LBUTTONDOWN:
-			w32.SetCapture(bt.Handle())
+			w32.SetCapture(control.Handle())
 		case w32.WM_LBUTTONUP:
 			w32.ReleaseCapture()*/
 		/*case win.WM_GETDLGCODE:
 		println("GETDLGCODE")*/
 	}
-	return w32.DefWindowProc(bt.hwnd, msg, wparam, lparam)
-	//return bt.W32Control.WndProc(msg, wparam, lparam)
+	return w32.DefWindowProc(control.hwnd, msg, wparam, lparam)
+	//return control.W32Control.WndProc(msg, wparam, lparam)
 }
 
-func (bt *Button) Checked() bool {
-	result := w32.SendMessage(bt.hwnd, w32.BM_GETCHECK, 0, 0)
+func (control *Button) Checked() bool {
+	result := w32.SendMessage(control.hwnd, w32.BM_GETCHECK, 0, 0)
 	return result == w32.BST_CHECKED
 }
 
-func (bt *Button) SetChecked(checked bool) {
+func (control *Button) SetChecked(checked bool) {
 	wparam := w32.BST_CHECKED
 	if !checked {
 		wparam = w32.BST_UNCHECKED
 	}
-	w32.SendMessage(bt.hwnd, w32.BM_SETCHECK, uintptr(wparam), 0)
+	w32.SendMessage(control.hwnd, w32.BM_SETCHECK, uintptr(wparam), 0)
 }
 
 // SetIcon sets icon on the button. Recommended icons are 32x32 with 32bit color depth.
-func (bt *Button) SetIcon(ico *Icon) {
-	w32.SendMessage(bt.hwnd, w32.BM_SETIMAGE, w32.IMAGE_ICON, uintptr(ico.handle))
+func (control *Button) SetIcon(ico *Icon) {
+	w32.SendMessage(control.hwnd, w32.BM_SETIMAGE, w32.IMAGE_ICON, uintptr(ico.handle))
 }
 
-func (bt *Button) SetResIcon(iconID uint16) {
+func (control *Button) SetResIcon(iconID uint16) {
 	if ico, err := NewIconFromResource(GetAppInstance(), iconID); err == nil {
-		bt.SetIcon(ico)
+		control.SetIcon(ico)
 		return
 	}
 	panic(fmt.Sprintf("missing icon with icon ID: %d", iconID))
@@ -66,21 +66,21 @@ type PushButton struct {
 }
 
 func NewPushButton(parent Controller) *PushButton {
-	pb := new(PushButton)
+	control := new(PushButton)
 
-	pb.InitControl("BUTTON", parent, 0, w32.BS_PUSHBUTTON|w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD)
-	RegMsgHandler(pb)
+	control.InitControl("BUTTON", parent, 0, w32.BS_PUSHBUTTON|w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD)
+	RegMsgHandler(control)
 
-	pb.SetFont(DefaultFont)
-	pb.SetText("Button")
-	pb.SetSize(100, 22)
+	control.SetFont(DefaultFont)
+	control.SetText("Button")
+	control.SetSize(100, 22)
 
-	return pb
+	return control
 }
 
 // SetDefault is used for dialogs to set default button.
-func (pb *PushButton) SetDefault() {
-	pb.SetAndClearStyleBits(w32.BS_DEFPUSHBUTTON, w32.BS_PUSHBUTTON)
+func (control *PushButton) SetDefault() {
+	control.SetAndClearStyleBits(w32.BS_DEFPUSHBUTTON, w32.BS_PUSHBUTTON)
 }
 
 // IconButton does not display text, requires SetResIcon call.
@@ -89,17 +89,17 @@ type IconButton struct {
 }
 
 func NewIconButton(parent Controller) *IconButton {
-	pb := new(IconButton)
+	control := new(IconButton)
 
-	pb.InitControl("BUTTON", parent, 0, w32.BS_ICON|w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD)
-	RegMsgHandler(pb)
+	control.InitControl("BUTTON", parent, 0, w32.BS_ICON|w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD)
+	RegMsgHandler(control)
 
-	pb.SetFont(DefaultFont)
+	control.SetFont(DefaultFont)
 	// even if text would be set it would not be displayed
-	pb.SetText("")
-	pb.SetSize(100, 22)
+	control.SetText("")
+	control.SetSize(100, 22)
 
-	return pb
+	return control
 }
 
 type CheckBox struct {
@@ -107,16 +107,16 @@ type CheckBox struct {
 }
 
 func NewCheckBox(parent Controller) *CheckBox {
-	cb := new(CheckBox)
+	control := new(CheckBox)
 
-	cb.InitControl("BUTTON", parent, 0, w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD|w32.BS_AUTOCHECKBOX)
-	RegMsgHandler(cb)
+	control.InitControl("BUTTON", parent, 0, w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD|w32.BS_AUTOCHECKBOX)
+	RegMsgHandler(control)
 
-	cb.SetFont(DefaultFont)
-	cb.SetText("CheckBox")
-	cb.SetSize(100, 22)
+	control.SetFont(DefaultFont)
+	control.SetText("CheckBox")
+	control.SetSize(100, 22)
 
-	return cb
+	return control
 }
 
 type RadioButton struct {
@@ -124,16 +124,16 @@ type RadioButton struct {
 }
 
 func NewRadioButton(parent Controller) *RadioButton {
-	rb := new(RadioButton)
+	control := new(RadioButton)
 
-	rb.InitControl("BUTTON", parent, 0, w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD|w32.BS_AUTORADIOBUTTON)
-	RegMsgHandler(rb)
+	control.InitControl("BUTTON", parent, 0, w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD|w32.BS_AUTORADIOBUTTON)
+	RegMsgHandler(control)
 
-	rb.SetFont(DefaultFont)
-	rb.SetText("RadioButton")
-	rb.SetSize(100, 22)
+	control.SetFont(DefaultFont)
+	control.SetText("RadioButton")
+	control.SetSize(100, 22)
 
-	return rb
+	return control
 }
 
 type GroupBox struct {
@@ -141,14 +141,15 @@ type GroupBox struct {
 }
 
 func NewGroupBox(parent Controller) *GroupBox {
-	gb := new(GroupBox)
+	control := new(GroupBox)
 
-	gb.InitControl("BUTTON", parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_GROUP|w32.BS_GROUPBOX)
-	RegMsgHandler(gb)
+	control.InitControl("BUTTON", parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_GROUP|w32.BS_GROUPBOX)
+	RegMsgHandler(control)
 
-	gb.SetFont(DefaultFont)
-	gb.SetText("GroupBox")
-	gb.SetSize(100, 100)
+	control.SetFont(DefaultFont)
+	control.SetText("GroupBox")
+	control.SetSize(100, 100)
 
-	return gb
+	return control
+
 }
