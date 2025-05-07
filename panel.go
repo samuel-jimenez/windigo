@@ -44,6 +44,48 @@ func (control *Panel) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 	return w32.DefWindowProc(control.hwnd, msg, wparam, lparam)
 }
 
+type GroupPanel struct {
+	Panel
+	groupbox *GroupBox
+}
+
+func NewGroupPanel(parent Controller) *GroupPanel {
+	control := new(GroupPanel)
+
+	RegClassOnlyOnce("windigo_GroupPanel")
+	control.hwnd = CreateWindow("windigo_GroupPanel", parent, w32.WS_EX_CONTROLPARENT, w32.WS_CHILD|w32.WS_VISIBLE)
+	control.parent = parent
+	RegMsgHandler(control)
+	control.groupbox = NewGroupBox(control)
+	control.SetFont(DefaultFont)
+	control.SetText("")
+	control.SetSize(200, 65)
+	return control
+}
+
+func (control *GroupPanel) SetText(caption string) {
+	control.groupbox.SetText(caption)
+}
+
+func (control *GroupPanel) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
+	switch msg {
+	case w32.WM_SIZE, w32.WM_PAINT:
+		if control.groupbox != nil {
+
+			x, y := control.margin_left, control.margin_top
+			control_width, control_height := control.ClientWidth()-control.margin_left-control.margin_right,
+				control.ClientHeight()-control.margin_top-control.margin_btm
+			control.groupbox.SetPos(x, y)
+			control.groupbox.SetSize(control_width, control_height)
+		}
+		if control.layoutMng != nil {
+
+			control.layoutMng.Update()
+		}
+	}
+	return w32.DefWindowProc(control.hwnd, msg, wparam, lparam)
+}
+
 var errorPanelPen = NewPen(w32.PS_GEOMETRIC, 2, NewSolidColorBrush(RGB(255, 128, 128)))
 var errorPanelOkPen = NewPen(w32.PS_GEOMETRIC, 2, NewSolidColorBrush(RGB(220, 220, 220)))
 
