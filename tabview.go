@@ -22,7 +22,7 @@ type TabView struct {
 func NewTabView(parent Controller) *TabView {
 	tv := new(TabView)
 
-	tv.InitControl("SysTabControl32", parent, 0,
+	tv.InitControl(w32.WC_TABCONTROL, parent, 0,
 		w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_CLIPSIBLINGS)
 	RegMsgHandler(tv)
 

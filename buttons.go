@@ -68,7 +68,7 @@ type PushButton struct {
 func NewPushButton(parent Controller) *PushButton {
 	control := new(PushButton)
 
-	control.InitControl("BUTTON", parent, 0, w32.BS_PUSHBUTTON|w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD)
+	control.InitControl(w32.WC_BUTTON, parent, 0, w32.BS_PUSHBUTTON|w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD)
 	RegMsgHandler(control)
 
 	control.SetFont(DefaultFont)
@@ -91,7 +91,7 @@ type IconButton struct {
 func NewIconButton(parent Controller) *IconButton {
 	control := new(IconButton)
 
-	control.InitControl("BUTTON", parent, 0, w32.BS_ICON|w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD)
+	control.InitControl(w32.WC_BUTTON, parent, 0, w32.BS_ICON|w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD)
 	RegMsgHandler(control)
 
 	control.SetFont(DefaultFont)
@@ -109,7 +109,7 @@ type CheckBox struct {
 func NewCheckBox(parent Controller) *CheckBox {
 	control := new(CheckBox)
 
-	control.InitControl("BUTTON", parent, 0, w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD|w32.BS_AUTOCHECKBOX)
+	control.InitControl(w32.WC_BUTTON, parent, 0, w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD|w32.BS_AUTOCHECKBOX)
 	RegMsgHandler(control)
 
 	control.SetFont(DefaultFont)
@@ -126,7 +126,7 @@ type RadioButton struct {
 func NewRadioButton(parent Controller) *RadioButton {
 	control := new(RadioButton)
 
-	control.InitControl("BUTTON", parent, 0, w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD|w32.BS_AUTORADIOBUTTON)
+	control.InitControl(w32.WC_BUTTON, parent, 0, w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD|w32.BS_AUTORADIOBUTTON)
 	RegMsgHandler(control)
 
 	control.SetFont(DefaultFont)
@@ -143,7 +143,7 @@ type GroupBox struct {
 func NewGroupBox(parent Controller) *GroupBox {
 	control := new(GroupBox)
 
-	control.InitControl("BUTTON", parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_GROUP|w32.BS_GROUPBOX)
+	control.InitControl(w32.WC_BUTTON, parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_GROUP|w32.BS_GROUPBOX)
 	RegMsgHandler(control)
 
 	control.SetFont(DefaultFont)

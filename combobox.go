@@ -22,7 +22,7 @@ type ComboBox struct {
 func NewComboBox(parent Controller) *ComboBox {
 	control := new(ComboBox)
 
-	control.InitControl("COMBOBOX", parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_DROPDOWN)
+	control.InitControl(w32.WC_COMBOBOX, parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_DROPDOWN)
 	RegMsgHandler(control)
 
 	control.SetFont(DefaultFont)
@@ -33,7 +33,7 @@ func NewComboBox(parent Controller) *ComboBox {
 func NewComboBoxWithFlags(parent Controller, style uint) *ComboBox {
 	control := new(ComboBox)
 
-	control.InitControl("COMBOBOX", parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_DROPDOWN|style)
+	control.InitControl(w32.WC_COMBOBOX, parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_DROPDOWN|style)
 	RegMsgHandler(control)
 
 	control.SetFont(DefaultFont)
@@ -44,7 +44,7 @@ func NewComboBoxWithFlags(parent Controller, style uint) *ComboBox {
 func NewListComboBox(parent Controller) *ComboBox {
 	control := new(ComboBox)
 
-	control.InitControl("COMBOBOX", parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_DROPDOWNLIST)
+	control.InitControl(w32.WC_COMBOBOX, parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_DROPDOWNLIST)
 	RegMsgHandler(control)
 
 	control.SetFont(DefaultFont)

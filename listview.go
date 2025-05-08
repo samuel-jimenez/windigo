@@ -66,7 +66,7 @@ type ListView struct {
 func NewListView(parent Controller) *ListView {
 	lv := new(ListView)
 
-	lv.InitControl("SysListView32", parent /*w32.WS_EX_CLIENTEDGE*/, 0,
+	lv.InitControl(w32.WC_LISTVIEW, parent /*w32.WS_EX_CLIENTEDGE*/, 0,
 		w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.LVS_REPORT|w32.LVS_EDITLABELS|w32.LVS_SHOWSELALWAYS)
 
 	lv.item2Handle = make(map[ListItem]uintptr)

@@ -69,7 +69,7 @@ func NewToolbar(parent Controller) *Toolbar {
 func newToolbar(parent Controller, style uint) *Toolbar {
 	tb := new(Toolbar)
 
-	tb.InitControl("ToolbarWindow32", parent, 0, style)
+	tb.InitControl(w32.TOOLBARCLASSNAME, parent, 0, style)
 
 	exStyle := w32.SendMessage(tb.hwnd, w32.TB_GETEXTENDEDSTYLE, 0, 0)
 	exStyle |= w32.TBSTYLE_EX_DRAWDDARROWS | w32.TBSTYLE_EX_MIXEDBUTTONS

@@ -10,6 +10,37 @@ const (
 	TRUE  = 1
 )
 
+// Window Classes (CommCtrl.h)
+const (
+	WC_HEADER = "SysHeader32"
+	/*
+		TOOLBARCLASSNAME = "ToolbarWindow32"	// Toolbar
+		TOOLTIPS_CLASS   = "tooltips_class32"	// Tooltip
+		STATUSCLASSNAME  = "msctls_statusbar32"	// StatusBar
+		TRACKBAR_CLASS   = "msctls_trackbar32"	// Trackbar
+		UPDOWN_CLASS     = "msctls_updown32"	// Up-Down
+		PROGRESS_CLASS   = "msctls_progress32"	// ProgressBar
+	*/
+	HOTKEY_CLASS     = "msctls_hotkey32"
+	WC_LINK          = "SysLink"
+	WC_LISTVIEW      = "SysListView32"
+	WC_TREEVIEW      = "SysTreeView32"
+	WC_COMBOBOXEX    = "ComboBoxEx32"
+	WC_TABCONTROL    = "SysTabControl32"
+	MONTHCAL_CLASS   = "SysMonthCal32"
+	WC_IPADDRESS     = "SysIPAddress32" // useless
+	WC_PAGESCROLLER  = "SysPager"
+	WC_NATIVEFONTCTL = "NativeFontCtl"
+	/*
+		WC_BUTTON        = "Button"
+		WC_STATIC        = "Static"
+		WC_EDIT          = "Edit"
+		WC_LISTBOX       = "ListBox"
+		WC_COMBOBOX      = "ComboBox"
+		WC_SCROLLBAR     = "ScrollBar"
+	*/
+)
+
 const (
 	NO_ERROR                         = 0
 	ERROR_SUCCESS                    = 0
@@ -130,6 +161,11 @@ const (
 	IDI_WARNING     = IDI_EXCLAMATION
 	IDI_ERROR       = IDI_HAND
 	IDI_INFORMATION = IDI_ASTERISK
+)
+
+// Button Class
+const (
+	WC_BUTTON = "Button"
 )
 
 // Button style constants
@@ -935,6 +971,11 @@ const (
 	TC_SCROLLBLT    = 65536
 )
 
+// Static Class
+const (
+	WC_STATIC = "Static"
+)
+
 // Static control styles
 const (
 	SS_BITMAP          = 14
@@ -969,6 +1010,11 @@ const (
 	SS_PATHELLIPSIS    = 0x00008000
 	SS_WORDELLIPSIS    = 0x0000C000
 	SS_ELLIPSISMASK    = 0x0000C000
+)
+
+// Edit Class
+const (
+	WC_EDIT = "Edit"
 )
 
 // Edit styles
@@ -1079,24 +1125,22 @@ const (
 	CCS_RIGHT         = 131
 )
 
-// ProgressBar messages
+// Toolbar Class
 const (
-	PROGRESS_CLASS  = "msctls_progress32"
-	PBM_SETPOS      = WM_USER + 2
-	PBM_DELTAPOS    = WM_USER + 3
-	PBM_SETSTEP     = WM_USER + 4
-	PBM_STEPIT      = WM_USER + 5
-	PBM_SETRANGE32  = 1030
-	PBM_GETRANGE    = 1031
-	PBM_GETPOS      = 1032
-	PBM_SETBARCOLOR = 1033
-	PBM_SETBKCOLOR  = CCM_SETBKCOLOR
-	PBS_SMOOTH      = 1
-	PBS_VERTICAL    = 4
+	TOOLBARCLASSNAME = "ToolbarWindow32"
+)
+
+// StatusBar Class
+const (
+	STATUSCLASSNAME = "msctls_statusbar32"
+	SBARS_SIZEGRIP  = 0x0100
+	SBARS_TOOLTIPS  = 0x0800
 )
 
 // Trackbar messages and constants
 const (
+	TRACKBAR_CLASS = "msctls_trackbar32"
+
 	TBS_AUTOTICKS      = 1
 	TBS_VERT           = 2
 	TBS_HORZ           = 0
@@ -1158,6 +1202,27 @@ const (
 	TB_TOP           = 6
 	TB_BOTTOM        = 7
 	TB_ENDTRACK      = 8
+)
+
+// Up-Down Class
+const (
+	UPDOWN_CLASS = "msctls_updown32"
+)
+
+// ProgressBar messages
+const (
+	PROGRESS_CLASS  = "msctls_progress32"
+	PBM_SETPOS      = WM_USER + 2
+	PBM_DELTAPOS    = WM_USER + 3
+	PBM_SETSTEP     = WM_USER + 4
+	PBM_STEPIT      = WM_USER + 5
+	PBM_SETRANGE32  = 1030
+	PBM_GETRANGE    = 1031
+	PBM_GETPOS      = 1032
+	PBM_SETBARCOLOR = 1033
+	PBM_SETBKCOLOR  = CCM_SETBKCOLOR
+	PBS_SMOOTH      = 1
+	PBS_VERTICAL    = 4
 )
 
 // GetOpenFileName and GetSaveFileName extended flags
@@ -2101,6 +2166,11 @@ const (
 	REG_QWORD_LITTLE_ENDIAN        = 11
 )
 
+// Tooltip Class
+const (
+	TOOLTIPS_CLASS = "tooltips_class32"
+)
+
 // Tooltip styles
 const (
 	TTS_ALWAYSTIP      = 0x01
@@ -2881,6 +2951,16 @@ const (
 	WH_SYSMSGFILTER    = 6
 )
 
+// ListBox Class
+const (
+	WC_LISTBOX = "ListBox"
+)
+
+// ComboBox Class
+const (
+	WC_COMBOBOX = "ComboBox"
+)
+
 // ComboBox return values
 const (
 	CB_OKAY     = 0
@@ -3585,6 +3665,8 @@ const (
 
 // ScrollBar constants
 const (
+	WC_SCROLLBAR = "ScrollBar"
+
 	SB_HORZ = 0
 	SB_VERT = 1
 	SB_CTL  = 2

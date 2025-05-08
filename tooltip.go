@@ -19,7 +19,7 @@ type ToolTip struct {
 func NewToolTip(parent Controller) *ToolTip {
 	tp := new(ToolTip)
 
-	tp.InitControl("tooltips_class32", parent, w32.WS_EX_TOPMOST, w32.WS_POPUP|w32.TTS_NOPREFIX|w32.TTS_ALWAYSTIP)
+	tp.InitControl(w32.TOOLTIPS_CLASS, parent, w32.WS_EX_TOPMOST, w32.WS_POPUP|w32.TTS_NOPREFIX|w32.TTS_ALWAYSTIP)
 	w32.SetWindowPos(tp.Handle(), w32.HWND_TOPMOST, 0, 0, 0, 0, w32.SWP_NOMOVE|w32.SWP_NOSIZE|w32.SWP_NOACTIVATE)
 
 	return tp

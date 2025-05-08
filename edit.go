@@ -18,7 +18,7 @@ const nopasswordChar = ' '
 func NewEdit(parent Controller) *Edit {
 	control := new(Edit)
 
-	control.InitControl("EDIT", parent, w32.WS_EX_CLIENTEDGE, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.ES_LEFT|
+	control.InitControl(w32.WC_EDIT, parent, w32.WS_EX_CLIENTEDGE, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.ES_LEFT|
 		w32.ES_AUTOHSCROLL)
 	RegMsgHandler(control)
 
@@ -74,8 +74,7 @@ type MultiEdit struct {
 
 func NewMultiEdit(parent Controller) *MultiEdit {
 	control := new(MultiEdit)
-
-	control.InitControl("EDIT", parent, w32.WS_EX_CLIENTEDGE, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.ES_LEFT|
+	control.InitControl(w32.WC_EDIT, parent, w32.WS_EX_CLIENTEDGE, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.ES_LEFT|
 		w32.WS_VSCROLL|w32.WS_HSCROLL|w32.ES_MULTILINE|w32.ES_WANTRETURN|w32.ES_AUTOHSCROLL|w32.ES_AUTOVSCROLL)
 	RegMsgHandler(control)
 

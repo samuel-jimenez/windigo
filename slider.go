@@ -16,7 +16,7 @@ type Slider struct {
 func NewSlider(parent Controller) *Slider {
 	tb := new(Slider)
 
-	tb.InitControl("msctls_trackbar32", parent, 0, w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD /*|w32.TBS_AUTOTICKS*/)
+	tb.InitControl(w32.TRACKBAR_CLASS, parent, 0, w32.WS_TABSTOP|w32.WS_VISIBLE|w32.WS_CHILD /*|w32.TBS_AUTOTICKS*/)
 	RegMsgHandler(tb)
 
 	tb.SetFont(DefaultFont)

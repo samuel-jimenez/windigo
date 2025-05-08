@@ -15,7 +15,7 @@ type Label struct {
 func NewLabel(parent Controller) *Label {
 	lb := new(Label)
 
-	lb.InitControl("STATIC", parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.SS_LEFTNOWORDWRAP)
+	lb.InitControl(w32.WC_STATIC, parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.SS_LEFTNOWORDWRAP)
 	RegMsgHandler(lb)
 
 	lb.SetFont(DefaultFont)

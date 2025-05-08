@@ -49,7 +49,7 @@ type TreeView struct {
 func NewTreeView(parent Controller) *TreeView {
 	tv := new(TreeView)
 
-	tv.InitControl("SysTreeView32", parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|
+	tv.InitControl(w32.WC_TREEVIEW, parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|
 		w32.WS_BORDER|w32.TVS_HASBUTTONS|w32.TVS_LINESATROOT|w32.TVS_SHOWSELALWAYS|
 		w32.TVS_TRACKSELECT /*|w32.WS_EX_CLIENTEDGE*/)
 
