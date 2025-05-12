@@ -86,6 +86,9 @@ func (control *TabView) SetCurrent(index int) {
 		panic("SendMessage(TCM_SETCURSEL) failed")
 	}
 	control.panels.SetCurrent(index)
+
+	// status bar disappears otherwise
+	control.parent.RefreshStatusBar()
 }
 
 func (control *TabView) WndProc(msg uint32, wparam, lparam uintptr) uintptr {

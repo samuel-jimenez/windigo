@@ -39,6 +39,10 @@ type Controller interface {
 	ContextMenu() *MenuItem
 	SetContextMenu(menu *MenuItem)
 
+	StatusBar() *StatusBar
+	SetStatusBar(statusbar *StatusBar)
+	RefreshStatusBar()
+
 	Font() *Font
 	SetFont(font *Font)
 	InvokeRequired() bool

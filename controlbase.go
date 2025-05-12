@@ -21,6 +21,8 @@ type ControlBase struct {
 
 	isForm bool
 
+	statusbar *StatusBar
+
 	minWidth, minHeight int
 	maxWidth, maxHeight int
 
@@ -381,6 +383,20 @@ func (control *ControlBase) Parent() Controller {
 
 func (control *ControlBase) SetParent(parent Controller) {
 	control.parent = parent
+}
+
+func (control *ControlBase) StatusBar() *StatusBar {
+	return control.statusbar
+}
+
+func (control *ControlBase) SetStatusBar(statusbar *StatusBar) {
+	control.statusbar = statusbar
+}
+
+func (control *ControlBase) RefreshStatusBar() {
+	if control.statusbar != nil {
+		control.statusbar.SetSize(0, 0)
+	}
 }
 
 func (control *ControlBase) Font() *Font {

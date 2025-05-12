@@ -20,7 +20,6 @@ type Form struct {
 	ControlBase
 
 	layoutMng LayoutManager
-	statusbar *StatusBar
 
 	// Fullscreen / Unfullscreen
 	isFullscreen            bool
@@ -94,10 +93,6 @@ func (control *Form) UpdateLayout() {
 	if control.layoutMng != nil {
 		control.layoutMng.Update()
 	}
-}
-
-func (control *Form) SetStatusBar(statusbar *StatusBar) {
-	control.statusbar = statusbar
 }
 
 func (control *Form) NewMenu() *Menu {
@@ -264,9 +259,7 @@ func (control *Form) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 		return 0
 
 	case w32.WM_SIZE, w32.WM_PAINT:
-		if control.statusbar != nil {
-			control.statusbar.SetSize(0, 0)
-		}
+		control.RefreshStatusBar()
 		if control.layoutMng != nil {
 			control.layoutMng.Update()
 		}
