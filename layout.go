@@ -268,21 +268,21 @@ func (control *SimpleDock) Update() {
 
 		switch c.dir {
 		case Top:
-			c.child.SetPos(x, y+c.child.MarginTop())
+			c.child.SetPos(x+c.child.MarginLeft(), y+c.child.MarginTop())
 			c.child.SetSize(control_width, child_height)
 			control_height -= total_child_height
 			y += total_child_height
 		case Bottom:
-			c.child.SetPos(x, control_height-total_child_height+c.child.MarginTop())
+			c.child.SetPos(x+c.child.MarginLeft(), control_height-total_child_height+c.child.MarginTop())
 			c.child.SetSize(control_width, child_height)
 			control_height -= total_child_height
 		case Left:
-			c.child.SetPos(x+c.child.MarginLeft(), y)
+			c.child.SetPos(x+c.child.MarginLeft(), y+c.child.MarginTop())
 			c.child.SetSize(child_width, control_height)
 			control_width -= total_child_width
 			x += total_child_width
 		case Right:
-			c.child.SetPos(control_width-total_child_width+c.child.MarginLeft(), y)
+			c.child.SetPos(control_width-total_child_width+c.child.MarginLeft(), y+c.child.MarginTop())
 			c.child.SetSize(child_width, control_height)
 			control_width -= total_child_width
 		case Fill:
