@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"sort"
 	"unsafe"
 
 	"github.com/samuel-jimenez/windigo/w32"
@@ -249,7 +248,6 @@ func (control *SimpleDock) LoadStateFile(file string) error {
 
 // Update is called to resize child items based on layout directions.
 func (control *SimpleDock) Update() {
-	sort.Stable(control.layoutCtl)
 
 	x, y := control.margin_left, control.margin_top
 	control_width, control_height := control.parent.ClientWidth()-control.margin_left-control.margin_right,
