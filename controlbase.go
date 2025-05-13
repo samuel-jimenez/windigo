@@ -278,11 +278,25 @@ func (control *ControlBase) MarginRight() int {
 	return control.margin_right
 }
 
-func (control *ControlBase) SetMargins(margin int) {
+func (control *ControlBase) SetMarginsAll(margin int) {
 	control.margin_top = margin
+	control.margin_right = margin
 	control.margin_btm = margin
 	control.margin_left = margin
-	control.margin_right = margin
+}
+
+func (control *ControlBase) SetMarginsHV(margin_vertical, margin_horizontal int) {
+	control.margin_top = margin_vertical
+	control.margin_right = margin_horizontal
+	control.margin_btm = margin_vertical
+	control.margin_left = margin_horizontal
+}
+
+func (control *ControlBase) SetMargins(margin_top, margin_right, margin_btm, margin_left int) {
+	control.margin_top = margin_top
+	control.margin_right = margin_right
+	control.margin_btm = margin_btm
+	control.margin_left = margin_left
 }
 
 func (control *ControlBase) SetMarginTop(margin int) {

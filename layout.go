@@ -22,7 +22,9 @@ type Marginal interface {
 	MarginLeft() int
 	MarginRight() int
 
-	SetMargins(int)
+	SetMarginsAll(int)
+	SetMarginsHV(int, int)
+	SetMargins(int, int, int, int)
 	SetMarginTop(int)
 	SetMarginBtm(int)
 	SetMarginLeft(int)
@@ -121,11 +123,25 @@ func (control *SimpleDock) MarginRight() int {
 	return control.margin_right
 }
 
-func (control *SimpleDock) SetMargins(margin int) {
+func (control *SimpleDock) SetMarginsAll(margin int) {
 	control.margin_top = margin
+	control.margin_right = margin
 	control.margin_btm = margin
 	control.margin_left = margin
-	control.margin_right = margin
+}
+
+func (control *SimpleDock) SetMarginsHV(margin_vertical, margin_horizontal int) {
+	control.margin_top = margin_vertical
+	control.margin_right = margin_horizontal
+	control.margin_btm = margin_vertical
+	control.margin_left = margin_horizontal
+}
+
+func (control *SimpleDock) SetMargins(margin_top, margin_right, margin_btm, margin_left int) {
+	control.margin_top = margin_top
+	control.margin_right = margin_right
+	control.margin_btm = margin_btm
+	control.margin_left = margin_left
 }
 
 func (control *SimpleDock) SetMarginTop(margin int) {
