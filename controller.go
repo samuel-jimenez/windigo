@@ -10,6 +10,7 @@ import (
 )
 
 type Controller interface {
+	Marginal
 	Text() string
 
 	Enabled() bool
