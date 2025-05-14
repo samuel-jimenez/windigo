@@ -10,6 +10,11 @@ import (
 	"github.com/samuel-jimenez/windigo/w32"
 )
 
+type Pane interface {
+	DockAllow
+	Controller
+}
+
 type Panel struct {
 	ControlBase
 	layoutMng LayoutManager
