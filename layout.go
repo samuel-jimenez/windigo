@@ -78,8 +78,8 @@ type SimpleDock struct {
 	layoutCtl   LayoutControls
 	loadedState bool
 
-	margin_top, margin_btm,
-	margin_left, margin_right int
+	padding_top, padding_btm,
+	padding_left, padding_right int
 }
 
 // DockState gets saved and loaded from json
@@ -107,56 +107,56 @@ func (control *SimpleDock) Dock(child Dockable, dir Direction) {
 	control.layoutCtl = append(control.layoutCtl, &LayoutControl{child, dir})
 }
 
-// Marginal
-func (control *SimpleDock) MarginTop() int {
-	return control.margin_top
+// Padded
+func (control *SimpleDock) PaddingTop() int {
+	return control.padding_top
 }
 
-func (control *SimpleDock) MarginBtm() int {
-	return control.margin_btm
+func (control *SimpleDock) PaddingBtm() int {
+	return control.padding_btm
 }
-func (control *SimpleDock) MarginLeft() int {
-	return control.margin_left
+func (control *SimpleDock) PaddingLeft() int {
+	return control.padding_left
 }
-func (control *SimpleDock) MarginRight() int {
-	return control.margin_right
-}
-
-func (control *SimpleDock) SetMarginsAll(margin int) {
-	control.margin_top = margin
-	control.margin_right = margin
-	control.margin_btm = margin
-	control.margin_left = margin
+func (control *SimpleDock) PaddingRight() int {
+	return control.padding_right
 }
 
-func (control *SimpleDock) SetMarginsHV(margin_vertical, margin_horizontal int) {
-	control.margin_top = margin_vertical
-	control.margin_right = margin_horizontal
-	control.margin_btm = margin_vertical
-	control.margin_left = margin_horizontal
+func (control *SimpleDock) SetPaddingsAll(padding int) {
+	control.padding_top = padding
+	control.padding_right = padding
+	control.padding_btm = padding
+	control.padding_left = padding
 }
 
-func (control *SimpleDock) SetMargins(margin_top, margin_right, margin_btm, margin_left int) {
-	control.margin_top = margin_top
-	control.margin_right = margin_right
-	control.margin_btm = margin_btm
-	control.margin_left = margin_left
+func (control *SimpleDock) SetPaddingsHV(padding_vertical, padding_horizontal int) {
+	control.padding_top = padding_vertical
+	control.padding_right = padding_horizontal
+	control.padding_btm = padding_vertical
+	control.padding_left = padding_horizontal
 }
 
-func (control *SimpleDock) SetMarginTop(margin int) {
-	control.margin_top = margin
+func (control *SimpleDock) SetPaddings(padding_top, padding_right, padding_btm, padding_left int) {
+	control.padding_top = padding_top
+	control.padding_right = padding_right
+	control.padding_btm = padding_btm
+	control.padding_left = padding_left
 }
 
-func (control *SimpleDock) SetMarginBtm(margin int) {
-	control.margin_btm = margin
+func (control *SimpleDock) SetPaddingTop(padding int) {
+	control.padding_top = padding
 }
 
-func (control *SimpleDock) SetMarginLeft(margin int) {
-	control.margin_left = margin
+func (control *SimpleDock) SetPaddingBtm(padding int) {
+	control.padding_btm = padding
 }
 
-func (control *SimpleDock) SetMarginRight(margin int) {
-	control.margin_right = margin
+func (control *SimpleDock) SetPaddingLeft(padding int) {
+	control.padding_left = padding
+}
+
+func (control *SimpleDock) SetPaddingRight(padding int) {
+	control.padding_right = padding
 }
 
 // SaveState of the layout. Only works for Docks with parent set to main form.
@@ -249,9 +249,9 @@ func (control *SimpleDock) LoadStateFile(file string) error {
 // Update is called to resize child items based on layout directions.
 func (control *SimpleDock) Update() {
 
-	x, y := control.margin_left, control.margin_top
-	control_width, control_height := control.parent.ClientWidth()-control.margin_left-control.margin_right,
-		control.parent.ClientHeight()-control.margin_top-control.margin_btm
+	x, y := control.padding_left, control.padding_top
+	control_width, control_height := control.parent.ClientWidth()-control.padding_left-control.padding_right,
+		control.parent.ClientHeight()-control.padding_top-control.padding_btm
 
 	for _, c := range control.layoutCtl {
 		// Non visible controls do not preserve space.
@@ -290,4 +290,23 @@ func (control *SimpleDock) Update() {
 		}
 		//c.child.Invalidate(true)
 	}
+}
+
+type AutoPanel struct {
+	Pane
+	*SimpleDock
+}
+
+func NewAutoPanel(parent Controller) AutoPanel {
+	panel := NewPanel(parent)
+	dock := NewSimpleDock(panel)
+
+	return AutoPanel{panel, dock}
+}
+
+func NewGroupAutoPanel(parent Controller) AutoPanel {
+	panel := NewGroupPanel(parent)
+	dock := NewSimpleDock(panel)
+
+	return AutoPanel{panel, dock}
 }
