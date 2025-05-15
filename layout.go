@@ -249,44 +249,48 @@ func (control *SimpleDock) LoadStateFile(file string) error {
 // Update is called to resize child items based on layout directions.
 func (control *SimpleDock) Update() {
 
-	x, y := control.padding_left, control.padding_top
-	control_width, control_height := control.parent.ClientWidth()-control.padding_left-control.padding_right,
-		control.parent.ClientHeight()-control.padding_top-control.padding_btm
+	x0, x1, y0, y1 := control.padding_left, control.parent.ClientWidth()-control.padding_right, control.padding_top, control.parent.ClientHeight()-control.padding_btm
+	control_width, control_height := x1-x0,
+		y1-y0
 
 	for _, c := range control.layoutCtl {
 		// Non visible controls do not preserve space.
 		if !c.child.Visible() {
 			continue
 		}
-
-		child_height := c.child.Height()
 		child_width := c.child.Width()
-		total_child_height := child_height + c.child.MarginTop() + c.child.MarginBtm()
-		total_child_width := child_width + c.child.MarginLeft() + c.child.MarginRight()
+		child_height := c.child.Height()
+		child_h_margin := c.child.MarginLeft() + c.child.MarginRight()
+		child_v_margin := c.child.MarginTop() + c.child.MarginBtm()
+		total_child_width := child_width + child_h_margin
+		total_child_height := child_height + child_v_margin
 
 		switch c.dir {
 		case Top:
-			c.child.SetPos(x+c.child.MarginLeft(), y+c.child.MarginTop())
-			c.child.SetSize(control_width, child_height)
+			c.child.SetPos(x0+c.child.MarginLeft(), y0+c.child.MarginTop())
+			c.child.SetSize(control_width-child_h_margin, child_height)
 			control_height -= total_child_height
-			y += total_child_height
+			y0 += total_child_height
 		case Bottom:
-			c.child.SetPos(x+c.child.MarginLeft(), control_height-total_child_height+c.child.MarginTop())
-			c.child.SetSize(control_width, child_height)
+			c.child.SetPos(x0+c.child.MarginLeft(), y1-total_child_height+c.child.MarginTop())
+			c.child.SetSize(control_width-child_h_margin, child_height)
 			control_height -= total_child_height
+			y1 -= total_child_height
 		case Left:
-			c.child.SetPos(x+c.child.MarginLeft(), y+c.child.MarginTop())
-			c.child.SetSize(child_width, control_height)
+			c.child.SetPos(x0+c.child.MarginLeft(), y0+c.child.MarginTop())
+			c.child.SetSize(child_width, control_height-child_v_margin)
 			control_width -= total_child_width
-			x += total_child_width
+			x0 += total_child_width
 		case Right:
-			c.child.SetPos(control_width-total_child_width+c.child.MarginLeft(), y+c.child.MarginTop())
-			c.child.SetSize(child_width, control_height)
+			c.child.SetPos(x1-total_child_width+c.child.MarginLeft(), y0+c.child.MarginTop())
+			c.child.SetSize(child_width, control_height-child_v_margin)
 			control_width -= total_child_width
+			x1 -= total_child_width
+
 		case Fill:
 			// fill available space
-			c.child.SetPos(x, y)
-			c.child.SetSize(control_width, control_height)
+			c.child.SetPos(x0+c.child.MarginLeft(), y0+c.child.MarginTop())
+			c.child.SetSize(control_width-child_h_margin, control_height-child_v_margin)
 		}
 		//c.child.Invalidate(true)
 	}
