@@ -22,8 +22,8 @@ type Marginal interface {
 	MarginRight() int
 
 	SetMarginsAll(int)
-	SetMarginsHV(int, int)
-	SetMargins(int, int, int, int)
+	SetMarginsVH(margin_vertical, margin_horizontal int)
+	SetMargins(margin_top, margin_right, margin_btm, margin_left int)
 	SetMarginTop(int)
 	SetMarginBtm(int)
 	SetMarginLeft(int)

@@ -285,7 +285,7 @@ func (control *ControlBase) SetMarginsAll(margin int) {
 	control.margin_left = margin
 }
 
-func (control *ControlBase) SetMarginsHV(margin_vertical, margin_horizontal int) {
+func (control *ControlBase) SetMarginsVH(margin_vertical, margin_horizontal int) {
 	control.margin_top = margin_vertical
 	control.margin_right = margin_horizontal
 	control.margin_btm = margin_vertical
