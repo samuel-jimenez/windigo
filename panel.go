@@ -169,11 +169,11 @@ func (control *ErrorPanel) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 	return w32.DefWindowProc(control.hwnd, msg, wparam, lparam)
 }
 
-// MultiPanel contains other panels and only makes one of them visible.
+// MultiPanel contains other panes and only makes one of them visible.
 type MultiPanel struct {
 	ControlBase
 	current int
-	panels  []*Panel
+	panels  []Pane
 }
 
 func NewMultiPanel(parent Controller) *MultiPanel {
@@ -194,7 +194,7 @@ func NewMultiPanel(parent Controller) *MultiPanel {
 func (control *MultiPanel) Count() int { return len(control.panels) }
 
 // AddPanel adds panels to the internal list, first panel is visible all others are hidden.
-func (control *MultiPanel) AddPanel(panel *Panel) {
+func (control *MultiPanel) AddPanel(panel Pane) {
 	if len(control.panels) > 0 {
 		panel.Hide()
 	}
@@ -203,7 +203,7 @@ func (control *MultiPanel) AddPanel(panel *Panel) {
 }
 
 // ReplacePanel replaces panel, useful for refreshing controls on screen.
-func (control *MultiPanel) ReplacePanel(index int, panel *Panel) {
+func (control *MultiPanel) ReplacePanel(index int, panel Pane) {
 	control.panels[index] = panel
 }
 

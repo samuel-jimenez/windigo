@@ -37,7 +37,7 @@ func (control *TabView) Panels() *MultiPanel {
 	return control.panels
 }
 
-func (control *TabView) tcitemFromPage(panel *Panel) *w32.TCITEM {
+func (control *TabView) tcitemFromPage(panel Pane) *w32.TCITEM {
 	text := syscall.StringToUTF16(panel.Text())
 	item := &w32.TCITEM{
 		Mask:       w32.TCIF_TEXT,
@@ -49,6 +49,22 @@ func (control *TabView) tcitemFromPage(panel *Panel) *w32.TCITEM {
 
 func (control *TabView) AddPanel(text string) *Panel {
 	panel := NewPanel(control.panels)
+	panel.SetText(text)
+
+	item := control.tcitemFromPage(panel)
+	index := control.panels.Count()
+	idx := int(w32.SendMessage(control.hwnd, w32.TCM_INSERTITEM, uintptr(index), uintptr(unsafe.Pointer(item))))
+	if idx == -1 {
+		panic("SendMessage(TCM_INSERTITEM) failed")
+	}
+
+	control.panels.AddPanel(panel)
+	control.SetCurrent(idx)
+	return panel
+}
+
+func (control *TabView) AddAutoPanel(text string) AutoPanel {
+	panel := NewAutoPanel(control.panels)
 	panel.SetText(text)
 
 	item := control.tcitemFromPage(panel)
