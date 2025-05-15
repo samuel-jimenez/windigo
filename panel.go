@@ -7,6 +7,8 @@ package windigo
 import (
 	"fmt"
 
+	"slices"
+
 	"github.com/samuel-jimenez/windigo/w32"
 )
 
@@ -104,15 +106,15 @@ type ErrorPanel struct {
 
 // NewErrorPanel.
 func NewErrorPanel(parent Controller) *ErrorPanel {
-	f := new(ErrorPanel)
-	f.init(parent)
+	control := new(ErrorPanel)
+	control.init(parent)
 
-	f.SetFont(DefaultFont)
-	f.SetText("No errors")
-	f.SetSize(200, 65)
-	f.margin = 5
-	f.pen = errorPanelOkPen
-	return f
+	control.SetFont(DefaultFont)
+	control.SetText("No errors")
+	control.SetSize(200, 65)
+	control.margin = 5
+	control.pen = errorPanelOkPen
+	return control
 }
 
 func (control *ErrorPanel) init(parent Controller) {
@@ -128,12 +130,12 @@ func (control *ErrorPanel) SetMargin(margin int) {
 	control.margin = margin
 }
 
-func (control *ErrorPanel) Printf(format string, v ...interface{}) {
+func (control *ErrorPanel) Printf(format string, v ...any) {
 	control.SetText(fmt.Sprintf(format, v...))
 	control.ShowAsError(false)
 }
 
-func (control *ErrorPanel) Errorf(format string, v ...interface{}) {
+func (control *ErrorPanel) Errorf(format string, v ...any) {
 	control.SetText(fmt.Sprintf(format, v...))
 	control.ShowAsError(true)
 }
@@ -207,7 +209,7 @@ func (control *MultiPanel) ReplacePanel(index int, panel *Panel) {
 
 // DeletePanel removed panel.
 func (control *MultiPanel) DeletePanel(index int) {
-	control.panels = append(control.panels[:index], control.panels[index+1:]...)
+	control.panels = slices.Delete(control.panels, index, index+1)
 }
 
 func (control *MultiPanel) Current() int {

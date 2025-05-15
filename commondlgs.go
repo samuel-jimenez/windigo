@@ -94,19 +94,19 @@ func MsgBoxOk(parent Controller, title, caption string) {
 }
 
 // Warningf is generic warning message with OK and Cancel buttons. Returns 1 for OK.
-func Warningf(parent Controller, format string, data ...interface{}) int {
+func Warningf(parent Controller, format string, data ...any) int {
 	caption := fmt.Sprintf(format, data...)
 	return MsgBox(parent, "Warning", caption, w32.MB_ICONWARNING|w32.MB_OKCANCEL)
 }
 
 // Printf is generic info message with OK button.
-func Printf(parent Controller, format string, data ...interface{}) {
+func Printf(parent Controller, format string, data ...any) {
 	caption := fmt.Sprintf(format, data...)
 	MsgBox(parent, "Information", caption, w32.MB_ICONINFORMATION|w32.MB_OK)
 }
 
 // Errorf is generic error message with OK button.
-func Errorf(parent Controller, format string, data ...interface{}) {
+func Errorf(parent Controller, format string, data ...any) {
 	caption := fmt.Sprintf(format, data...)
 	MsgBox(parent, "Error", caption, w32.MB_ICONERROR|w32.MB_OK)
 }

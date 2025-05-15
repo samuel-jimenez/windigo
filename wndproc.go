@@ -33,7 +33,7 @@ func genDropFilesEventArg(wparam uintptr) *DropFilesEventData {
 	data.Files = make([]string, fileCount)
 
 	var i uint
-	for i = 0; i < fileCount; i++ {
+	for i = range fileCount {
 		data.Files[i], _ = w32.DragQueryFile(hDrop, i)
 	}
 

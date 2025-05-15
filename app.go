@@ -90,7 +90,7 @@ func RunMainLoop() int {
 // PostMessages processes recent messages. Sometimes helpful for instant window refresh.
 func PostMessages() {
 	var m w32.MSG
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		if w32.GetMessage(&m, 0, 0, 0) != 0 {
 			if !PreTranslateMessage(&m) {
 				w32.TranslateMessage(&m)
