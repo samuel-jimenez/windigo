@@ -5,7 +5,11 @@
 
 package windigo
 
-import "github.com/samuel-jimenez/windigo/w32"
+import (
+	"unsafe"
+
+	"github.com/samuel-jimenez/windigo/w32"
+)
 
 type Edit struct {
 	ControlBase
@@ -37,6 +41,25 @@ func (control *Edit) SetReadOnly(isReadOnly bool) {
 	w32.SendMessage(control.hwnd, w32.EM_SETREADONLY, uintptr(w32.BoolToBOOL(isReadOnly)), 0)
 }
 
+/*
+
+
+ */
+// Public methods.
+func (control *Edit) Modified() uintptr {
+	return w32.SendMessage(control.hwnd, w32.EM_GETMODIFY, 0, 0)
+}
+
+func (control *Edit) Selected() (int, int) {
+	var start, end int
+	w32.SendMessage(control.hwnd, w32.EM_GETSEL, uintptr(unsafe.Pointer(&start)), uintptr(unsafe.Pointer(&end)))
+	return start, end
+}
+
+func (control *Edit) SelectText(start, end int) {
+	w32.SendMessage(control.hwnd, w32.EM_SETSEL, uintptr(start), uintptr(end))
+}
+
 // Public methods
 func (control *Edit) SetPassword(isPassword bool) {
 	if isPassword {
@@ -55,13 +78,10 @@ func (control *Edit) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 		case w32.EN_KILLFOCUS:
 			control.onKillFocus.Fire(NewEvent(control, nil))
 		case w32.EN_CHANGE:
-			control.onChange.Fire(NewEvent(control, nil))
+			if control.Modified() == w32.TRUE {
+				control.onChange.Fire(NewEvent(control, nil))
+			}
 		}
-		/*case w32.WM_GETDLGCODE:
-		println("Edit")
-		if wparam == w32.VK_RETURN {
-			return w32.DLGC_WANTALLKEYS
-		}*/
 	}
 	return w32.DefWindowProc(control.hwnd, msg, wparam, lparam)
 }
