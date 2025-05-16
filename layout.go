@@ -42,6 +42,8 @@ type Dockable interface {
 
 	SetPos(x, y int)
 	SetSize(width, height int)
+	Show()
+	Hide()
 
 	OnMouseMove() *EventManager
 	OnLBUp() *EventManager
