@@ -79,11 +79,7 @@ func (control *GroupPanel) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 	case w32.WM_SIZE, w32.WM_PAINT:
 		if control.groupbox != nil {
 
-			x, y := control.margin_left, control.margin_top
-			control_width, control_height := control.ClientWidth()-control.margin_left-control.margin_right,
-				control.ClientHeight()-control.margin_top-control.margin_btm
-			control.groupbox.SetPos(x, y)
-			control.groupbox.SetSize(control_width, control_height)
+			control.groupbox.SetSize(control.ClientWidth(), control.ClientHeight())
 		}
 		if control.layoutMng != nil {
 
