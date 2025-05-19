@@ -6,43 +6,39 @@ import (
 
 func main() {
 	mainWindow := windigo.NewForm(nil)
-	mainWindow.SetSize(400, 300)
+	mainWindow.SetSize(800, 600)
 	mainWindow.SetText("Hello World Demo")
 
-	// Main window menu. Context menus on controls also available.
-	menu := mainWindow.NewMenu()
-	fileMn := menu.AddSubMenu("File")
-	fileMn.AddItem("New", windigo.Shortcut{windigo.ModControl, windigo.KeyN})
-	editMn := menu.AddSubMenu("Edit")
-	cutMn := editMn.AddItem("Cut", windigo.Shortcut{windigo.ModControl, windigo.KeyX})
-	copyMn := editMn.AddItem("Copy", windigo.NoShortcut)
-	pasteMn := editMn.AddItem("Paste", windigo.NoShortcut)
-	menu.Show()
-	// Menu items can be disabled and checked.
-	copyMn.SetCheckable(true)
-	copyMn.SetChecked(true)
-	pasteMn.SetEnabled(false)
+	dock := windigo.NewSimpleDock(mainWindow)
 
-	cutMn.OnClick().Bind(func(e *windigo.Event) {
-		windigo.MsgBoxOk(mainWindow, "Cut", "Click event")
-	})
+	group_panel := windigo.NewAutoPanel(mainWindow)
+	//When docking, controls are expanded to fill available space
+	//e.g., since this will dock to Top, its width will be ignored
+	group_panel.SetSize(400, 105)
+	group_panel.SetMarginsAll(5)
 
-	edt := windigo.NewEdit(mainWindow)
-	edt.SetPos(10, 20)
-	// Most Controls have default size unless SetSize is called.
-	edt.SetText("edit text")
+	edit_field := windigo.NewLabeledEdit(group_panel, 110, 200, 22, "Edit Control")
+	edit_field.SetMarginsAll(15)
+	optional_field := windigo.NewLabeledEdit(group_panel, 110, 200, 22, "Optional Control")
+	optional_field.SetMarginsAll(25)
 
-	btn := windigo.NewPushButton(mainWindow)
-	btn.SetText("Show or Hide")
-	btn.SetPos(40, 50)
-	btn.SetSize(100, 40)
-	btn.OnClick().Bind(func(e *windigo.Event) {
-		if edt.Visible() {
-			edt.Hide()
+	group_panel.Dock(edit_field, windigo.Top)
+	group_panel.Dock(optional_field, windigo.Top)
+
+	button := windigo.NewPushButton(mainWindow)
+	button.SetText("Show or Hide")
+	button.SetSize(100, 40)
+	button.OnClick().Bind(func(e *windigo.Event) {
+		if optional_field.Visible() {
+			optional_field.Hide()
 		} else {
-			edt.Show()
+			optional_field.Show()
 		}
 	})
+	button.SetMarginsAll(5)
+	dock.Dock(button, windigo.Left)
+
+	dock.Dock(group_panel, windigo.Top)
 
 	mainWindow.Center()
 	mainWindow.Show()

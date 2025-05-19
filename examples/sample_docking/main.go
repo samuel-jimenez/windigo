@@ -26,7 +26,6 @@ func main() {
 
 	mainWindow := windigo.NewForm(nil)
 	dock := windigo.NewSimpleDock(mainWindow)
-	mainWindow.SetLayout(dock)
 
 	mainWindow.SetSize(700, 600)
 	mainWindow.SetText("Controls Demo")

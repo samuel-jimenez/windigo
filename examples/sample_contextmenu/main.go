@@ -30,14 +30,16 @@ func main() {
 	mainWindow.SetSize(700, 600)
 	mainWindow.SetText("Controls Demo")
 
+	// Main window menu. Context menus on controls also available.
 	menu := mainWindow.NewMenu()
 	fileMn := menu.AddSubMenu("File")
-	fileMn.AddItem("New", windigo.NoShortcut)
+	fileMn.AddItem("New", windigo.Shortcut{windigo.ModControl, windigo.KeyN})
 	editMn := menu.AddSubMenu("Edit")
 	cutMn := editMn.AddItem("Cut", windigo.Shortcut{windigo.ModControl, windigo.KeyX})
 	copyMn := editMn.AddItem("Copy", windigo.NoShortcut)
 	pasteMn := editMn.AddItem("Paste", windigo.NoShortcut)
 	menu.Show()
+	// Menu items can be disabled and checked.
 	copyMn.SetCheckable(true)
 	copyMn.SetChecked(true)
 	pasteMn.SetEnabled(false)
@@ -87,6 +89,8 @@ func main() {
 		println("cut click")
 		ok := tree.EnsureVisible(p)
 		fmt.Println("result of EnsureVisible", ok)
+		windigo.MsgBoxOk(mainWindow, "Cut", "Click event")
+
 	})
 
 	panel := windigo.NewPanel(tabs)
