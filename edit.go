@@ -50,6 +50,14 @@ func (control *Edit) Modified() uintptr {
 	return w32.SendMessage(control.hwnd, w32.EM_GETMODIFY, 0, 0)
 }
 
+func (control *Edit) SetModified(modified bool) uintptr {
+	w32_modified := w32.FALSE
+	if modified {
+		w32_modified = w32.TRUE
+	}
+	return w32.SendMessage(control.hwnd, w32.EM_SETMODIFY, uintptr(w32_modified), 0)
+}
+
 func (control *Edit) Selected() (int, int) {
 	var start, end int
 	w32.SendMessage(control.hwnd, w32.EM_GETSEL, uintptr(unsafe.Pointer(&start)), uintptr(unsafe.Pointer(&end)))
