@@ -12,6 +12,7 @@ import (
 type Pen struct {
 	hPen  w32.HPEN
 	style uint
+	width uint
 	brush *Brush
 }
 
@@ -25,7 +26,7 @@ func NewPen(style uint, width uint, brush *Brush) *Pen {
 		panic("Failed to create pen")
 	}
 
-	return &Pen{hPen, style, brush}
+	return &Pen{hPen, style, width, brush}
 }
 
 func NewNullPen() *Pen {
@@ -41,6 +42,9 @@ func NewNullPen() *Pen {
 
 func (pen *Pen) Style() uint {
 	return pen.style
+}
+func (pen *Pen) Width() uint {
+	return pen.width
 }
 
 func (pen *Pen) Brush() *Brush {
