@@ -30,6 +30,23 @@ type Marginal interface {
 	SetMarginRight(int)
 }
 
+// Padded component must satisfy interface to have padding.
+type Padded interface {
+	PaddingTop() int
+	PaddingBtm() int
+	PaddingLeft() int
+	PaddingRight() int
+
+	SetPaddingsAll(padding int)
+	SetPaddingsHV(padding_vertical, padding_horizontal int)
+	SetPaddings(padding_top, padding_right, padding_btm, padding_left int)
+
+	SetPaddingTop(padding int)
+	SetPaddingBtm(padding int)
+	SetPaddingLeft(padding int)
+	SetPaddingRight(padding int)
+}
+
 // Dockable component must satisfy interface to be docked.
 type Dockable interface {
 	Marginal
