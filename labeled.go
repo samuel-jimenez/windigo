@@ -5,7 +5,7 @@
 package windigo
 
 type LabeledEdit struct {
-	Dockable
+	ComponentFrame
 	*Edit
 }
 
@@ -27,7 +27,7 @@ func NewLabeledEdit(parent Controller, label_width, control_width, height int, l
 }
 
 type LabeledComboBox struct {
-	Dockable
+	ComponentFrame
 	*ComboBox
 }
 
@@ -49,7 +49,7 @@ func NewLabeledComboBox(parent Controller, label_width, control_width, height in
 }
 
 type LabeledLabel struct {
-	Dockable
+	ComponentFrame
 	*Label
 }
 

@@ -74,6 +74,12 @@ type DockAllow interface {
 	SetLayout(mng LayoutManager)
 }
 
+// ComponentFrame component can dock and be docked.
+type ComponentFrame interface {
+	Dockable
+	Padded
+}
+
 // Various layout managers
 type Direction int
 
