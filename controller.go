@@ -33,6 +33,7 @@ type Controller interface {
 	SetPos(x, y int)
 	SetPosAfter(x, y int, after Controller)
 	SetSize(w, h int)
+	SetBorder(pen *Pen)
 	EnableDragAcceptFiles(b bool)
 	Show()
 	Hide()

@@ -29,6 +29,9 @@ type ControlBase struct {
 	margin_top, margin_btm,
 	margin_left, margin_right int
 
+	border_pen  *Pen
+	erasure_pen *Pen
+
 	// General events
 	onCreate EventManager
 	onClose  EventManager
@@ -411,6 +414,15 @@ func (control *ControlBase) RefreshStatusBar() {
 	if control.statusbar != nil {
 		control.statusbar.SetSize(0, 0)
 	}
+}
+
+func (control *ControlBase) SetBorder(pen *Pen) {
+	if control.border_pen != nil {
+		//erase old pen marks
+		control.erasure_pen = NewPen(w32.PS_GEOMETRIC|w32.PS_SOLID|w32.PS_ENDCAP_SQUARE, control.border_pen.Width(), NewSystemColorBrush(w32.COLOR_BTNFACE))
+	}
+	control.border_pen = pen
+	control.Invalidate(true)
 }
 
 func (control *ControlBase) Font() *Font {

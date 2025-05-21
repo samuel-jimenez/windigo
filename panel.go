@@ -47,6 +47,27 @@ func (control *Panel) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 		if control.layoutMng != nil {
 			control.layoutMng.Update()
 		}
+	case w32.WM_ERASEBKGND:
+		if control.border_pen != nil {
+			canvas := NewCanvasFromHDC(w32.HDC(wparam))
+			margin := int32(control.border_pen.width) / 2
+
+			r := control.Bounds()
+			r.rect.Left += margin
+			r.rect.Right -= margin
+			r.rect.Top += margin
+			r.rect.Bottom -= margin
+			if control.erasure_pen != nil {
+				canvas.DrawFillRect(r, control.erasure_pen, NewSystemColorBrush(w32.COLOR_BTNFACE))
+
+				control.erasure_pen.Dispose()
+				control.erasure_pen = nil
+				w32.DefWindowProc(control.hwnd, msg, wparam, lparam)
+			}
+			canvas.DrawFillRect(r, control.border_pen, NewSystemColorBrush(w32.COLOR_BTNFACE))
+			canvas.Dispose()
+			return 1
+		}
 	}
 	return w32.DefWindowProc(control.hwnd, msg, wparam, lparam)
 }
@@ -78,15 +99,16 @@ func (control *GroupPanel) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 	switch msg {
 	case w32.WM_SIZE, w32.WM_PAINT:
 		if control.groupbox != nil {
-
-			control.groupbox.SetSize(control.ClientWidth(), control.ClientHeight())
-		}
-		if control.layoutMng != nil {
-
-			control.layoutMng.Update()
+			var margin int
+			if control.border_pen != nil {
+				margin = int(control.border_pen.width)
+				control.groupbox.SetPos(margin, margin)
+				margin = 2 * margin
+			}
+			control.groupbox.SetSize(control.ClientWidth()-margin, control.ClientHeight()-margin)
 		}
 	}
-	return w32.DefWindowProc(control.hwnd, msg, wparam, lparam)
+	return control.Panel.WndProc(msg, wparam, lparam)
 }
 
 var errorPanelPen = NewPen(w32.PS_GEOMETRIC, 2, NewSolidColorBrush(RGB(255, 128, 128)))
