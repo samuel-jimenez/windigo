@@ -47,3 +47,22 @@ func NewLabeledComboBox(parent Controller, label_width, control_width, height in
 	panel.Dock(combobox_field, Fill)
 	return LabeledComboBox{panel, combobox_field}
 }
+
+type LabeledLabel struct {
+	Dockable
+	*Label
+}
+
+func NewLabeledLabel(parent Controller, width, height int, text string) LabeledLabel {
+
+	panel := NewAutoPanel(parent)
+	panel.SetSize(width, height)
+
+	label := NewLabel(panel)
+	// label.SetSize(width, height)
+	label.SetText(text)
+
+	// panel.Dock(label, Left)
+	panel.Dock(label, Fill)
+	return LabeledLabel{panel, label}
+}
