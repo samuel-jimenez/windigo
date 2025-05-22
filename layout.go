@@ -14,6 +14,12 @@ import (
 	"github.com/samuel-jimenez/windigo/w32"
 )
 
+type Bordered interface {
+	Border() *Pen
+	SetBorder(pen *Pen)
+	drawBorder(canvas *Canvas)
+}
+
 // Marginal component must satisfy interface to have margins.
 type Marginal interface {
 	MarginTop() int
@@ -78,6 +84,7 @@ type DockAllow interface {
 type ComponentFrame interface {
 	Dockable
 	Padded
+	Bordered
 }
 
 // Various layout managers

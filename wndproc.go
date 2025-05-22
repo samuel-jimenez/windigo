@@ -130,13 +130,17 @@ func generalWndProc(hwnd w32.HWND, msg uint32, wparam, lparam uintptr) uintptr {
 		case w32.WM_PAINT:
 			canvas := NewCanvasFromHwnd(hwnd)
 			defer canvas.Dispose()
+			controller.drawBorder(canvas)
 			controller.OnPaint().Fire(NewEvent(controller, &PaintEventData{Canvas: canvas}))
+			return 0
+
 		case w32.WM_KEYUP:
 			controller.OnKeyUp().Fire(NewEvent(controller, &KeyUpEventData{int(wparam), int(lparam)}))
 		case w32.WM_SIZE:
 			x, y := genPoint(lparam)
 			controller.OnSize().Fire(NewEvent(controller, &SizeEventData{uint(wparam), x, y}))
-
+		case w32.WM_ERASEBKGND:
+			return 1
 		}
 		return ret
 	}

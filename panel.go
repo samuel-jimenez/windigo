@@ -47,27 +47,6 @@ func (control *Panel) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 		if control.layoutMng != nil {
 			control.layoutMng.Update()
 		}
-		if control.border_pen != nil {
-			canvas := NewCanvasFromHwnd(control.hwnd)
-			defer canvas.Dispose()
-			margin_0 := int32(control.border_pen.width) / 2
-			margin_1 := int32(control.border_pen.width+1) / 2
-
-			r := control.Bounds()
-
-			if control.erasure_pen != nil {
-				canvas.DrawFillRect(r, control.erasure_pen, NewSystemColorBrush(w32.COLOR_BTNFACE))
-				control.erasure_pen.Dispose()
-				control.erasure_pen = nil
-			}
-			r.rect.Top += margin_0
-			r.rect.Left += margin_0
-			r.rect.Bottom -= margin_1
-			r.rect.Right -= margin_1
-			canvas.DrawFillRect(r, control.border_pen, NewSystemColorBrush(w32.COLOR_BTNFACE))
-		}
-	case w32.WM_ERASEBKGND:
-		return 1
 	}
 	return w32.DefWindowProc(control.hwnd, msg, wparam, lparam)
 }

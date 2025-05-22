@@ -332,6 +332,39 @@ func (control *ControlBase) ToggleVisible() bool {
 	return !visible
 }
 
+func (control *ControlBase) Border() *Pen {
+	return control.border_pen
+}
+
+func (control *ControlBase) SetBorder(pen *Pen) {
+	if control.border_pen != nil {
+		//erase old pen marks
+		control.erasure_pen = NewPen(w32.PS_GEOMETRIC|w32.PS_SOLID|w32.PS_ENDCAP_SQUARE, control.border_pen.Width(), NewSystemColorBrush(w32.COLOR_BTNFACE))
+	}
+	control.border_pen = pen
+	control.Invalidate(true)
+}
+
+func (control *ControlBase) drawBorder(canvas *Canvas) {
+	if control.border_pen != nil {
+		margin_0 := int32(control.border_pen.width) / 2
+		margin_1 := int32(control.border_pen.width+1) / 2
+
+		r := control.Bounds()
+
+		if control.erasure_pen != nil {
+			canvas.DrawFillRect(r, control.erasure_pen, NewSystemColorBrush(w32.COLOR_BTNFACE))
+			control.erasure_pen.Dispose()
+			control.erasure_pen = nil
+		}
+		r.rect.Top += margin_0
+		r.rect.Left += margin_0
+		r.rect.Bottom -= margin_1
+		r.rect.Right -= margin_1
+		canvas.DrawFillRect(r, control.border_pen, NewSystemColorBrush(w32.COLOR_BTNFACE))
+	}
+}
+
 func (control *ControlBase) ContextMenu() *MenuItem {
 	return control.contextMenu
 }
@@ -414,15 +447,6 @@ func (control *ControlBase) RefreshStatusBar() {
 	if control.statusbar != nil {
 		control.statusbar.SetSize(0, 0)
 	}
-}
-
-func (control *ControlBase) SetBorder(pen *Pen) {
-	if control.border_pen != nil {
-		//erase old pen marks
-		control.erasure_pen = NewPen(w32.PS_GEOMETRIC|w32.PS_SOLID|w32.PS_ENDCAP_SQUARE, control.border_pen.Width(), NewSystemColorBrush(w32.COLOR_BTNFACE))
-	}
-	control.border_pen = pen
-	control.Invalidate(true)
 }
 
 func (control *ControlBase) Font() *Font {
