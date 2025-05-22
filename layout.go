@@ -14,13 +14,14 @@ import (
 	"github.com/samuel-jimenez/windigo/w32"
 )
 
+// Bordered components can display a border.
 type Bordered interface {
 	Border() *Pen
 	SetBorder(pen *Pen)
 	drawBorder(canvas *Canvas)
 }
 
-// Marginal component must satisfy interface to have margins.
+// Marginal components can have margins.
 type Marginal interface {
 	MarginTop() int
 	MarginBtm() int
@@ -28,15 +29,15 @@ type Marginal interface {
 	MarginRight() int
 
 	SetMarginsAll(int)
-	SetMarginsVH(margin_vertical, margin_horizontal int)
-	SetMargins(margin_top, margin_right, margin_btm, margin_left int)
+	SetMarginsHV(margin_horizontal, margin_vertical int)
+	SetMargins(margin_left, margin_top, margin_right, margin_btm int)
 	SetMarginTop(int)
 	SetMarginBtm(int)
 	SetMarginLeft(int)
 	SetMarginRight(int)
 }
 
-// Padded component must satisfy interface to have padding.
+// Padded components can have padding.
 type Padded interface {
 	PaddingTop() int
 	PaddingBtm() int
@@ -44,8 +45,8 @@ type Padded interface {
 	PaddingRight() int
 
 	SetPaddingsAll(padding int)
-	SetPaddingsHV(padding_vertical, padding_horizontal int)
-	SetPaddings(padding_top, padding_right, padding_btm, padding_left int)
+	SetPaddingsHV(padding_horizontal, padding_vertical int)
+	SetPaddings(padding_left, padding_top, padding_right, padding_btm int)
 
 	SetPaddingTop(padding int)
 	SetPaddingBtm(padding int)
@@ -53,7 +54,7 @@ type Padded interface {
 	SetPaddingRight(padding int)
 }
 
-// Dockable component must satisfy interface to be docked.
+// Dockable components can be docked.
 type Dockable interface {
 	Marginal
 	Handle() w32.HWND
@@ -72,7 +73,7 @@ type Dockable interface {
 	OnLBUp() *EventManager
 }
 
-// DockAllow is window, panel or other component that satisfies interface.
+// DockAllow is window, panel or other component that allows children to be docked
 type DockAllow interface {
 	Handle() w32.HWND
 	ClientWidth() int
@@ -80,7 +81,7 @@ type DockAllow interface {
 	SetLayout(mng LayoutManager)
 }
 
-// ComponentFrame component can dock and be docked.
+// ComponentFrame components can dock and be docked.
 type ComponentFrame interface {
 	Dockable
 	Padded
@@ -161,14 +162,14 @@ func (control *SimpleDock) SetPaddingsAll(padding int) {
 	control.padding_left = padding
 }
 
-func (control *SimpleDock) SetPaddingsHV(padding_vertical, padding_horizontal int) {
+func (control *SimpleDock) SetPaddingsHV(padding_horizontal, padding_vertical int) {
 	control.padding_top = padding_vertical
 	control.padding_right = padding_horizontal
 	control.padding_btm = padding_vertical
 	control.padding_left = padding_horizontal
 }
 
-func (control *SimpleDock) SetPaddings(padding_top, padding_right, padding_btm, padding_left int) {
+func (control *SimpleDock) SetPaddings(padding_left, padding_top, padding_right, padding_btm int) {
 	control.padding_top = padding_top
 	control.padding_right = padding_right
 	control.padding_btm = padding_btm
