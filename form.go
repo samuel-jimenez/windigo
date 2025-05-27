@@ -25,6 +25,8 @@ type Form struct {
 	isFullscreen            bool
 	previousWindowStyle     uint32
 	previousWindowPlacement w32.WINDOWPLACEMENT
+
+	local_shortcuts map[Shortcut]func()
 }
 
 func NewCustomForm(parent Controller, exStyle int, dwStyle uint) *Form {
@@ -44,14 +46,12 @@ func NewCustomForm(parent Controller, exStyle int, dwStyle uint) *Form {
 
 	control.hwnd = CreateWindow("windigo_Form", parent, uint(exStyle), dwStyle)
 	control.parent = parent
+	control.local_shortcuts = make(map[Shortcut]func())
 
 	// this might fail if icon resource is not embedded in the binary
 	if ico, err := NewIconFromResource(GetAppInstance(), uint16(AppIconID)); err == nil {
 		control.SetIcon(0, ico)
 	}
-
-	// This forces display of focus rectangles, as soon as the user starts to type.
-	w32.SendMessage(control.hwnd, w32.WM_CHANGEUISTATE, w32.UIS_INITIALIZE, 0)
 
 	RegMsgHandler(control)
 
@@ -61,27 +61,7 @@ func NewCustomForm(parent Controller, exStyle int, dwStyle uint) *Form {
 }
 
 func NewForm(parent Controller) *Form {
-	control := new(Form)
-
-	RegClassOnlyOnce("windigo_Form")
-
-	control.isForm = true
-	control.hwnd = CreateWindow("windigo_Form", parent, w32.WS_EX_CONTROLPARENT|w32.WS_EX_APPWINDOW, w32.WS_OVERLAPPEDWINDOW)
-	control.parent = parent
-
-	// this might fail if icon resource is not embedded in the binary
-	if ico, err := NewIconFromResource(GetAppInstance(), uint16(AppIconID)); err == nil {
-		control.SetIcon(0, ico)
-	}
-
-	// This forces display of focus rectangles, as soon as the user starts to type.
-	w32.SendMessage(control.hwnd, w32.WM_CHANGEUISTATE, w32.UIS_INITIALIZE, 0)
-
-	RegMsgHandler(control)
-
-	control.SetFont(DefaultFont)
-	control.SetText("Form")
-	return control
+	return NewCustomForm(parent, w32.WS_EX_CONTROLPARENT|w32.WS_EX_APPWINDOW, w32.WS_OVERLAPPEDWINDOW)
 }
 
 func (control *Form) SetLayout(mng LayoutManager) {
@@ -227,6 +207,32 @@ func (control *Form) EnableTopMost(b bool) {
 	w32.SetWindowPos(control.hwnd, tag, 0, 0, 0, 0, w32.SWP_NOMOVE|w32.SWP_NOSIZE)
 }
 
+func (control *Form) AddShortcut(shortcut Shortcut, action func()) {
+	control.local_shortcuts[shortcut] = action
+}
+
+func (control *Form) PreTranslateMessage(msg *w32.MSG) bool {
+	switch msg.Message {
+	case w32.WM_KEYDOWN:
+		// Accelerator support.
+		key := Key(msg.WParam)
+		if uint32(msg.LParam)>>30 == 0 {
+			// TODO TranslateAccelerators
+			shortcut := Shortcut{ModifiersDown(), key}
+			if action, ok := control.local_shortcuts[shortcut]; ok {
+				action()
+			} else if action, ok := shortcut2Action[shortcut]; ok {
+				if action.Enabled() {
+					action.onClick.Fire(NewEvent(control, nil))
+				}
+			}
+		}
+	case w32.WM_GETDLGCODE:
+		println("pretranslate, WM_GETDLGCODE")
+	}
+	return false
+}
+
 func (control *Form) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 
 	switch msg {
@@ -238,20 +244,6 @@ func (control *Form) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 				action.onClick.Fire(NewEvent(control, nil))
 			}
 		}
-	case w32.WM_KEYDOWN:
-		// Accelerator support.
-		key := Key(wparam)
-		if uint32(lparam)>>30 == 0 {
-			// Using TranslateAccelerators refused to work, so we handle them
-			// ourselves, at least for now.
-			shortcut := Shortcut{ModifiersDown(), key}
-			if action, ok := shortcut2Action[shortcut]; ok {
-				if action.Enabled() {
-					action.onClick.Fire(NewEvent(control, nil))
-				}
-			}
-		}
-
 	case w32.WM_CLOSE:
 		return 0
 	case w32.WM_DESTROY:
