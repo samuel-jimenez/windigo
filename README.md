@@ -74,7 +74,7 @@ func main() {
 	mainWindow.Show()
 	mainWindow.OnClose().Bind(wndOnClose)
 
-	windigo.RunMainLoop() // Must call to start event loop.
+	mainWindow.RunMainLoop() // Must call to start event loop.
 }
 
 func wndOnClose(arg *windigo.Event) {
@@ -187,7 +187,7 @@ func main() {
 	mainWindow.Show()
 	mainWindow.OnClose().Bind(wndOnClose)
 
-	windigo.RunMainLoop() // Must call to start event loop.
+	mainWindow.RunMainLoop() // Must call to start event loop.
 }
 
 func wndOnClose(arg *windigo.Event) {

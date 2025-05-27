@@ -78,5 +78,5 @@ func main() {
 	dock.Update()
 	mainWindow.OnClose().Bind(wndOnClose)
 
-	windigo.RunMainLoop()
+	mainWindow.RunMainLoop()
 }

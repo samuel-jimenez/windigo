@@ -71,22 +71,6 @@ func PreTranslateMessage(msg *w32.MSG) bool {
 	return processed
 }
 
-// RunMainLoop processes messages in main application loop.
-func RunMainLoop() int {
-	var m w32.MSG
-
-	for w32.GetMessage(&m, 0, 0, 0) != 0 {
-
-		if !PreTranslateMessage(&m) {
-			w32.TranslateMessage(&m)
-			w32.DispatchMessage(&m)
-		}
-	}
-
-	w32.GdiplusShutdown()
-	return int(m.WParam)
-}
-
 // PostMessages processes recent messages. Sometimes helpful for instant window refresh.
 func PostMessages() {
 	var m w32.MSG

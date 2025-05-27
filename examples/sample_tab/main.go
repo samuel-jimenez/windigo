@@ -127,5 +127,5 @@ func main() {
 	mainWindow.Show()
 	mainWindow.OnClose().Bind(wndOnClose)
 
-	windigo.RunMainLoop()
+	mainWindow.RunMainLoop()
 }

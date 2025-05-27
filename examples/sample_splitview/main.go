@@ -95,7 +95,7 @@ func main() {
 
 	dock.Update()
 
-	windigo.RunMainLoop()
+	mainWindow.RunMainLoop()
 	// --- end of Dock and main window management
 
 }
