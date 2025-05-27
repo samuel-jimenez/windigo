@@ -221,9 +221,11 @@ func (control *Form) PreTranslateMessage(msg *w32.MSG) bool {
 			shortcut := Shortcut{ModifiersDown(), key}
 			if action, ok := control.local_shortcuts[shortcut]; ok {
 				action()
+				return true
 			} else if action, ok := shortcut2Action[shortcut]; ok {
 				if action.Enabled() {
 					action.onClick.Fire(NewEvent(control, nil))
+					return true
 				}
 			}
 		}
