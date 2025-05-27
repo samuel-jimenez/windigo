@@ -562,8 +562,8 @@ func (control *ControlBase) RunMainLoop() int {
 	var m w32.MSG
 
 	for w32.GetMessage(&m, 0, 0, 0) != 0 {
-		if !w32.IsDialogMessage(control.hwnd, &m) {
-			if !PreTranslateMessage(&m) {
+		if !PreTranslateMessage(&m) {
+			if !w32.IsDialogMessage(control.hwnd, &m) {
 				w32.TranslateMessage(&m)
 				w32.DispatchMessage(&m)
 			}
