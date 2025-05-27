@@ -26,7 +26,7 @@ type Form struct {
 	previousWindowStyle     uint32
 	previousWindowPlacement w32.WINDOWPLACEMENT
 
-	local_shortcuts map[Shortcut]func()
+	local_shortcuts map[Shortcut]func() bool
 }
 
 func NewCustomForm(parent Controller, exStyle int, dwStyle uint) *Form {
@@ -46,7 +46,7 @@ func NewCustomForm(parent Controller, exStyle int, dwStyle uint) *Form {
 
 	control.hwnd = CreateWindow("windigo_Form", parent, uint(exStyle), dwStyle)
 	control.parent = parent
-	control.local_shortcuts = make(map[Shortcut]func())
+	control.local_shortcuts = make(map[Shortcut]func() bool)
 
 	// this might fail if icon resource is not embedded in the binary
 	if ico, err := NewIconFromResource(GetAppInstance(), uint16(AppIconID)); err == nil {
@@ -207,7 +207,7 @@ func (control *Form) EnableTopMost(b bool) {
 	w32.SetWindowPos(control.hwnd, tag, 0, 0, 0, 0, w32.SWP_NOMOVE|w32.SWP_NOSIZE)
 }
 
-func (control *Form) AddShortcut(shortcut Shortcut, action func()) {
+func (control *Form) AddShortcut(shortcut Shortcut, action func() bool) {
 	control.local_shortcuts[shortcut] = action
 }
 
@@ -220,8 +220,7 @@ func (control *Form) PreTranslateMessage(msg *w32.MSG) bool {
 			// TODO TranslateAccelerators
 			shortcut := Shortcut{ModifiersDown(), key}
 			if action, ok := control.local_shortcuts[shortcut]; ok {
-				action()
-				return true
+				return action()
 			} else if action, ok := shortcut2Action[shortcut]; ok {
 				if action.Enabled() {
 					action.onClick.Fire(NewEvent(control, nil))
