@@ -131,6 +131,9 @@ var (
 	procSetWindowsHookEx              = moduser32.NewProc("SetWindowsHookExW")
 	procUnhookWindowsHookEx           = moduser32.NewProc("UnhookWindowsHookEx")
 	procCallNextHookEx                = moduser32.NewProc("CallNextHookEx")
+	procGetParent                     = moduser32.NewProc("GetParent")
+	procFindWindowEx                  = moduser32.NewProc("FindWindowExW")
+	procChildWindowFromPoint          = moduser32.NewProc("ChildWindowFromPoint")
 
 	libuser32, _        = syscall.LoadLibrary("user32.dll")
 	insertMenuItem, _   = syscall.GetProcAddress(libuser32, "InsertMenuItemW")
@@ -1237,4 +1240,48 @@ func GetScrollInfo(hwnd HWND, fnBar int32, lpsi *SCROLLINFO) bool {
 		uintptr(unsafe.Pointer(lpsi)))
 
 	return ret != 0
+}
+
+// HWND GetParent(
+//
+//	[in] HWND hWnd
+//
+// );
+func GetParent(parent HWND) HWND {
+	ret, _, _ := procGetParent.Call(
+		uintptr(parent),
+	)
+	return HWND(ret)
+}
+
+// HWND FindWindowExA(
+//   [in, optional] HWND   hWndParent,
+//   [in, optional] HWND   hWndChildAfter,
+//   [in, optional] LPCSTR lpszClass,
+//   [in, optional] LPCSTR lpszWindow
+// );
+
+func FindWindowEx(Parent, ChildAfter HWND, Class, Window string) HWND {
+	ret, _, _ := procFindWindowEx.Call(
+		uintptr(Parent),
+		uintptr(ChildAfter),
+		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(Class))),
+		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(Window))),
+	)
+	return HWND(ret)
+}
+
+// HWND ChildWindowFromPoint(
+//
+//	[in] HWND  hWndParent,
+//	[in] POINT Point
+//
+// );
+func ChildWindowFromPoint(hWndParent HWND, x, y int) HWND {
+	pt := POINT{X: int32(x), Y: int32(y)}
+	ret, _, _ := procChildWindowFromPoint.Call(
+		uintptr(hWndParent),
+		uintptr(unsafe.Pointer(&pt)),
+	)
+	return HWND(ret)
 }
