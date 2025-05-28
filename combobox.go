@@ -20,14 +20,7 @@ type ComboBox struct {
 }
 
 func NewComboBox(parent Controller) *ComboBox {
-	control := new(ComboBox)
-
-	control.InitControl(w32.WC_COMBOBOX, parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_DROPDOWN)
-	RegMsgHandler(control)
-
-	control.SetFont(DefaultFont)
-	control.SetSize(200, 400)
-	return control
+	return NewComboBoxWithFlags(parent, 0)
 }
 
 func NewComboBoxWithFlags(parent Controller, style uint) *ComboBox {
@@ -35,6 +28,14 @@ func NewComboBoxWithFlags(parent Controller, style uint) *ComboBox {
 
 	control.InitControl(w32.WC_COMBOBOX, parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_DROPDOWN|style)
 	RegMsgHandler(control)
+
+	// register edit control also
+	edit_control := new(Edit)
+	edit_control.parent = control
+
+	// edit_control.hwnd = w32.ChildWindowFromPoint(control.hwnd, 1, 1)
+	edit_control.hwnd = w32.FindWindowEx(control.hwnd, 0, w32.WC_EDIT, "")
+	RegMsgHandler(edit_control)
 
 	control.SetFont(DefaultFont)
 	control.SetSize(200, 400)
