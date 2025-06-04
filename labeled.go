@@ -66,3 +66,22 @@ func NewLabeledLabel(parent Controller, width, height int, text string) LabeledL
 	panel.Dock(label, Fill)
 	return LabeledLabel{panel, label}
 }
+
+type LabeledCheckBox struct {
+	ComponentFrame
+	*CheckBox
+}
+
+func NewLabeledCheckBox(parent Controller, width, height int, text string) LabeledCheckBox {
+
+	panel := NewAutoPanel(parent)
+	panel.SetSize(width, height)
+
+	label := NewCheckBox(panel)
+	// label.SetSize(width, height)
+	label.SetText(text)
+
+	// panel.Dock(label, Left)
+	panel.Dock(label, Fill)
+	return LabeledCheckBox{panel, label}
+}
