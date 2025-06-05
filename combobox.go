@@ -11,6 +11,36 @@ import (
 	"github.com/samuel-jimenez/windigo/w32"
 )
 
+/* DiffComboBoxable
+ *
+ */
+type DiffComboBoxable interface {
+	DeleteAllItems() bool
+	AddItem(str string) bool
+	InsertItem(index int, str string) bool
+	DeleteItem(index int) bool
+	GetItemLength(index int) int
+	GetItem(index int) string
+	SelectedItem() int
+	GetSelectedItem() string
+	SetSelectedItem(value int) bool
+	OnSelectedChange() *EventManager
+	OnChange() *EventManager
+	OnUpdate() *EventManager
+	OnSelectedEnd() *EventManager
+}
+
+/* ComboBoxable
+ *
+ */
+type ComboBoxable interface {
+	BaseController
+	DiffComboBoxable
+}
+
+/* ComboBox
+ *
+ */
 type ComboBox struct {
 	ControlBase
 	onSelectedChange EventManager
@@ -112,7 +142,7 @@ func (control *ComboBox) OnSelectedEnd() *EventManager {
 	return &control.onSelectedEnd
 }
 
-// Message processer
+// Message processor
 func (control *ComboBox) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 	switch msg {
 	case w32.WM_COMMAND:

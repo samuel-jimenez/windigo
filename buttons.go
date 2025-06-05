@@ -11,6 +11,26 @@ import (
 	"github.com/samuel-jimenez/windigo/w32"
 )
 
+/* DiffButtonable
+ *
+ */
+type DiffButtonable interface {
+	Checked() bool
+	SetChecked(checked bool)
+	OnClick() *EventManager
+}
+
+/* ComboBoxable
+ *
+ */
+type Buttonable interface {
+	BaseController
+	DiffButtonable
+}
+
+/* Button
+ *
+ */
 type Button struct {
 	ControlBase
 	onClick EventManager

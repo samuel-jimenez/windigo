@@ -106,15 +106,6 @@ type LayoutControl struct {
 
 type LayoutControls []*LayoutControl
 
-type SimpleDock struct {
-	parent      DockAllow
-	layoutCtl   LayoutControls
-	loadedState bool
-
-	padding_top, padding_btm,
-	padding_left, padding_right int
-}
-
 // DockState gets saved and loaded from json
 type CtlState struct {
 	X, Y, Width, Height int
@@ -128,6 +119,27 @@ type LayoutState struct {
 func (lc LayoutControls) Len() int           { return len(lc) }
 func (lc LayoutControls) Swap(i, j int)      { lc[i], lc[j] = lc[j], lc[i] }
 func (lc LayoutControls) Less(i, j int) bool { return lc[i].dir < lc[j].dir }
+
+/* Dockerable
+ *
+ */
+type Dockerable interface {
+	Dock(child Dockable, dir Direction)
+	Padded
+	Update()
+}
+
+/* SimpleDock
+ *
+ */
+type SimpleDock struct {
+	parent      DockAllow
+	layoutCtl   LayoutControls
+	loadedState bool
+
+	padding_top, padding_btm,
+	padding_left, padding_right int
+}
 
 func NewSimpleDock(parent DockAllow) *SimpleDock {
 	d := &SimpleDock{parent: parent}
@@ -329,21 +341,32 @@ func (control *SimpleDock) Update() {
 	}
 }
 
+/* AutoPane
+ *
+ */
+type AutoPane interface {
+	Pane
+	Dockerable
+}
+
+/* AutoPanel
+ *
+ */
 type AutoPanel struct {
 	Pane
 	*SimpleDock
 }
 
-func NewAutoPanel(parent Controller) AutoPanel {
+func NewAutoPanel(parent Controller) *AutoPanel {
 	panel := NewPanel(parent)
 	dock := NewSimpleDock(panel)
 
-	return AutoPanel{panel, dock}
+	return &AutoPanel{panel, dock}
 }
 
-func NewGroupAutoPanel(parent Controller) AutoPanel {
+func NewGroupAutoPanel(parent Controller) *AutoPanel {
 	panel := NewGroupPanel(parent)
 	dock := NewSimpleDock(panel)
 
-	return AutoPanel{panel, dock}
+	return &AutoPanel{panel, dock}
 }

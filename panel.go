@@ -12,11 +12,17 @@ import (
 	"github.com/samuel-jimenez/windigo/w32"
 )
 
+/* Pane
+ *
+ */
 type Pane interface {
 	DockAllow
 	Controller
 }
 
+/* Panel
+ *
+ */
 type Panel struct {
 	ControlBase
 	layoutMng LayoutManager
@@ -51,6 +57,9 @@ func (control *Panel) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 	return w32.DefWindowProc(control.hwnd, msg, wparam, lparam)
 }
 
+/* GroupPanel
+ *
+ */
 type GroupPanel struct {
 	Panel
 	groupbox *GroupBox

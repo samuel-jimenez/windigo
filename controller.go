@@ -9,34 +9,24 @@ import (
 	"github.com/samuel-jimenez/windigo/w32"
 )
 
-type Controller interface {
-	Marginal
-	Bordered
+// BaseController needs to be mutually exclusive with ComponentFrame
+type BaseController interface {
 	Text() string
 
 	Enabled() bool
 	SetFocus()
 
-	Handle() w32.HWND
 	Invalidate(erase bool)
 	Parent() Controller
 
-	Pos() (x, y int)
 	Size() (w, h int)
-	Height() int
-	Width() int
-	Visible() bool
 	Bounds() *Rect
 	ClientRect() *Rect
 
 	SetText(s string)
 	SetEnabled(b bool)
-	SetPos(x, y int)
 	SetPosAfter(x, y int, after Controller)
-	SetSize(w, h int)
 	EnableDragAcceptFiles(b bool)
-	Show()
-	Hide()
 
 	ContextMenu() *MenuItem
 	SetContextMenu(menu *MenuItem)
@@ -64,14 +54,14 @@ type Controller interface {
 
 	//Mouse events
 	OnLBDown() *EventManager
-	OnLBUp() *EventManager
+	// OnLBUp() *EventManager
 	OnLBDbl() *EventManager
 	OnMBDown() *EventManager
 	OnMBUp() *EventManager
 	OnRBDown() *EventManager
 	OnRBUp() *EventManager
 	OnRBDbl() *EventManager
-	OnMouseMove() *EventManager
+	// OnMouseMove() *EventManager
 
 	// OnMouseLeave and OnMouseHover does not fire unless control called internalTrackMouseEvent.
 	// Use MouseControl for a how to example.
@@ -84,4 +74,10 @@ type Controller interface {
 	//Paint events
 	OnPaint() *EventManager
 	OnSize() *EventManager
+}
+
+type Controller interface {
+	BaseController
+	Dockable
+	Bordered
 }

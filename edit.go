@@ -11,6 +11,30 @@ import (
 	"github.com/samuel-jimenez/windigo/w32"
 )
 
+/* DiffEditable
+ *
+ */
+type DiffEditable interface {
+	OnChange() *EventManager
+	SetReadOnly(isReadOnly bool)
+	Modified() uintptr
+	SetModified(modified bool) uintptr
+	Selected() (int, int)
+	SelectText(start, end int)
+	SetPassword(isPassword bool)
+}
+
+/* Editable
+ *
+ */
+type Editable interface {
+	BaseController
+	DiffEditable
+}
+
+/* Edit
+ *
+ */
 type Edit struct {
 	ControlBase
 	onChange EventManager
@@ -41,11 +65,6 @@ func (control *Edit) SetReadOnly(isReadOnly bool) {
 	w32.SendMessage(control.hwnd, w32.EM_SETREADONLY, uintptr(w32.BoolToBOOL(isReadOnly)), 0)
 }
 
-/*
-
-
- */
-// Public methods.
 func (control *Edit) Modified() uintptr {
 	return w32.SendMessage(control.hwnd, w32.EM_GETMODIFY, 0, 0)
 }
@@ -68,7 +87,6 @@ func (control *Edit) SelectText(start, end int) {
 	w32.SendMessage(control.hwnd, w32.EM_SETSEL, uintptr(start), uintptr(end))
 }
 
-// Public methods
 func (control *Edit) SetPassword(isPassword bool) {
 	if isPassword {
 		w32.SendMessage(control.hwnd, w32.EM_SETPASSWORDCHAR, uintptr(passwordChar), 0)

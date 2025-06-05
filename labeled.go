@@ -4,12 +4,31 @@
 
 package windigo
 
-type LabeledEdit struct {
+/* Labelable
+ *
+ */
+type Labelable interface {
 	ComponentFrame
-	*Edit
+	BaseController
 }
 
-func NewLabeledEdit(parent Controller, label_width, control_width, height int, label_text string) LabeledEdit {
+/* LabeledEditable
+ *
+ */
+type LabeledEditable interface {
+	Labelable
+	DiffEditable
+}
+
+/* LabeledEdit
+ *
+ */
+type LabeledEdit struct {
+	ComponentFrame
+	*Edit //Editable
+}
+
+func NewLabeledEdit(parent Controller, label_width, control_width, height int, label_text string) *LabeledEdit {
 
 	panel := NewAutoPanel(parent)
 	panel.SetSize(label_width+control_width, height)
@@ -23,15 +42,26 @@ func NewLabeledEdit(parent Controller, label_width, control_width, height int, l
 
 	panel.Dock(edit_label, Left)
 	panel.Dock(edit_field, Fill)
-	return LabeledEdit{panel, edit_field}
+	return &LabeledEdit{panel, edit_field}
 }
 
+/* LabeledComboBoxable
+ *
+ */
+type LabeledComboBoxable interface {
+	Labelable
+	DiffComboBoxable
+}
+
+/* LabeledComboBox
+ *
+ */
 type LabeledComboBox struct {
 	ComponentFrame
-	*ComboBox
+	*ComboBox //ComboBoxable
 }
 
-func NewLabeledComboBox(parent Controller, label_width, control_width, height int, label_text string) LabeledComboBox {
+func NewLabeledComboBox(parent Controller, label_width, control_width, height int, label_text string) *LabeledComboBox {
 
 	panel := NewAutoPanel(parent)
 	panel.SetSize(label_width+control_width, height)
@@ -45,15 +75,25 @@ func NewLabeledComboBox(parent Controller, label_width, control_width, height in
 
 	panel.Dock(combobox_label, Left)
 	panel.Dock(combobox_field, Fill)
-	return LabeledComboBox{panel, combobox_field}
+	return &LabeledComboBox{panel, combobox_field}
 }
 
+/* LabeledLabelable
+ *
+ */
+type LabeledLabelable interface {
+	Labelable
+}
+
+/* LabeledLabel
+ *
+ */
 type LabeledLabel struct {
 	ComponentFrame
-	*Label
+	BaseController
 }
 
-func NewLabeledLabel(parent Controller, width, height int, text string) LabeledLabel {
+func NewLabeledLabel(parent Controller, width, height int, text string) *LabeledLabel {
 
 	panel := NewAutoPanel(parent)
 	panel.SetSize(width, height)
@@ -64,15 +104,26 @@ func NewLabeledLabel(parent Controller, width, height int, text string) LabeledL
 
 	// panel.Dock(label, Left)
 	panel.Dock(label, Fill)
-	return LabeledLabel{panel, label}
+	return &LabeledLabel{panel, label}
 }
 
+/* LabeledCheckBoxable
+ *
+ */
+type LabeledCheckBoxable interface {
+	Labelable
+	DiffButtonable
+}
+
+/* LabeledCheckBox
+ *
+ */
 type LabeledCheckBox struct {
 	ComponentFrame
-	*CheckBox
+	*CheckBox // Buttonable
 }
 
-func NewLabeledCheckBox(parent Controller, width, height int, text string) LabeledCheckBox {
+func NewLabeledCheckBox(parent Controller, width, height int, text string) *LabeledCheckBox {
 
 	panel := NewAutoPanel(parent)
 	panel.SetSize(width, height)
@@ -83,5 +134,5 @@ func NewLabeledCheckBox(parent Controller, width, height int, text string) Label
 
 	// panel.Dock(label, Left)
 	panel.Dock(label, Fill)
-	return LabeledCheckBox{panel, label}
+	return &LabeledCheckBox{panel, label}
 }

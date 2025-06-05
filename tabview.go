@@ -63,7 +63,7 @@ func (control *TabView) AddPanel(text string) *Panel {
 	return panel
 }
 
-func (control *TabView) AddAutoPanel(text string) AutoPanel {
+func (control *TabView) AddAutoPanel(text string) *AutoPanel {
 	panel := NewAutoPanel(control.panels)
 	panel.SetText(text)
 
