@@ -64,94 +64,94 @@ type ListView struct {
 }
 
 func NewListView(parent Controller) *ListView {
-	lv := new(ListView)
+	control := new(ListView)
 
-	lv.InitControl(w32.WC_LISTVIEW, parent /*w32.WS_EX_CLIENTEDGE*/, 0,
+	control.InitControl(w32.WC_LISTVIEW, parent /*w32.WS_EX_CLIENTEDGE*/, 0,
 		w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.LVS_REPORT|w32.LVS_EDITLABELS|w32.LVS_SHOWSELALWAYS)
 
-	lv.item2Handle = make(map[ListItem]uintptr)
-	lv.handle2Item = make(map[uintptr]ListItem)
+	control.item2Handle = make(map[ListItem]uintptr)
+	control.handle2Item = make(map[uintptr]ListItem)
 
-	RegMsgHandler(lv)
+	RegMsgHandler(control)
 
-	lv.SetFont(DefaultFont)
-	lv.SetSize(200, 400)
+	control.SetFont(DefaultFont)
+	control.SetSize(200, 400)
 
-	if err := lv.SetTheme("Explorer"); err != nil {
+	if err := control.SetTheme("Explorer"); err != nil {
 		// theme error is ignored
 	}
-	return lv
+	return control
 }
 
 // FIXME: Changes the state of an item in a list-view control. Refer LVM_SETITEMSTATE message.
-func (lv *ListView) setItemState(i int, state, mask uint) {
+func (control *ListView) setItemState(i int, state, mask uint) {
 	var item w32.LVITEM
 	item.State, item.StateMask = uint32(state), uint32(mask)
-	w32.SendMessage(lv.hwnd, w32.LVM_SETITEMSTATE, uintptr(i), uintptr(unsafe.Pointer(&item)))
+	w32.SendMessage(control.hwnd, w32.LVM_SETITEMSTATE, uintptr(i), uintptr(unsafe.Pointer(&item)))
 }
 
-func (lv *ListView) EnableSingleSelect(enable bool) {
-	ToggleStyle(lv.hwnd, enable, w32.LVS_SINGLESEL)
+func (control *ListView) EnableSingleSelect(enable bool) {
+	ToggleStyle(control.hwnd, enable, w32.LVS_SINGLESEL)
 }
 
-func (lv *ListView) EnableSortHeader(enable bool) {
-	ToggleStyle(lv.hwnd, enable, w32.LVS_NOSORTHEADER)
+func (control *ListView) EnableSortHeader(enable bool) {
+	ToggleStyle(control.hwnd, enable, w32.LVS_NOSORTHEADER)
 }
 
-func (lv *ListView) EnableSortAscending(enable bool) {
-	ToggleStyle(lv.hwnd, enable, w32.LVS_SORTASCENDING)
+func (control *ListView) EnableSortAscending(enable bool) {
+	ToggleStyle(control.hwnd, enable, w32.LVS_SORTASCENDING)
 }
 
-func (lv *ListView) EnableEditLabels(enable bool) {
-	ToggleStyle(lv.hwnd, enable, w32.LVS_EDITLABELS)
+func (control *ListView) EnableEditLabels(enable bool) {
+	ToggleStyle(control.hwnd, enable, w32.LVS_EDITLABELS)
 }
 
-func (lv *ListView) EnableFullRowSelect(enable bool) {
+func (control *ListView) EnableFullRowSelect(enable bool) {
 	if enable {
-		w32.SendMessage(lv.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, w32.LVS_EX_FULLROWSELECT)
+		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, w32.LVS_EX_FULLROWSELECT)
 	} else {
-		w32.SendMessage(lv.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_FULLROWSELECT, 0)
+		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_FULLROWSELECT, 0)
 	}
 }
 
-func (lv *ListView) EnableDoubleBuffer(enable bool) {
+func (control *ListView) EnableDoubleBuffer(enable bool) {
 	if enable {
-		w32.SendMessage(lv.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, w32.LVS_EX_DOUBLEBUFFER)
+		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, w32.LVS_EX_DOUBLEBUFFER)
 	} else {
-		w32.SendMessage(lv.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_DOUBLEBUFFER, 0)
+		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_DOUBLEBUFFER, 0)
 	}
 }
 
-func (lv *ListView) EnableHotTrack(enable bool) {
+func (control *ListView) EnableHotTrack(enable bool) {
 	if enable {
-		w32.SendMessage(lv.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, w32.LVS_EX_TRACKSELECT)
+		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, w32.LVS_EX_TRACKSELECT)
 	} else {
-		w32.SendMessage(lv.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_TRACKSELECT, 0)
+		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_TRACKSELECT, 0)
 	}
 }
 
-func (lv *ListView) SetItemCount(count int) bool {
-	return w32.SendMessage(lv.hwnd, w32.LVM_SETITEMCOUNT, uintptr(count), 0) != 0
+func (control *ListView) SetItemCount(count int) bool {
+	return w32.SendMessage(control.hwnd, w32.LVM_SETITEMCOUNT, uintptr(count), 0) != 0
 }
 
-func (lv *ListView) ItemCount() int {
-	return int(w32.SendMessage(lv.hwnd, w32.LVM_GETITEMCOUNT, 0, 0))
+func (control *ListView) ItemCount() int {
+	return int(w32.SendMessage(control.hwnd, w32.LVM_GETITEMCOUNT, 0, 0))
 }
 
-func (lv *ListView) ItemAt(x, y int) ListItem {
+func (control *ListView) ItemAt(x, y int) ListItem {
 	hti := w32.LVHITTESTINFO{Pt: w32.POINT{int32(x), int32(y)}}
-	w32.SendMessage(lv.hwnd, w32.LVM_HITTEST, 0, uintptr(unsafe.Pointer(&hti)))
-	return lv.findItemByIndex(int(hti.IItem))
+	w32.SendMessage(control.hwnd, w32.LVM_HITTEST, 0, uintptr(unsafe.Pointer(&hti)))
+	return control.findItemByIndex(int(hti.IItem))
 }
 
-func (lv *ListView) Items() (list []ListItem) {
-	for item := range lv.item2Handle {
+func (control *ListView) Items() (list []ListItem) {
+	for item := range control.item2Handle {
 		list = append(list, item)
 	}
 	return list
 }
 
-func (lv *ListView) AddColumn(caption string, width int) {
+func (control *ListView) AddColumn(caption string, width int) {
 	var lc w32.LVCOLUMN
 	lc.Mask = w32.LVCF_TEXT
 	if width != 0 {
@@ -159,31 +159,31 @@ func (lv *ListView) AddColumn(caption string, width int) {
 		lc.Cx = int32(width)
 	}
 	lc.PszText = syscall.StringToUTF16Ptr(caption)
-	lv.insertLvColumn(&lc, lv.cols)
-	lv.cols++
+	control.insertLvColumn(&lc, control.cols)
+	control.cols++
 }
 
 // StretchLastColumn makes the last column take up all remaining horizontal
 // space of the *ListView.
 // The effect of this is not persistent.
-func (lv *ListView) StretchLastColumn() error {
-	if lv.cols == 0 {
+func (control *ListView) StretchLastColumn() error {
+	if control.cols == 0 {
 		return nil
 	}
-	if w32.SendMessage(lv.hwnd, w32.LVM_SETCOLUMNWIDTH, uintptr(lv.cols-1), w32.LVSCW_AUTOSIZE_USEHEADER) == 0 {
+	if w32.SendMessage(control.hwnd, w32.LVM_SETCOLUMNWIDTH, uintptr(control.cols-1), w32.LVSCW_AUTOSIZE_USEHEADER) == 0 {
 		//panic("LVM_SETCOLUMNWIDTH failed")
 	}
 	return nil
 }
 
 // CheckBoxes returns if the *TableView has check boxes.
-func (lv *ListView) CheckBoxes() bool {
-	return w32.SendMessage(lv.hwnd, w32.LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0)&w32.LVS_EX_CHECKBOXES > 0
+func (control *ListView) CheckBoxes() bool {
+	return w32.SendMessage(control.hwnd, w32.LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0)&w32.LVS_EX_CHECKBOXES > 0
 }
 
 // SetCheckBoxes sets if the *TableView has check boxes.
-func (lv *ListView) SetCheckBoxes(value bool) {
-	exStyle := w32.SendMessage(lv.hwnd, w32.LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0)
+func (control *ListView) SetCheckBoxes(value bool) {
+	exStyle := w32.SendMessage(control.hwnd, w32.LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0)
 	oldStyle := exStyle
 	if value {
 		exStyle |= w32.LVS_EX_CHECKBOXES
@@ -191,33 +191,33 @@ func (lv *ListView) SetCheckBoxes(value bool) {
 		exStyle &^= w32.LVS_EX_CHECKBOXES
 	}
 	if exStyle != oldStyle {
-		w32.SendMessage(lv.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, exStyle)
+		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, exStyle)
 	}
 
-	mask := w32.SendMessage(lv.hwnd, w32.LVM_GETCALLBACKMASK, 0, 0)
+	mask := w32.SendMessage(control.hwnd, w32.LVM_GETCALLBACKMASK, 0, 0)
 	if value {
 		mask |= w32.LVIS_STATEIMAGEMASK
 	} else {
 		mask &^= w32.LVIS_STATEIMAGEMASK
 	}
 
-	if w32.SendMessage(lv.hwnd, w32.LVM_SETCALLBACKMASK, mask, 0) == w32.FALSE {
+	if w32.SendMessage(control.hwnd, w32.LVM_SETCALLBACKMASK, mask, 0) == w32.FALSE {
 		panic("SendMessage(LVM_SETCALLBACKMASK)")
 	}
 }
 
-func (lv *ListView) applyImage(lc *w32.LVITEM, imIndex int) {
-	if lv.iml != nil {
+func (control *ListView) applyImage(lc *w32.LVITEM, imIndex int) {
+	if control.iml != nil {
 		lc.Mask |= w32.LVIF_IMAGE
 		lc.IImage = int32(imIndex)
 	}
 }
 
-func (lv *ListView) AddItem(item ListItem) {
-	lv.InsertItem(item, lv.ItemCount())
+func (control *ListView) AddItem(item ListItem) {
+	control.InsertItem(item, control.ItemCount())
 }
 
-func (lv *ListView) InsertItem(item ListItem, index int) {
+func (control *ListView) InsertItem(item ListItem, index int) {
 	text := item.Text()
 	li := &w32.LVITEM{
 		Mask:    w32.LVIF_TEXT | w32.LVIF_PARAM,
@@ -225,31 +225,31 @@ func (lv *ListView) InsertItem(item ListItem, index int) {
 		IItem:   int32(index),
 	}
 
-	lv.lastIndex++
+	control.lastIndex++
 	ix := new(int)
-	*ix = lv.lastIndex
+	*ix = control.lastIndex
 	li.LParam = uintptr(*ix)
-	lv.handle2Item[li.LParam] = item
-	lv.item2Handle[item] = li.LParam
+	control.handle2Item[li.LParam] = item
+	control.item2Handle[item] = li.LParam
 
-	lv.applyImage(li, item.ImageIndex())
-	lv.insertLvItem(li)
+	control.applyImage(li, item.ImageIndex())
+	control.insertLvItem(li)
 
 	for i := 1; i < len(text); i++ {
 		li.Mask = w32.LVIF_TEXT
 		li.PszText = syscall.StringToUTF16Ptr(text[i])
 		li.ISubItem = int32(i)
-		lv.setLvItem(li)
+		control.setLvItem(li)
 	}
 }
 
-func (lv *ListView) UpdateItem(item ListItem) bool {
-	lparam, ok := lv.item2Handle[item]
+func (control *ListView) UpdateItem(item ListItem) bool {
+	lparam, ok := control.item2Handle[item]
 	if !ok {
 		return false
 	}
 
-	index := lv.findIndexByItem(item)
+	index := control.findIndexByItem(item)
 	if index == -1 {
 		return false
 	}
@@ -262,57 +262,57 @@ func (lv *ListView) UpdateItem(item ListItem) bool {
 		IItem:   int32(index),
 	}
 
-	lv.applyImage(li, item.ImageIndex())
-	lv.setLvItem(li)
+	control.applyImage(li, item.ImageIndex())
+	control.setLvItem(li)
 
 	for i := 1; i < len(text); i++ {
 		li.Mask = w32.LVIF_TEXT
 		li.PszText = syscall.StringToUTF16Ptr(text[i])
 		li.ISubItem = int32(i)
-		lv.setLvItem(li)
+		control.setLvItem(li)
 	}
 	return true
 }
 
-func (lv *ListView) insertLvColumn(lvColumn *w32.LVCOLUMN, iCol int) {
-	w32.SendMessage(lv.hwnd, w32.LVM_INSERTCOLUMN, uintptr(iCol), uintptr(unsafe.Pointer(lvColumn)))
+func (control *ListView) insertLvColumn(controlColumn *w32.LVCOLUMN, iCol int) {
+	w32.SendMessage(control.hwnd, w32.LVM_INSERTCOLUMN, uintptr(iCol), uintptr(unsafe.Pointer(controlColumn)))
 }
 
-func (lv *ListView) insertLvItem(lvItem *w32.LVITEM) {
-	w32.SendMessage(lv.hwnd, w32.LVM_INSERTITEM, 0, uintptr(unsafe.Pointer(lvItem)))
+func (control *ListView) insertLvItem(controlItem *w32.LVITEM) {
+	w32.SendMessage(control.hwnd, w32.LVM_INSERTITEM, 0, uintptr(unsafe.Pointer(controlItem)))
 }
 
-func (lv *ListView) setLvItem(lvItem *w32.LVITEM) {
-	w32.SendMessage(lv.hwnd, w32.LVM_SETITEM, 0, uintptr(unsafe.Pointer(lvItem)))
+func (control *ListView) setLvItem(controlItem *w32.LVITEM) {
+	w32.SendMessage(control.hwnd, w32.LVM_SETITEM, 0, uintptr(unsafe.Pointer(controlItem)))
 }
 
-func (lv *ListView) DeleteAllItems() bool {
-	if w32.SendMessage(lv.hwnd, w32.LVM_DELETEALLITEMS, 0, 0) == w32.TRUE {
-		lv.item2Handle = make(map[ListItem]uintptr)
-		lv.handle2Item = make(map[uintptr]ListItem)
+func (control *ListView) DeleteAllItems() bool {
+	if w32.SendMessage(control.hwnd, w32.LVM_DELETEALLITEMS, 0, 0) == w32.TRUE {
+		control.item2Handle = make(map[ListItem]uintptr)
+		control.handle2Item = make(map[uintptr]ListItem)
 		return true
 	}
 	return false
 }
 
-func (lv *ListView) DeleteItem(item ListItem) error {
-	index := lv.findIndexByItem(item)
+func (control *ListView) DeleteItem(item ListItem) error {
+	index := control.findIndexByItem(item)
 	if index == -1 {
 		return errors.New("item not found")
 	}
 
-	if w32.SendMessage(lv.hwnd, w32.LVM_DELETEITEM, uintptr(index), 0) == 0 {
+	if w32.SendMessage(control.hwnd, w32.LVM_DELETEITEM, uintptr(index), 0) == 0 {
 		return errors.New("SendMessage(TVM_DELETEITEM) failed")
 	}
 
-	h := lv.item2Handle[item]
-	delete(lv.item2Handle, item)
-	delete(lv.handle2Item, h)
+	h := control.item2Handle[item]
+	delete(control.item2Handle, item)
+	delete(control.handle2Item, h)
 	return nil
 }
 
-func (lv *ListView) findIndexByItem(item ListItem) int {
-	lparam, ok := lv.item2Handle[item]
+func (control *ListView) findIndexByItem(item ListItem) int {
+	lparam, ok := control.item2Handle[item]
 	if !ok {
 		return -1
 	}
@@ -322,40 +322,40 @@ func (lv *ListView) findIndexByItem(item ListItem) int {
 		LParam: lparam,
 	}
 	var i int = -1
-	return int(w32.SendMessage(lv.hwnd, w32.LVM_FINDITEM, uintptr(i), uintptr(unsafe.Pointer(it))))
+	return int(w32.SendMessage(control.hwnd, w32.LVM_FINDITEM, uintptr(i), uintptr(unsafe.Pointer(it))))
 }
 
-func (lv *ListView) findItemByIndex(i int) ListItem {
+func (control *ListView) findItemByIndex(i int) ListItem {
 	it := &w32.LVITEM{
 		Mask:  w32.LVIF_PARAM,
 		IItem: int32(i),
 	}
 
-	if w32.SendMessage(lv.hwnd, w32.LVM_GETITEM, 0, uintptr(unsafe.Pointer(it))) == w32.TRUE {
-		if item, ok := lv.handle2Item[it.LParam]; ok {
+	if w32.SendMessage(control.hwnd, w32.LVM_GETITEM, 0, uintptr(unsafe.Pointer(it))) == w32.TRUE {
+		if item, ok := control.handle2Item[it.LParam]; ok {
 			return item
 		}
 	}
 	return nil
 }
 
-func (lv *ListView) EnsureVisible(item ListItem) bool {
-	if i := lv.findIndexByItem(item); i != -1 {
-		return w32.SendMessage(lv.hwnd, w32.LVM_ENSUREVISIBLE, uintptr(i), 1) == 0
+func (control *ListView) EnsureVisible(item ListItem) bool {
+	if i := control.findIndexByItem(item); i != -1 {
+		return w32.SendMessage(control.hwnd, w32.LVM_ENSUREVISIBLE, uintptr(i), 1) == 0
 	}
 	return false
 }
 
-func (lv *ListView) SelectedItem() ListItem {
-	if items := lv.SelectedItems(); len(items) > 0 {
+func (control *ListView) SelectedItem() ListItem {
+	if items := control.SelectedItems(); len(items) > 0 {
 		return items[0]
 	}
 	return nil
 }
 
-func (lv *ListView) SetSelectedItem(item ListItem) bool {
-	if i := lv.findIndexByItem(item); i > -1 {
-		lv.SetSelectedIndex(i)
+func (control *ListView) SetSelectedItem(item ListItem) bool {
+	if i := control.findIndexByItem(item); i > -1 {
+		control.SetSelectedIndex(i)
 		return true
 	}
 	return false
@@ -363,84 +363,84 @@ func (lv *ListView) SetSelectedItem(item ListItem) bool {
 
 // mask is used to set the LVITEM.Mask for ListView.GetItem which indicates which attributes you'd like to receive
 // of LVITEM.
-func (lv *ListView) SelectedItems() []ListItem {
+func (control *ListView) SelectedItems() []ListItem {
 	var items []ListItem
 
 	var i int = -1
 	for {
-		if i = int(w32.SendMessage(lv.hwnd, w32.LVM_GETNEXTITEM, uintptr(i), uintptr(w32.LVNI_SELECTED))); i == -1 {
+		if i = int(w32.SendMessage(control.hwnd, w32.LVM_GETNEXTITEM, uintptr(i), uintptr(w32.LVNI_SELECTED))); i == -1 {
 			break
 		}
 
-		if item := lv.findItemByIndex(i); item != nil {
+		if item := control.findItemByIndex(i); item != nil {
 			items = append(items, item)
 		}
 	}
 	return items
 }
 
-func (lv *ListView) SelectedCount() uint {
-	return uint(w32.SendMessage(lv.hwnd, w32.LVM_GETSELECTEDCOUNT, 0, 0))
+func (control *ListView) SelectedCount() uint {
+	return uint(w32.SendMessage(control.hwnd, w32.LVM_GETSELECTEDCOUNT, 0, 0))
 }
 
 // GetSelectedIndex first selected item index. Returns -1 if no item is selected.
-func (lv *ListView) SelectedIndex() int {
+func (control *ListView) SelectedIndex() int {
 	var i int = -1
-	return int(w32.SendMessage(lv.hwnd, w32.LVM_GETNEXTITEM, uintptr(i), uintptr(w32.LVNI_SELECTED)))
+	return int(w32.SendMessage(control.hwnd, w32.LVM_GETNEXTITEM, uintptr(i), uintptr(w32.LVNI_SELECTED)))
 }
 
 // Set i to -1 to select all items.
-func (lv *ListView) SetSelectedIndex(i int) {
-	lv.setItemState(i, w32.LVIS_SELECTED, w32.LVIS_SELECTED)
+func (control *ListView) SetSelectedIndex(i int) {
+	control.setItemState(i, w32.LVIS_SELECTED, w32.LVIS_SELECTED)
 }
 
-func (lv *ListView) SetImageList(imageList *ImageList) {
-	w32.SendMessage(lv.hwnd, w32.LVM_SETIMAGELIST, w32.LVSIL_SMALL, uintptr(imageList.Handle()))
-	lv.iml = imageList
+func (control *ListView) SetImageList(imageList *ImageList) {
+	w32.SendMessage(control.hwnd, w32.LVM_SETIMAGELIST, w32.LVSIL_SMALL, uintptr(imageList.Handle()))
+	control.iml = imageList
 }
 
 // Event publishers
-func (lv *ListView) OnEndLabelEdit() *EventManager {
-	return &lv.onEndLabelEdit
+func (control *ListView) OnEndLabelEdit() *EventManager {
+	return &control.onEndLabelEdit
 }
 
-func (lv *ListView) OnDoubleClick() *EventManager {
-	return &lv.onDoubleClick
+func (control *ListView) OnDoubleClick() *EventManager {
+	return &control.onDoubleClick
 }
 
-func (lv *ListView) OnClick() *EventManager {
-	return &lv.onClick
+func (control *ListView) OnClick() *EventManager {
+	return &control.onClick
 }
 
-func (lv *ListView) OnKeyDown() *EventManager {
-	return &lv.onKeyDown
+func (control *ListView) OnKeyDown() *EventManager {
+	return &control.onKeyDown
 }
 
-func (lv *ListView) OnItemChanging() *EventManager {
-	return &lv.onItemChanging
+func (control *ListView) OnItemChanging() *EventManager {
+	return &control.onItemChanging
 }
 
-func (lv *ListView) OnItemChanged() *EventManager {
-	return &lv.onItemChanged
+func (control *ListView) OnItemChanged() *EventManager {
+	return &control.onItemChanged
 }
 
-func (lv *ListView) OnCheckChanged() *EventManager {
-	return &lv.onCheckChanged
+func (control *ListView) OnCheckChanged() *EventManager {
+	return &control.onCheckChanged
 }
 
-func (lv *ListView) OnViewChange() *EventManager {
-	return &lv.onViewChange
+func (control *ListView) OnViewChange() *EventManager {
+	return &control.onViewChange
 }
 
-func (lv *ListView) OnEndScroll() *EventManager {
-	return &lv.onEndScroll
+func (control *ListView) OnEndScroll() *EventManager {
+	return &control.onEndScroll
 }
 
 // Message processer
-func (lv *ListView) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
+func (control *ListView) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 	switch msg {
 	/*case w32.WM_ERASEBKGND:
-	lv.StretchLastColumn()
+	control.StretchLastColumn()
 	println("case w32.WM_ERASEBKGND")
 	return 1*/
 
@@ -455,30 +455,30 @@ func (lv *ListView) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 			nmdi := (*w32.NMLVDISPINFO)(unsafe.Pointer(lparam))
 			if nmdi.Item.PszText != nil {
 				fmt.Println(nmdi.Item.PszText, nmdi.Item)
-				if item, ok := lv.handle2Item[nmdi.Item.LParam]; ok {
-					lv.onEndLabelEdit.Fire(NewEvent(lv,
+				if item, ok := control.handle2Item[nmdi.Item.LParam]; ok {
+					control.onEndLabelEdit.Fire(NewEvent(control,
 						&LabelEditEventData{Item: item,
 							Text: w32.UTF16PtrToString(nmdi.Item.PszText)}))
 				}
 				return w32.TRUE
 			}
 		case w32.NM_DBLCLK:
-			lv.onDoubleClick.Fire(NewEvent(lv, nil))
+			control.onDoubleClick.Fire(NewEvent(control, nil))
 
 		case w32.NM_CLICK:
 			ac := (*w32.NMITEMACTIVATE)(unsafe.Pointer(lparam))
 			var hti w32.LVHITTESTINFO
 			hti.Pt = w32.POINT{ac.PtAction.X, ac.PtAction.Y}
-			w32.SendMessage(lv.hwnd, w32.LVM_HITTEST, 0, uintptr(unsafe.Pointer(&hti)))
+			w32.SendMessage(control.hwnd, w32.LVM_HITTEST, 0, uintptr(unsafe.Pointer(&hti)))
 
 			if hti.Flags == w32.LVHT_ONITEMSTATEICON {
-				if item := lv.findItemByIndex(int(hti.IItem)); item != nil {
+				if item := control.findItemByIndex(int(hti.IItem)); item != nil {
 					if item, ok := item.(ListItemChecker); ok {
 						checked := !item.Checked()
 						item.SetChecked(checked)
-						lv.onCheckChanged.Fire(NewEvent(lv, item))
+						control.onCheckChanged.Fire(NewEvent(control, item))
 
-						if w32.SendMessage(lv.hwnd, w32.LVM_UPDATE, uintptr(hti.IItem), 0) == w32.FALSE {
+						if w32.SendMessage(control.hwnd, w32.LVM_UPDATE, uintptr(hti.IItem), 0) == w32.FALSE {
 							panic("SendMessage(LVM_UPDATE)")
 						}
 					}
@@ -486,45 +486,45 @@ func (lv *ListView) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 			}
 
 			hti.Pt = w32.POINT{ac.PtAction.X, ac.PtAction.Y}
-			w32.SendMessage(lv.hwnd, w32.LVM_SUBITEMHITTEST, 0, uintptr(unsafe.Pointer(&hti)))
-			lv.onClick.Fire(NewEvent(lv, hti.ISubItem))
+			w32.SendMessage(control.hwnd, w32.LVM_SUBITEMHITTEST, 0, uintptr(unsafe.Pointer(&hti)))
+			control.onClick.Fire(NewEvent(control, hti.ISubItem))
 
 		case w32.LVN_KEYDOWN:
 			nmkey := (*w32.NMLVKEYDOWN)(unsafe.Pointer(lparam))
-			if nmkey.WVKey == w32.VK_SPACE && lv.CheckBoxes() {
-				if item := lv.SelectedItem(); item != nil {
+			if nmkey.WVKey == w32.VK_SPACE && control.CheckBoxes() {
+				if item := control.SelectedItem(); item != nil {
 					if item, ok := item.(ListItemChecker); ok {
 						checked := !item.Checked()
 						item.SetChecked(checked)
-						lv.onCheckChanged.Fire(NewEvent(lv, item))
+						control.onCheckChanged.Fire(NewEvent(control, item))
 					}
 
-					index := lv.findIndexByItem(item)
-					if w32.SendMessage(lv.hwnd, w32.LVM_UPDATE, uintptr(index), 0) == w32.FALSE {
+					index := control.findIndexByItem(item)
+					if w32.SendMessage(control.hwnd, w32.LVM_UPDATE, uintptr(index), 0) == w32.FALSE {
 						panic("SendMessage(LVM_UPDATE)")
 					}
 				}
 			}
-			lv.onKeyDown.Fire(NewEvent(lv, nmkey.WVKey))
+			control.onKeyDown.Fire(NewEvent(control, nmkey.WVKey))
 			key := nmkey.WVKey
-			w32.SendMessage(lv.Parent().Handle(), w32.WM_KEYDOWN, uintptr(key), 0)
+			w32.SendMessage(control.Parent().Handle(), w32.WM_KEYDOWN, uintptr(key), 0)
 
 		case w32.LVN_ITEMCHANGING:
 			// This event also fires when listview has changed via code.
-			nmlv := (*w32.NMLISTVIEW)(unsafe.Pointer(lparam))
-			item := lv.findItemByIndex(int(nmlv.IItem))
-			lv.onItemChanging.Fire(NewEvent(lv, item))
+			nmcontrol := (*w32.NMLISTVIEW)(unsafe.Pointer(lparam))
+			item := control.findItemByIndex(int(nmcontrol.IItem))
+			control.onItemChanging.Fire(NewEvent(control, item))
 
 		case w32.LVN_ITEMCHANGED:
 			// This event also fires when listview has changed via code.
-			nmlv := (*w32.NMLISTVIEW)(unsafe.Pointer(lparam))
-			item := lv.findItemByIndex(int(nmlv.IItem))
-			lv.onItemChanged.Fire(NewEvent(lv, item))
+			nmcontrol := (*w32.NMLISTVIEW)(unsafe.Pointer(lparam))
+			item := control.findItemByIndex(int(nmcontrol.IItem))
+			control.onItemChanged.Fire(NewEvent(control, item))
 
 		case w32.LVN_GETDISPINFO:
 			nmdi := (*w32.NMLVDISPINFO)(unsafe.Pointer(lparam))
 			if nmdi.Item.StateMask&w32.LVIS_STATEIMAGEMASK > 0 {
-				if item, ok := lv.handle2Item[nmdi.Item.LParam]; ok {
+				if item, ok := control.handle2Item[nmdi.Item.LParam]; ok {
 					if item, ok := item.(ListItemChecker); ok {
 
 						checked := item.Checked()
@@ -537,11 +537,11 @@ func (lv *ListView) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 				}
 			}
 
-			lv.onViewChange.Fire(NewEvent(lv, nil))
+			control.onViewChange.Fire(NewEvent(control, nil))
 
 		case w32.LVN_ENDSCROLL:
-			lv.onEndScroll.Fire(NewEvent(lv, nil))
+			control.onEndScroll.Fire(NewEvent(control, nil))
 		}
 	}
-	return w32.DefWindowProc(lv.hwnd, msg, wparam, lparam)
+	return w32.DefWindowProc(control.hwnd, msg, wparam, lparam)
 }
