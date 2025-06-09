@@ -45,22 +45,28 @@ func (s StringListItem) ImageIndex() int         { return 0 }
 type ListView struct {
 	ControlBase
 
-	iml       *ImageList
-	lastIndex int
-	cols      int // count of columns
+	iml *ImageList
+	lastIndex,
+	sortCol,
+	cols int // count of columns
+
+	sortAscending bool
 
 	item2Handle map[ListItem]uintptr
 	handle2Item map[uintptr]ListItem
 
-	onEndLabelEdit EventManager
-	onDoubleClick  EventManager
-	onClick        EventManager
-	onKeyDown      EventManager
-	onItemChanging EventManager
-	onItemChanged  EventManager
-	onCheckChanged EventManager
-	onViewChange   EventManager
-	onEndScroll    EventManager
+	sort func(int, bool)
+
+	onEndLabelEdit,
+	onDoubleClick,
+	onClick,
+	onRClick,
+	onKeyDown,
+	onItemChanging,
+	onItemChanged,
+	onCheckChanged,
+	onViewChange,
+	onEndScroll EventManager
 }
 
 func NewListView(parent Controller) *ListView {
@@ -76,6 +82,9 @@ func NewListView(parent Controller) *ListView {
 
 	control.SetFont(DefaultFont)
 	control.SetSize(200, 400)
+
+	control.sortCol = -1
+	control.sortAscending = true
 
 	if err := control.SetTheme("Explorer"); err != nil {
 		// theme error is ignored
@@ -94,8 +103,15 @@ func (control *ListView) EnableSingleSelect(enable bool) {
 	ToggleStyle(control.hwnd, enable, w32.LVS_SINGLESEL)
 }
 
-func (control *ListView) EnableSortHeader(enable bool) {
-	ToggleStyle(control.hwnd, enable, w32.LVS_NOSORTHEADER)
+func (control *ListView) EnableSortHeader(enable bool,
+	sort func(int, bool)) {
+	if enable {
+		control.sort = sort
+	} else {
+		control.sort = nil
+	}
+
+	ToggleStyle(control.hwnd, !enable, w32.LVS_NOSORTHEADER)
 }
 
 func (control *ListView) EnableSortAscending(enable bool) {
@@ -139,7 +155,7 @@ func (control *ListView) ItemCount() int {
 }
 
 func (control *ListView) ItemAt(x, y int) ListItem {
-	hti := w32.LVHITTESTINFO{Pt: w32.POINT{int32(x), int32(y)}}
+	hti := w32.LVHITTESTINFO{Pt: w32.POINT{X: int32(x), Y: int32(y)}}
 	w32.SendMessage(control.hwnd, w32.LVM_HITTEST, 0, uintptr(unsafe.Pointer(&hti)))
 	return control.findItemByIndex(int(hti.IItem))
 }
@@ -412,6 +428,10 @@ func (control *ListView) OnClick() *EventManager {
 	return &control.onClick
 }
 
+func (control *ListView) OnRClick() *EventManager {
+	return &control.onRClick
+}
+
 func (control *ListView) OnKeyDown() *EventManager {
 	return &control.onKeyDown
 }
@@ -449,6 +469,22 @@ func (control *ListView) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 		code := int32(nm.Code)
 
 		switch code {
+
+		case w32.LVN_COLUMNCLICK:
+			nm := (*w32.NMLISTVIEW)(unsafe.Pointer(lparam))
+			control.onClick.Fire(NewEvent(control, ListViewEvent{int(nm.IItem), int(nm.ISubItem)}))
+
+			if control.sort != nil {
+				sortCol := int(nm.ISubItem)
+				if sortCol == control.sortCol {
+					control.sortAscending = !control.sortAscending
+				} else {
+					control.sortAscending = true
+					control.sortCol = sortCol
+				}
+				control.sort(control.sortCol, control.sortAscending)
+			}
+
 		case w32.LVN_BEGINLABELEDITW:
 			// println("Begin label edit")
 		case w32.LVN_ENDLABELEDITW:
@@ -463,12 +499,17 @@ func (control *ListView) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 				return w32.TRUE
 			}
 		case w32.NM_DBLCLK:
-			control.onDoubleClick.Fire(NewEvent(control, nil))
+			ac := (*w32.NMITEMACTIVATE)(unsafe.Pointer(lparam))
+			control.onDoubleClick.Fire(NewEvent(control, ListViewEvent{int(ac.IItem), int(ac.ISubItem)}))
 
+		case w32.NM_RCLICK:
+			ac := (*w32.NMITEMACTIVATE)(unsafe.Pointer(lparam))
+			control.onRClick.Fire(NewEvent(control, ListViewEvent{int(ac.IItem), int(ac.ISubItem)}))
 		case w32.NM_CLICK:
+
 			ac := (*w32.NMITEMACTIVATE)(unsafe.Pointer(lparam))
 			var hti w32.LVHITTESTINFO
-			hti.Pt = w32.POINT{ac.PtAction.X, ac.PtAction.Y}
+			hti.Pt = w32.POINT{X: ac.PtAction.X, Y: ac.PtAction.Y}
 			w32.SendMessage(control.hwnd, w32.LVM_HITTEST, 0, uintptr(unsafe.Pointer(&hti)))
 
 			if hti.Flags == w32.LVHT_ONITEMSTATEICON {
@@ -484,10 +525,7 @@ func (control *ListView) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 					}
 				}
 			}
-
-			hti.Pt = w32.POINT{ac.PtAction.X, ac.PtAction.Y}
-			w32.SendMessage(control.hwnd, w32.LVM_SUBITEMHITTEST, 0, uintptr(unsafe.Pointer(&hti)))
-			control.onClick.Fire(NewEvent(control, hti.ISubItem))
+			control.onClick.Fire(NewEvent(control, ListViewEvent{int(ac.IItem), int(ac.ISubItem)}))
 
 		case w32.LVN_KEYDOWN:
 			nmkey := (*w32.NMLVKEYDOWN)(unsafe.Pointer(lparam))

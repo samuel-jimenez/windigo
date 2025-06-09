@@ -98,7 +98,7 @@ func (tv *TreeView) SetSelectedItem(item TreeItem) bool {
 }
 
 func (tv *TreeView) ItemAt(x, y int) TreeItem {
-	hti := w32.TVHITTESTINFO{Pt: w32.POINT{int32(x), int32(y)}}
+	hti := w32.TVHITTESTINFO{Pt: w32.POINT{X: int32(x), Y: int32(y)}}
 	w32.SendMessage(tv.hwnd, w32.TVM_HITTEST, 0, uintptr(unsafe.Pointer(&hti)))
 	if item, ok := tv.handle2Item[hti.HItem]; ok {
 		return item

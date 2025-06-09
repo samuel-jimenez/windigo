@@ -48,3 +48,7 @@ type SizeEventData struct {
 	Type uint
 	X, Y int
 }
+
+type ListViewEvent struct {
+	X, Y int
+}
