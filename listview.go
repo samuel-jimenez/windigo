@@ -124,7 +124,7 @@ func (control *ListView) EnableEditLabels(enable bool) {
 
 func (control *ListView) EnableFullRowSelect(enable bool) {
 	if enable {
-		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, w32.LVS_EX_FULLROWSELECT)
+		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_FULLROWSELECT, w32.LVS_EX_FULLROWSELECT)
 	} else {
 		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_FULLROWSELECT, 0)
 	}
@@ -132,7 +132,7 @@ func (control *ListView) EnableFullRowSelect(enable bool) {
 
 func (control *ListView) EnableDoubleBuffer(enable bool) {
 	if enable {
-		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, w32.LVS_EX_DOUBLEBUFFER)
+		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_DOUBLEBUFFER, w32.LVS_EX_DOUBLEBUFFER)
 	} else {
 		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_DOUBLEBUFFER, 0)
 	}
@@ -140,7 +140,7 @@ func (control *ListView) EnableDoubleBuffer(enable bool) {
 
 func (control *ListView) EnableHotTrack(enable bool) {
 	if enable {
-		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, w32.LVS_EX_TRACKSELECT)
+		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_TRACKSELECT, w32.LVS_EX_TRACKSELECT)
 	} else {
 		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_TRACKSELECT, 0)
 	}
@@ -148,7 +148,7 @@ func (control *ListView) EnableHotTrack(enable bool) {
 
 func (control *ListView) EnableGridlines(enable bool) {
 	if enable {
-		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, w32.LVS_EX_GRIDLINES)
+		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_GRIDLINES, w32.LVS_EX_GRIDLINES)
 	} else {
 		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_GRIDLINES, 0)
 	}
