@@ -146,6 +146,14 @@ func (control *ListView) EnableHotTrack(enable bool) {
 	}
 }
 
+func (control *ListView) EnableGridlines(enable bool) {
+	if enable {
+		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, 0, w32.LVS_EX_GRIDLINES)
+	} else {
+		w32.SendMessage(control.hwnd, w32.LVM_SETEXTENDEDLISTVIEWSTYLE, w32.LVS_EX_GRIDLINES, 0)
+	}
+}
+
 func (control *ListView) SetItemCount(count int) bool {
 	return w32.SendMessage(control.hwnd, w32.LVM_SETITEMCOUNT, uintptr(count), 0) != 0
 }
