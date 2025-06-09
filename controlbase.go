@@ -66,6 +66,30 @@ type ControlBase struct {
 	onSize  EventManager
 }
 
+func (control *ControlBase) ClipboardCopyText(text string) bool {
+
+	if !w32.OpenClipboard(control.hwnd) {
+		return false
+	}
+
+	w32.EmptyClipboard()
+
+	//allocate and fill buffer
+	bufferSize := uint32(len(text)) * 16 //sizeof(TCHAR))
+	globalBuffer := w32.GlobalAlloc(w32.GMEM_MOVEABLE, bufferSize)
+	pGlobalBuffer := w32.GlobalLock(globalBuffer)
+	w32.MoveMemory(pGlobalBuffer, unsafe.Pointer(syscall.StringToUTF16Ptr(text)), bufferSize)
+	w32.GlobalUnlock(globalBuffer)
+
+	// Place the handle on the clipboard.
+	w32.SetClipboardData(w32.CF_UNICODETEXT, globalBuffer)
+
+	// Close the clipboard.
+	w32.CloseClipboard()
+
+	return true
+}
+
 // initControl is called by controls: edit, button, treeview, listview, and so on.
 func (control *ControlBase) InitControl(className string, parent Controller, exstyle, style uint) {
 	control.hwnd = CreateWindow(className, parent, exstyle, style)
