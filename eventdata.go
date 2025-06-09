@@ -50,5 +50,5 @@ type SizeEventData struct {
 }
 
 type ListViewEvent struct {
-	X, Y int
+	Row, Column int
 }
