@@ -12,6 +12,7 @@ import (
 )
 
 const (
+	FontNormal    byte = 0x00
 	FontBold      byte = 0x01
 	FontItalic    byte = 0x02
 	FontUnderline byte = 0x04
