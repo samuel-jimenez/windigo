@@ -83,6 +83,11 @@ func (control *GroupPanel) SetText(caption string) {
 	control.groupbox.SetText(caption)
 }
 
+func (control *GroupPanel) SetFont(font *Font) {
+	control.Panel.SetFont(font)
+	control.groupbox.SetFont(font)
+}
+
 func (control *GroupPanel) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 	switch msg {
 	case w32.WM_SIZE, w32.WM_PAINT:
