@@ -4,12 +4,36 @@
 
 package windigo
 
+/* BaseLabelable
+ *
+ */
+type BaseLabelable interface {
+	ComponentFrame
+	BaseController
+}
+
+/* DiffLabelable
+ *
+ */
+type DiffLabelable interface {
+	Label() *Label
+}
+
+/* Labeled
+ *
+ */
+type Labeled struct {
+	FieldLabel *Label
+}
+
+func (control Labeled) Label() *Label { return control.FieldLabel }
+
 /* Labelable
  *
  */
 type Labelable interface {
-	ComponentFrame
-	BaseController
+	BaseLabelable
+	DiffLabelable
 }
 
 /* LabeledEditable
@@ -26,6 +50,7 @@ type LabeledEditable interface {
 type LabeledEdit struct {
 	ComponentFrame
 	*Edit //Editable
+	*Labeled
 }
 
 func NewLabeledEdit(parent Controller, label_width, control_width, height int, label_text string) *LabeledEdit {
@@ -33,16 +58,16 @@ func NewLabeledEdit(parent Controller, label_width, control_width, height int, l
 	panel := NewAutoPanel(parent)
 	panel.SetSize(label_width+control_width, height)
 
-	edit_label := NewLabel(panel)
-	edit_label.SetSize(label_width, height)
-	edit_label.SetText(label_text)
+	label := NewLabel(panel)
+	label.SetSize(label_width, height)
+	label.SetText(label_text)
 
-	edit_field := NewEdit(panel)
-	edit_field.SetText("")
+	field := NewEdit(panel)
+	field.SetText("")
 
-	panel.Dock(edit_label, Left)
-	panel.Dock(edit_field, Fill)
-	return &LabeledEdit{panel, edit_field}
+	panel.Dock(label, Left)
+	panel.Dock(field, Fill)
+	return &LabeledEdit{panel, field, &Labeled{label}}
 }
 
 /* LabeledComboBoxable
@@ -59,6 +84,7 @@ type LabeledComboBoxable interface {
 type LabeledComboBox struct {
 	ComponentFrame
 	*ComboBox //ComboBoxable
+	*Labeled
 }
 
 func NewLabeledComboBox(parent Controller, label_width, control_width, height int, label_text string) *LabeledComboBox {
@@ -66,23 +92,24 @@ func NewLabeledComboBox(parent Controller, label_width, control_width, height in
 	panel := NewAutoPanel(parent)
 	panel.SetSize(label_width+control_width, height)
 
-	combobox_label := NewLabel(panel)
-	combobox_label.SetSize(label_width, height)
-	combobox_label.SetText(label_text)
+	label := NewLabel(panel)
+	label.SetSize(label_width, height)
+	label.SetText(label_text)
 
-	combobox_field := NewComboBox(panel)
-	combobox_field.SetText("")
+	field := NewComboBox(panel)
+	field.SetText("")
 
-	panel.Dock(combobox_label, Left)
-	panel.Dock(combobox_field, Fill)
-	return &LabeledComboBox{panel, combobox_field}
+	panel.Dock(label, Left)
+	panel.Dock(field, Fill)
+	return &LabeledComboBox{panel, field, &Labeled{label}}
+
 }
 
 /* LabeledLabelable
  *
  */
 type LabeledLabelable interface {
-	Labelable
+	BaseLabelable
 }
 
 /* LabeledLabel
@@ -90,7 +117,7 @@ type LabeledLabelable interface {
  */
 type LabeledLabel struct {
 	ComponentFrame
-	BaseController
+	*Label // BaseController
 }
 
 func NewLabeledLabel(parent Controller, width, height int, text string) *LabeledLabel {
@@ -111,7 +138,7 @@ func NewLabeledLabel(parent Controller, width, height int, text string) *Labeled
  *
  */
 type LabeledCheckBoxable interface {
-	Labelable
+	BaseLabelable
 	DiffButtonable
 }
 
