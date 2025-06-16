@@ -53,7 +53,22 @@ type LabeledEdit struct {
 	*Labeled
 }
 
-func NewLabeledEdit(parent Controller, label_width, control_width, height int, label_text string) *LabeledEdit {
+func NewLabeledEdit(parent Controller, label_text string) *LabeledEdit {
+
+	panel := NewAutoPanel(parent)
+
+	label := NewLabel(panel)
+	label.SetText(label_text)
+
+	field := NewEdit(panel)
+	field.SetText("")
+
+	panel.Dock(label, Left)
+	panel.Dock(field, Fill)
+	return &LabeledEdit{panel, field, &Labeled{label}}
+}
+
+func NewSizedLabeledEdit(parent Controller, label_width, control_width, height int, label_text string) *LabeledEdit {
 
 	panel := NewAutoPanel(parent)
 	panel.SetSize(label_width+control_width, height)
@@ -87,7 +102,23 @@ type LabeledComboBox struct {
 	*Labeled
 }
 
-func NewLabeledComboBox(parent Controller, label_width, control_width, height int, label_text string) *LabeledComboBox {
+func NewLabeledComboBox(parent Controller, label_text string) *LabeledComboBox {
+
+	panel := NewAutoPanel(parent)
+
+	label := NewLabel(panel)
+	label.SetText(label_text)
+
+	field := NewComboBox(panel)
+	field.SetText("")
+
+	panel.Dock(label, Left)
+	panel.Dock(field, Fill)
+	return &LabeledComboBox{panel, field, &Labeled{label}}
+
+}
+
+func NewSizedLabeledComboBox(parent Controller, label_width, control_width, height int, label_text string) *LabeledComboBox {
 
 	panel := NewAutoPanel(parent)
 	panel.SetSize(label_width+control_width, height)
@@ -120,18 +151,22 @@ type LabeledLabel struct {
 	*Label // BaseController
 }
 
-func NewLabeledLabel(parent Controller, width, height int, text string) *LabeledLabel {
+func NewLabeledLabel(parent Controller, text string) *LabeledLabel {
 
 	panel := NewAutoPanel(parent)
-	panel.SetSize(width, height)
 
 	label := NewLabel(panel)
-	// label.SetSize(width, height)
 	label.SetText(text)
 
-	// panel.Dock(label, Left)
 	panel.Dock(label, Fill)
 	return &LabeledLabel{panel, label}
+}
+
+func NewSizedLabeledLabel(parent Controller, width, height int, text string) *LabeledLabel {
+
+	label := NewLabeledLabel(parent, text)
+	label.SetSize(width, height)
+	return label
 }
 
 /* LabeledCheckBoxable
@@ -150,16 +185,13 @@ type LabeledCheckBox struct {
 	*CheckBox // Buttonable
 }
 
-func NewLabeledCheckBox(parent Controller, width, height int, text string) *LabeledCheckBox {
+func NewLabeledCheckBox(parent Controller, text string) *LabeledCheckBox {
 
 	panel := NewAutoPanel(parent)
-	panel.SetSize(width, height)
 
 	label := NewCheckBox(panel)
-	// label.SetSize(width, height)
 	label.SetText(text)
 
-	// panel.Dock(label, Left)
 	panel.Dock(label, Fill)
 	return &LabeledCheckBox{panel, label}
 }

@@ -47,9 +47,9 @@ func main() {
 	group_panel.SetSize(400, 105)
 	group_panel.SetMarginsAll(5)
 
-	edit_field := windigo.NewLabeledEdit(group_panel, 110, 200, 22, "Edit Control")
+	edit_field := windigo.NewSizedLabeledEdit(group_panel, 110, 200, 22, "Edit Control")
 	edit_field.SetMarginsAll(15)
-	optional_field := windigo.NewLabeledEdit(group_panel, 110, 200, 22, "Optional Control")
+	optional_field := windigo.NewSizedLabeledEdit(group_panel, 110, 200, 22, "Optional Control")
 	optional_field.SetMarginsAll(25)
 
 	group_panel.Dock(edit_field, windigo.Top)
