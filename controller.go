@@ -11,6 +11,7 @@ import (
 
 // BaseController needs to be mutually exclusive with ComponentFrame
 type BaseController interface {
+	Close()
 	Text() string
 
 	Enabled() bool
