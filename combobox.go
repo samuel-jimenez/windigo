@@ -47,6 +47,7 @@ type ComboBox struct {
 	onChange         EventManager
 	onUpdate         EventManager
 	onSelectedEnd    EventManager
+	*Edit
 }
 
 func NewComboBox(parent Controller) *ComboBox {
@@ -66,6 +67,7 @@ func NewComboBoxWithFlags(parent Controller, style uint) *ComboBox {
 	// edit_control.hwnd = w32.ChildWindowFromPoint(control.hwnd, 1, 1)
 	edit_control.hwnd = w32.FindWindowEx(control.hwnd, 0, w32.WC_EDIT, "")
 	RegMsgHandler(edit_control)
+	control.Edit = edit_control
 
 	control.SetFont(DefaultFont)
 	control.SetSize(200, 400)
