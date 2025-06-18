@@ -119,7 +119,11 @@ func (control *ComboBox) SelectedItem() int {
 }
 
 func (control *ComboBox) GetSelectedItem() string {
-	return control.GetItem(control.SelectedItem())
+	selected := control.SelectedItem()
+	if selected < 0 {
+		return ""
+	}
+	return control.GetItem(selected)
 }
 
 func (control *ComboBox) SetSelectedItem(value int) bool {
