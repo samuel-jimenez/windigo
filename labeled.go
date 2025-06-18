@@ -136,6 +136,40 @@ func NewSizedLabeledComboBox(parent Controller, label_width, control_width, heig
 
 }
 
+func NewLabeledListComboBox(parent Controller, label_text string) *LabeledComboBox {
+
+	panel := NewAutoPanel(parent)
+
+	label := NewLabel(panel)
+	label.SetText(label_text)
+
+	field := NewListComboBox(panel)
+	field.SetText("")
+
+	panel.Dock(label, Left)
+	panel.Dock(field, Fill)
+	return &LabeledComboBox{panel, field, &Labeled{label}}
+
+}
+
+func NewSizedLabeledListComboBox(parent Controller, label_width, control_width, height int, label_text string) *LabeledComboBox {
+
+	panel := NewAutoPanel(parent)
+	panel.SetSize(label_width+control_width, height)
+
+	label := NewLabel(panel)
+	label.SetSize(label_width, height)
+	label.SetText(label_text)
+
+	field := NewListComboBox(panel)
+	field.SetText("")
+
+	panel.Dock(label, Left)
+	panel.Dock(field, Fill)
+	return &LabeledComboBox{panel, field, &Labeled{label}}
+
+}
+
 /* LabeledLabelable
  *
  */
