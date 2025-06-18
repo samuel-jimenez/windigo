@@ -24,6 +24,7 @@ type DiffComboBoxable interface {
 	SelectedItem() int
 	GetSelectedItem() string
 	SetSelectedItem(value int) bool
+	ShowDropdown(show bool)
 	OnSelectedChange() *EventManager
 	OnChange() *EventManager
 	OnUpdate() *EventManager
@@ -130,6 +131,14 @@ func (control *ComboBox) GetSelectedItem() string {
 
 func (control *ComboBox) SetSelectedItem(value int) bool {
 	return int(int32(w32.SendMessage(control.hwnd, w32.CB_SETCURSEL, uintptr(value), 0))) == value
+}
+
+func (control *ComboBox) ShowDropdown(show bool) {
+	w32_show := w32.FALSE
+	if show {
+		w32_show = w32.TRUE
+	}
+	w32.SendMessage(control.hwnd, w32.CB_SHOWDROPDOWN, uintptr(w32_show), 0)
 }
 
 func (control *ComboBox) OnSelectedChange() *EventManager {
