@@ -299,16 +299,18 @@ func (control *SimpleDock) Update() {
 		y1-y0
 
 	for _, c := range control.layoutCtl {
-		// Non visible controls do not preserve space.
-		if !c.child.Visible() {
-			continue
-		}
 		child_width := c.child.Width()
 		child_height := c.child.Height()
 		child_h_margin := c.child.MarginLeft() + c.child.MarginRight()
 		child_v_margin := c.child.MarginTop() + c.child.MarginBtm()
+
 		total_child_width := child_width + child_h_margin
 		total_child_height := child_height + child_v_margin
+		// Non visible controls do not reserve space.
+		if !c.child.Visible() {
+			total_child_width = 0
+			total_child_height = 0
+		}
 
 		switch c.dir {
 		case Top:
