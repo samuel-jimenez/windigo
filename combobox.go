@@ -58,7 +58,7 @@ func NewComboBox(parent Controller) *ComboBox {
 func NewComboBoxWithFlags(parent Controller, style uint) *ComboBox {
 	control := new(ComboBox)
 
-	control.InitControl(w32.WC_COMBOBOX, parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_DROPDOWN|style)
+	control.InitControl(w32.WC_COMBOBOX, parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_AUTOHSCROLL|w32.CBS_DROPDOWN|style)
 	RegMsgHandler(control)
 
 	// register edit control also
