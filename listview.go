@@ -6,7 +6,6 @@ package windigo
 
 import (
 	"errors"
-	"fmt"
 	"syscall"
 	"unsafe"
 
@@ -490,7 +489,6 @@ func (control *ListView) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 		case w32.LVN_ENDLABELEDITW:
 			nmdi := (*w32.NMLVDISPINFO)(unsafe.Pointer(lparam))
 			if nmdi.Item.PszText != nil {
-				fmt.Println(nmdi.Item.PszText, nmdi.Item)
 				if item, ok := control.handle2Item[nmdi.Item.LParam]; ok {
 					control.onEndLabelEdit.Fire(NewEvent(control,
 						&LabelEditEventData{Item: item,
