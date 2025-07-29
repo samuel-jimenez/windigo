@@ -17,6 +17,7 @@ type BaseLabelable interface {
  */
 type DiffLabelable interface {
 	Label() *Label
+	SetLabeledSize(label_width, control_width, height int)
 }
 
 /* Labeled
@@ -83,6 +84,15 @@ func NewSizedLabeledEdit(parent Controller, label_width, control_width, height i
 	panel.Dock(label, Left)
 	panel.Dock(field, Fill)
 	return &LabeledEdit{panel, field, &Labeled{label}}
+}
+
+func (control *LabeledEdit) SetFont(font *Font) {
+	control.Edit.SetFont(font)
+	control.Label().SetFont(font)
+}
+func (control *LabeledEdit) SetLabeledSize(label_width, control_width, height int) {
+	control.SetSize(label_width+control_width, height)
+	control.Label().SetSize(label_width, height)
 }
 
 /* LabeledComboBoxable
@@ -170,6 +180,16 @@ func NewSizedLabeledListComboBox(parent Controller, label_width, control_width, 
 
 }
 
+func (control *LabeledComboBox) SetFont(font *Font) {
+	control.ComboBox.SetFont(font)
+	control.Label().SetFont(font)
+}
+
+func (control *LabeledComboBox) SetLabeledSize(label_width, control_width, height int) {
+	control.SetSize(label_width+control_width, height)
+	control.Label().SetSize(label_width, height)
+}
+
 /* LabeledLabelable
  *
  */
@@ -203,6 +223,10 @@ func NewSizedLabeledLabel(parent Controller, width, height int, text string) *La
 	return label
 }
 
+func (control *LabeledLabel) SetFont(font *Font) {
+	control.Label.SetFont(font)
+}
+
 /* LabeledCheckBoxable
  *
  */
@@ -228,4 +252,8 @@ func NewLabeledCheckBox(parent Controller, text string) *LabeledCheckBox {
 
 	panel.Dock(label, Fill)
 	return &LabeledCheckBox{panel, label}
+}
+
+func (control *LabeledCheckBox) SetFont(font *Font) {
+	control.CheckBox.SetFont(font)
 }
