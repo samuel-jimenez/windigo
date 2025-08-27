@@ -108,6 +108,12 @@ func Printf(parent Controller, format string, data ...any) {
 // Errorf is generic error message with OK button.
 func Errorf(parent Controller, format string, data ...any) {
 	caption := fmt.Sprintf(format, data...)
+	Error(parent, caption)
+}
+
+// Error is generic error message with OK button.
+// Avoids 'non-constant format string in call'
+func Error(parent Controller, caption string) {
 	MsgBox(parent, "Error", caption, w32.MB_ICONERROR|w32.MB_OK)
 }
 
