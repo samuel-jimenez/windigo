@@ -1077,3 +1077,24 @@ type SCROLLINFO struct {
 	NPos      int32
 	NTrackPos int32
 }
+
+// learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-comboboxinfo
+type COMBOBOXINFO struct {
+	//cbSize
+	// struct size in bytes
+	Size DWORD
+	// rcItem
+	// edit box coordinates
+	Edit RECT
+	// rcButton
+	// drop-down button coordinates
+	Button RECT
+	// stateButton
+	ButtonState DWORD
+	// hwndCombo
+	ComboHandle HWND
+	// hwndItem
+	EditHandle HWND
+	// hwndList
+	ListHandle HWND
+}

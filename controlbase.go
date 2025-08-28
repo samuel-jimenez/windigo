@@ -14,10 +14,13 @@ import (
 )
 
 type ControlBase struct {
-	hwnd        w32.HWND
-	font        *Font
-	parent      Controller
-	contextMenu *MenuItem
+	hwnd                         w32.HWND
+	font                         *Font
+	color_fg, color_bg           Color
+	draw_color_fg, draw_color_bg bool
+	brush_bg                     *Brush
+	parent                       Controller
+	contextMenu                  *MenuItem
 
 	isForm bool
 
@@ -480,6 +483,48 @@ func (control *ControlBase) Font() *Font {
 func (control *ControlBase) SetFont(font *Font) {
 	w32.SendMessage(control.hwnd, w32.WM_SETFONT, uintptr(font.hfont), 1)
 	control.font = font
+}
+
+func (control *ControlBase) FGColor() Color {
+	return control.color_fg
+}
+
+func (control *ControlBase) SetFGColor(color Color) {
+	control.color_fg = color
+	control.draw_color_fg = true
+}
+
+func (control *ControlBase) ClearFGColor() {
+	control.draw_color_fg = false
+}
+
+func (control *ControlBase) HasFGColor() bool {
+	return control.draw_color_fg
+}
+
+func (control *ControlBase) BGColor() Color {
+	return control.color_bg
+}
+
+func (control *ControlBase) SetBGColor(color Color) {
+	control.color_bg = color
+	control.draw_color_bg = true
+	if control.brush_bg != nil {
+		control.brush_bg.Dispose()
+	}
+	control.brush_bg = NewSolidColorBrush(color)
+}
+
+func (control *ControlBase) ClearBGColor() {
+	control.draw_color_bg = false
+}
+
+func (control *ControlBase) HasBGColor() bool {
+	return control.draw_color_bg
+}
+
+func (control *ControlBase) Brush() *Brush {
+	return control.brush_bg
 }
 
 func (control *ControlBase) EnableDragAcceptFiles(b bool) {

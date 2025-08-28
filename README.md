@@ -86,7 +86,7 @@ func wndOnClose(arg *windigo.Event) {
 
 ## Resources
 
-If you want to package icon files and other resources into binary **rsrc** tool is recommended:
+If you want to package icon files and other resources into binary [**rsrc**](https://pkg.go.dev/github.com/akavel/rsrc) tool is recommended:
 
 	rsrc -manifest app.manifest -ico=app.ico,application_edit.ico,application_error.ico -o rsrc.syso
 

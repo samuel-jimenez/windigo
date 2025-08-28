@@ -20,7 +20,7 @@ func NewSolidColorBrush(color Color) *Brush {
 	lb := w32.LOGBRUSH{LbStyle: w32.BS_SOLID, LbColor: w32.COLORREF(color)}
 	hBrush := w32.CreateBrushIndirect(&lb)
 	if hBrush == 0 {
-		panic("Faild to create solid color brush")
+		panic("Failed to create solid color brush")
 	}
 
 	return &Brush{hBrush, lb}
@@ -40,7 +40,7 @@ func NewHatchedColorBrush(color Color) *Brush {
 	lb := w32.LOGBRUSH{LbStyle: w32.BS_HATCHED, LbColor: w32.COLORREF(color)}
 	hBrush := w32.CreateBrushIndirect(&lb)
 	if hBrush == 0 {
-		panic("Faild to create solid color brush")
+		panic("Failed to create solid color brush")
 	}
 
 	return &Brush{hBrush, lb}

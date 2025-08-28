@@ -5,6 +5,7 @@
 package windigo
 
 import (
+	"log"
 	"syscall"
 	"unsafe"
 
@@ -61,14 +62,27 @@ func NewComboBoxWithFlags(parent Controller, style uint) *ComboBox {
 	control.InitControl(w32.WC_COMBOBOX, parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_AUTOHSCROLL|w32.CBS_DROPDOWN|style)
 	RegMsgHandler(control)
 
+	// register sub controls
+	var cbInfo w32.COMBOBOXINFO
+	cbInfo.Size = w32.DWORD(unsafe.Sizeof(cbInfo))
+	if w32.SendMessage(control.hwnd, w32.CB_GETCOMBOBOXINFO, 0, uintptr(unsafe.Pointer(&cbInfo))) == 0 {
+		log.Panicln("Crit: [NewComboBox] SOMETHINGS GONE WRONG", w32.GetLastError())
+	}
+
 	// register edit control also
 	edit_control := new(Edit)
 	edit_control.parent = control
 
 	// edit_control.hwnd = w32.ChildWindowFromPoint(control.hwnd, 1, 1)
-	edit_control.hwnd = w32.FindWindowEx(control.hwnd, 0, w32.WC_EDIT, "")
+	// edit_control.hwnd = w32.FindWindowEx(control.hwnd, 0, w32.WC_EDIT, "")
+	edit_control.hwnd = cbInfo.EditHandle
 	RegMsgHandler(edit_control)
 	control.Edit = edit_control
+
+	control.hwnd = cbInfo.ListHandle
+	RegMsgHandler(control)
+
+	control.hwnd = cbInfo.ComboHandle
 
 	control.SetFont(DefaultFont)
 	control.SetSize(200, 400)
@@ -81,9 +95,57 @@ func NewListComboBox(parent Controller) *ComboBox {
 	control.InitControl(w32.WC_COMBOBOX, parent, 0, w32.WS_CHILD|w32.WS_VISIBLE|w32.WS_TABSTOP|w32.WS_VSCROLL|w32.CBS_DROPDOWNLIST)
 	RegMsgHandler(control)
 
+	// register sub controls
+	var cbInfo w32.COMBOBOXINFO
+	cbInfo.Size = w32.DWORD(unsafe.Sizeof(cbInfo))
+	if w32.SendMessage(control.hwnd, w32.CB_GETCOMBOBOXINFO, 0, uintptr(unsafe.Pointer(&cbInfo))) == 0 {
+		log.Panicln("Crit: [NewComboBox] SOMETHINGS GONE WRONG", w32.GetLastError())
+	}
+
+	control.hwnd = cbInfo.ListHandle
+	RegMsgHandler(control)
+
+	control.hwnd = cbInfo.ComboHandle
+
 	control.SetFont(DefaultFont)
 	control.SetSize(200, 400)
 	return control
+}
+
+func (control *ComboBox) SetFGColor(color Color) {
+	control.ControlBase.SetFGColor(color)
+
+	if control.Edit == nil {
+		return
+	}
+	control.Edit.SetFGColor(color)
+}
+
+func (control *ComboBox) ClearFGColor() {
+	control.ControlBase.ClearFGColor()
+
+	if control.Edit == nil {
+		return
+	}
+	control.Edit.ClearFGColor()
+}
+
+func (control *ComboBox) SetBGColor(color Color) {
+	control.ControlBase.SetBGColor(color)
+
+	if control.Edit == nil {
+		return
+	}
+	control.Edit.SetBGColor(color)
+}
+
+func (control *ComboBox) ClearBGColor() {
+	control.ControlBase.ClearBGColor()
+
+	if control.Edit == nil {
+		return
+	}
+	control.Edit.ClearBGColor()
 }
 
 func (control *ComboBox) DeleteAllItems() bool {

@@ -56,8 +56,33 @@ func generalWndProc(hwnd w32.HWND, msg uint32, wparam, lparam uintptr) uintptr {
 		ret := controller.WndProc(msg, wparam, lparam)
 
 		switch msg {
+		//TODO Why are we GetMsgHandlering twice?
+		// TODO because we call the controller controller.WndProc first?
+		case w32.WM_CTLCOLORSTATIC, //Label
+			w32.WM_CTLCOLOREDIT, //Edit
+			// w32.WM_CTLCOLORBTN, // needs custom draw
+			// // stackoverflow.com/questions/75478704/how-to-change-the-color-of-a-button-using-wm-ctlcolorbtn
+			w32.WM_CTLCOLORLISTBOX:
+			if controller := GetMsgHandler(w32.HWND(lparam)); controller != nil {
+				if controller.HasFGColor() {
+					w32.SetTextColor(
+						w32.HDC(wparam),
+						w32.COLORREF(controller.FGColor()),
+					)
+				}
+				if controller.HasBGColor() {
+					w32.SetBkColor(
+						w32.HDC(wparam),
+						w32.COLORREF(controller.BGColor()),
+					)
+					return controller.Brush().GetHBRUSH()
+				}
+			}
 		case w32.WM_NOTIFY: //Reflect notification to control
 			nm := (*w32.NMHDR)(unsafe.Pointer(lparam))
+
+			// case w32.NM_CUSTOMDRAW:
+			// log.Println("NM_CUSTOMDRAW controller", controller.Speak(), msg, ret)
 			if controller := GetMsgHandler(nm.HwndFrom); controller != nil {
 				ret := controller.WndProc(msg, wparam, lparam)
 				if ret != 0 {

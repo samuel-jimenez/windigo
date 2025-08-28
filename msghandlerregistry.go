@@ -24,3 +24,12 @@ func GetMsgHandler(hwnd w32.HWND) Controller {
 
 	return nil
 }
+
+func GetAncestralMsgHandler(handle w32.HWND) Controller {
+	controller := GetMsgHandler(handle)
+	for controller == nil && handle != 0 { //nil
+		handle = w32.GetParent(handle)
+		controller = GetMsgHandler(handle)
+	}
+	return controller
+}

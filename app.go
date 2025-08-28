@@ -58,13 +58,7 @@ func PreTranslateMessage(msg *w32.MSG) bool {
 		if msg.Hwnd != 0 {
 			// Search the chain of parents for message handlers
 			handle := msg.Hwnd
-			controller := GetMsgHandler(handle)
-			for controller == nil && handle != 0 { //nil
-				handle = w32.GetParent(handle)
-				controller = GetMsgHandler(handle)
-			}
-
-			if controller != nil {
+			if controller := GetAncestralMsgHandler(handle); controller != nil {
 				// Search the chain of parents for pretranslated messages.
 				for p := controller; p != nil; p = p.Parent() {
 					if processed = p.PreTranslateMessage(msg); processed {

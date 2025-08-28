@@ -38,6 +38,19 @@ type BaseController interface {
 
 	Font() *Font
 	SetFont(font *Font)
+
+	FGColor() Color
+	SetFGColor(color Color)
+	ClearFGColor()
+	HasFGColor() bool
+
+	BGColor() Color
+	SetBGColor(color Color)
+	ClearBGColor()
+	HasBGColor() bool
+
+	Brush() *Brush
+
 	InvokeRequired() bool
 	PreTranslateMessage(msg *w32.MSG) bool
 	WndProc(msg uint32, wparam, lparam uintptr) uintptr
