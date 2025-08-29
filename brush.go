@@ -9,7 +9,9 @@ import (
 	"github.com/samuel-jimenez/windigo/w32"
 )
 
-var DefaultBackgroundBrush = NewSystemColorBrush(w32.COLOR_BTNFACE)
+func init() {
+	DefaultBackgroundBrush = NewSystemColorBrush(w32.COLOR_BTNFACE)
+}
 
 type Brush struct {
 	hBrush   w32.HBRUSH
