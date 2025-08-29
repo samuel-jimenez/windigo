@@ -70,12 +70,20 @@ func generalWndProc(hwnd w32.HWND, msg uint32, wparam, lparam uintptr) uintptr {
 						w32.COLORREF(controller.FGColor()),
 					)
 				}
-				if controller.HasBGColor() {
+				if controller.HasHighlightColor() {
 					w32.SetBkColor(
 						w32.HDC(wparam),
-						w32.COLORREF(controller.BGColor()),
+						w32.COLORREF(controller.HighlightColor()),
 					)
-					return controller.Brush().GetHBRUSH()
+				}
+				if controller.HasBGColor() {
+					if !controller.HasHighlightColor() {
+						w32.SetBkColor(
+							w32.HDC(wparam),
+							w32.COLORREF(controller.BGColor()),
+						)
+					}
+					return controller.BGBrush().GetHBRUSH()
 				}
 			}
 		case w32.WM_NOTIFY: //Reflect notification to control
@@ -165,6 +173,12 @@ func generalWndProc(hwnd w32.HWND, msg uint32, wparam, lparam uintptr) uintptr {
 			x, y := genPoint(lparam)
 			controller.OnSize().Fire(NewEvent(controller, &SizeEventData{uint(wparam), x, y}))
 		case w32.WM_ERASEBKGND:
+			if controller.HasBGColor() {
+				canvas := NewCanvasFromHDC(w32.HDC(wparam))
+				defer canvas.Dispose()
+				bounding_rect := controller.WindowBounds()
+				canvas.FillRect(bounding_rect, controller.BGBrush())
+			}
 			return 1
 		}
 		return ret

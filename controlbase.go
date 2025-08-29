@@ -14,13 +14,13 @@ import (
 )
 
 type ControlBase struct {
-	hwnd                         w32.HWND
-	font                         *Font
-	color_fg, color_bg           Color
-	draw_color_fg, draw_color_bg bool
-	brush_bg                     *Brush
-	parent                       Controller
-	contextMenu                  *MenuItem
+	hwnd                                               w32.HWND
+	font                                               *Font
+	color_fg, color_highlight, color_bg                Color
+	draw_color_fg, draw_color_highlight, draw_color_bg bool
+	brush_bg                                           *Brush
+	parent                                             Controller
+	contextMenu                                        *MenuItem
 
 	isForm bool
 
@@ -364,32 +364,37 @@ func (control *ControlBase) Border() *Pen {
 }
 
 func (control *ControlBase) SetBorder(pen *Pen) {
+	if control.brush_bg == nil {
+		control.brush_bg = DefaultBackgroundBrush
+	}
 	if control.border_pen != nil {
 		//erase old pen marks
-		control.erasure_pen = NewPen(w32.PS_GEOMETRIC|w32.PS_SOLID|w32.PS_ENDCAP_SQUARE, control.border_pen.Width(), NewSystemColorBrush(w32.COLOR_BTNFACE))
+		control.erasure_pen = NewPen(w32.PS_GEOMETRIC|w32.PS_SOLID|w32.PS_ENDCAP_SQUARE, control.border_pen.Width(), control.brush_bg)
 	}
 	control.border_pen = pen
 	control.Invalidate(true)
 }
 
 func (control *ControlBase) drawBorder(canvas *Canvas) {
-	if control.border_pen != nil {
-		margin_0 := int32(control.border_pen.width) / 2
-		margin_1 := int32(control.border_pen.width+1) / 2
-
-		r := control.Bounds()
-
-		if control.erasure_pen != nil {
-			canvas.DrawFillRect(r, control.erasure_pen, NewSystemColorBrush(w32.COLOR_BTNFACE))
-			control.erasure_pen.Dispose()
-			control.erasure_pen = nil
-		}
-		r.rect.Top += margin_0
-		r.rect.Left += margin_0
-		r.rect.Bottom -= margin_1
-		r.rect.Right -= margin_1
-		canvas.DrawFillRect(r, control.border_pen, NewSystemColorBrush(w32.COLOR_BTNFACE))
+	if control.border_pen == nil {
+		return
 	}
+	margin_0 := int32(control.border_pen.width) / 2
+	margin_1 := int32(control.border_pen.width+1) / 2
+
+	r := control.Bounds()
+
+	if control.erasure_pen != nil {
+		canvas.DrawFillRect(r, control.erasure_pen, control.brush_bg)
+		control.erasure_pen.Dispose()
+		control.erasure_pen = nil
+	}
+	r.rect.Top += margin_0
+	r.rect.Left += margin_0
+	r.rect.Bottom -= margin_1
+	r.rect.Right -= margin_1
+	canvas.DrawFillRect(r, control.border_pen, control.brush_bg)
+
 }
 
 func (control *ControlBase) ContextMenu() *MenuItem {
@@ -407,6 +412,10 @@ func (control *ControlBase) Bounds() *Rect {
 	}
 
 	return ScreenToClientRect(control.hwnd, rect)
+}
+
+func (control *ControlBase) WindowBounds() *Rect {
+	return ScreenToClientRect(control.hwnd, w32.GetWindowRect(control.hwnd))
 }
 
 func (control *ControlBase) ClientRect() *Rect {
@@ -485,10 +494,6 @@ func (control *ControlBase) SetFont(font *Font) {
 	control.font = font
 }
 
-func (control *ControlBase) FGColor() Color {
-	return control.color_fg
-}
-
 func (control *ControlBase) SetFGColor(color Color) {
 	control.color_fg = color
 	control.draw_color_fg = true
@@ -502,14 +507,31 @@ func (control *ControlBase) HasFGColor() bool {
 	return control.draw_color_fg
 }
 
-func (control *ControlBase) BGColor() Color {
-	return control.color_bg
+func (control *ControlBase) FGColor() Color {
+	return control.color_fg
+}
+
+func (control *ControlBase) SetHighlightColor(color Color) {
+	control.color_highlight = color
+	control.draw_color_highlight = true
+}
+
+func (control *ControlBase) ClearHighlightColor() {
+	control.draw_color_highlight = false
+}
+
+func (control *ControlBase) HasHighlightColor() bool {
+	return control.draw_color_highlight
+}
+
+func (control *ControlBase) HighlightColor() Color {
+	return control.color_highlight
 }
 
 func (control *ControlBase) SetBGColor(color Color) {
 	control.color_bg = color
 	control.draw_color_bg = true
-	if control.brush_bg != nil {
+	if control.brush_bg != nil && control.brush_bg != DefaultBackgroundBrush {
 		control.brush_bg.Dispose()
 	}
 	control.brush_bg = NewSolidColorBrush(color)
@@ -523,7 +545,11 @@ func (control *ControlBase) HasBGColor() bool {
 	return control.draw_color_bg
 }
 
-func (control *ControlBase) Brush() *Brush {
+func (control *ControlBase) BGColor() Color {
+	return control.color_bg
+}
+
+func (control *ControlBase) BGBrush() *Brush {
 	return control.brush_bg
 }
 

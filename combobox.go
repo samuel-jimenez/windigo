@@ -148,6 +148,24 @@ func (control *ComboBox) ClearBGColor() {
 	control.Edit.ClearBGColor()
 }
 
+func (control *ComboBox) SetHighlightColor(color Color) {
+	control.ControlBase.SetHighlightColor(color)
+
+	if control.Edit == nil {
+		return
+	}
+	control.Edit.SetHighlightColor(color)
+}
+
+func (control *ComboBox) ClearHighlightColor() {
+	control.ControlBase.ClearHighlightColor()
+
+	if control.Edit == nil {
+		return
+	}
+	control.Edit.ClearHighlightColor()
+}
+
 func (control *ComboBox) DeleteAllItems() bool {
 	return w32.SendMessage(control.hwnd, w32.CB_RESETCONTENT, 0, 0) == w32.TRUE
 }

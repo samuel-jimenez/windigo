@@ -190,6 +190,36 @@ func (control *LabeledComboBox) SetLabeledSize(label_width, control_width, heigh
 	control.Label().SetSize(label_width, height)
 }
 
+func (control *LabeledComboBox) SetFGColor(color Color) {
+	control.ComponentFrame.(*AutoPanel).SetFGColor(color)
+	control.ComboBox.SetFGColor(color)
+}
+
+func (control *LabeledComboBox) ClearFGColor() {
+	control.ComponentFrame.(*AutoPanel).ClearFGColor()
+	control.ComboBox.ClearFGColor()
+}
+
+func (control *LabeledComboBox) SetBGColor(color Color) {
+	control.ComponentFrame.(*AutoPanel).SetBGColor(color)
+	control.ComboBox.SetBGColor(color)
+}
+
+func (control *LabeledComboBox) ClearBGColor() {
+	control.ComponentFrame.(*AutoPanel).ClearBGColor()
+	control.ComboBox.ClearBGColor()
+}
+
+func (control *LabeledComboBox) SetHighlightColor(color Color) {
+	control.ComponentFrame.(*AutoPanel).SetHighlightColor(color)
+	control.ComboBox.SetHighlightColor(color)
+}
+
+func (control *LabeledComboBox) ClearHighlightColor() {
+	control.ComponentFrame.(*AutoPanel).ClearHighlightColor()
+	control.ComboBox.ClearHighlightColor()
+}
+
 /* LabeledLabelable
  *
  */

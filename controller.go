@@ -22,6 +22,7 @@ type BaseController interface {
 
 	Size() (w, h int)
 	Bounds() *Rect
+	WindowBounds() *Rect
 	ClientRect() *Rect
 
 	SetText(s string)
@@ -39,17 +40,21 @@ type BaseController interface {
 	Font() *Font
 	SetFont(font *Font)
 
-	FGColor() Color
 	SetFGColor(color Color)
 	ClearFGColor()
 	HasFGColor() bool
+	FGColor() Color
 
-	BGColor() Color
+	SetHighlightColor(color Color)
+	ClearHighlightColor()
+	HasHighlightColor() bool
+	HighlightColor() Color
+
 	SetBGColor(color Color)
 	ClearBGColor()
 	HasBGColor() bool
-
-	Brush() *Brush
+	BGColor() Color
+	BGBrush() *Brush
 
 	InvokeRequired() bool
 	PreTranslateMessage(msg *w32.MSG) bool

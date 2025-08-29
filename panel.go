@@ -170,6 +170,7 @@ func (control *ErrorPanel) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 		r.rect.Top += int32(control.margin)
 		r.rect.Bottom -= int32(control.margin)
 		// old code used NewSystemColorBrush(w32.COLOR_BTNFACE)
+		// which is DefaultBackgroundBrush
 		canvas.DrawFillRect(r, control.pen, NewSystemColorBrush(w32.COLOR_WINDOW))
 
 		r.rect.Left += 5
