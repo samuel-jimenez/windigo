@@ -94,10 +94,23 @@ type Direction int
 
 const (
 	Top Direction = iota
+	TopLeft
+	TopCenter
+	TopRight
 	Bottom
+	BottomLeft
+	BottomCenter
+	BottomRight
 	Left
+	LeftTop
+	LeftCenter
+	LeftBottom
 	Right
+	RightTop
+	RightCenter
+	RightBottom
 	Fill
+	Center
 )
 
 type LayoutControl struct {
@@ -313,34 +326,63 @@ func (control *SimpleDock) Update() {
 			total_child_height = 0
 		}
 
+		// Determine child start point
+		child_x := x0 + c.child.MarginLeft()
+		child_y := y0 + c.child.MarginTop()
 		switch c.dir {
-		case Top:
-			c.child.SetPos(x0+c.child.MarginLeft(), y0+c.child.MarginTop())
-			c.child.SetSize(control_width-child_h_margin, child_height)
-			control_height -= total_child_height
-			y0 += total_child_height
-		case Bottom:
-			c.child.SetPos(x0+c.child.MarginLeft(), y1-total_child_height+c.child.MarginTop())
-			c.child.SetSize(control_width-child_h_margin, child_height)
-			control_height -= total_child_height
-			y1 -= total_child_height
-		case Left:
-			c.child.SetPos(x0+c.child.MarginLeft(), y0+c.child.MarginTop())
-			c.child.SetSize(child_width, control_height-child_v_margin)
-			control_width -= total_child_width
-			x0 += total_child_width
-		case Right:
-			c.child.SetPos(x1-total_child_width+c.child.MarginLeft(), y0+c.child.MarginTop())
-			c.child.SetSize(child_width, control_height-child_v_margin)
-			control_width -= total_child_width
-			x1 -= total_child_width
+		// Center
+		case TopCenter, BottomCenter, Center:
+			child_x = child_x + (control_width-total_child_width)/2
+		// Right
+		case Right, RightTop, RightCenter, RightBottom, TopRight, BottomRight:
+			child_x = x1 - total_child_width + c.child.MarginLeft()
+		}
+		switch c.dir {
+		// Center
+		case LeftCenter, RightCenter, Center:
+			child_y = child_y + (control_height-total_child_height)/2
+		// Bottom
+		case Bottom, BottomLeft, BottomCenter, BottomRight, LeftBottom, RightBottom:
+			child_y = y1 - total_child_height + c.child.MarginTop()
+		}
 
+		// Move child
+		c.child.SetPos(child_x, child_y)
+
+		// case Top, Bottom,Left,Right,Fill:
+		// Resize child to fill space
+		switch c.dir {
+		case Top, Bottom:
+			c.child.SetSize(control_width-child_h_margin, child_height)
+		case Left, Right:
+			c.child.SetSize(child_width, control_height-child_v_margin)
 		case Fill:
-			// fill available space
-			c.child.SetPos(x0+c.child.MarginLeft(), y0+c.child.MarginTop())
 			c.child.SetSize(control_width-child_h_margin, control_height-child_v_margin)
 		}
-		//c.child.Invalidate(true)
+
+		// adjust available height and drawing corners
+		switch c.dir {
+		case Top, TopLeft, TopCenter, TopRight:
+			y0 += total_child_height
+
+		case Bottom, BottomLeft, BottomCenter, BottomRight:
+			y1 -= total_child_height
+
+		case Left, LeftTop, LeftCenter, LeftBottom:
+			x0 += total_child_width
+
+		case Right, RightTop, RightCenter, RightBottom:
+			x1 -= total_child_width
+		}
+		switch c.dir {
+		// Top, Bottom:
+		case Top, TopLeft, TopCenter, TopRight, Bottom, BottomLeft, BottomCenter, BottomRight:
+			control_height -= total_child_height
+
+		// Left,Right:
+		case Left, LeftTop, LeftCenter, LeftBottom, Right, RightTop, RightCenter, RightBottom:
+			control_width -= total_child_width
+		}
 	}
 }
 
