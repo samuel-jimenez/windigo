@@ -26,7 +26,6 @@ type BaseController interface {
 
 	SetText(s string)
 	SetEnabled(b bool)
-	SetPosAfter(x, y int, after Controller)
 	EnableDragAcceptFiles(b bool)
 
 	ContextMenu() *MenuItem

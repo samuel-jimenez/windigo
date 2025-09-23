@@ -65,6 +65,10 @@ type Dockable interface {
 	Visible() bool
 
 	SetPos(x, y int)
+	SetPosAfter(x, y int, after Dockable)
+	SetZAfter(after Dockable)
+	SetZTop()
+	SetZBottom()
 	SetSize(width, height int)
 	Show()
 	Hide()

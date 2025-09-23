@@ -274,13 +274,26 @@ func (control *ControlBase) SetPos(x, y int) {
 	info := getMonitorInfo(control.hwnd)
 	workRect := info.RcWork
 
-	w32.SetWindowPos(control.hwnd, w32.HWND_TOP, int(workRect.Left)+x, int(workRect.Top)+y, 0, 0, w32.SWP_NOSIZE|w32.SWP_NOZORDER)
+	w32.SetWindowPos(control.hwnd, 0, int(workRect.Left)+x, int(workRect.Top)+y, 0, 0, w32.SWP_NOSIZE|w32.SWP_NOZORDER)
 }
 
-func (control *ControlBase) SetPosAfter(x, y int, after Controller) {
+func (control *ControlBase) SetPosAfter(x, y int, after Dockable) {
 	info := getMonitorInfo(control.hwnd)
 	workRect := info.RcWork
+
 	w32.SetWindowPos(control.hwnd, after.Handle(), int(workRect.Left)+x, int(workRect.Top)+y, 0, 0, w32.SWP_NOSIZE)
+}
+
+func (control *ControlBase) SetZAfter(after Dockable) {
+	w32.SetWindowPos(control.hwnd, after.Handle(), 0, 0, 0, 0, w32.SWP_NOSIZE|w32.SWP_NOMOVE)
+}
+
+func (control *ControlBase) SetZTop() {
+	w32.SetWindowPos(control.hwnd, w32.HWND_TOP, 0, 0, 0, 0, w32.SWP_NOSIZE|w32.SWP_NOMOVE)
+}
+
+func (control *ControlBase) SetZBottom() {
+	w32.SetWindowPos(control.hwnd, w32.HWND_BOTTOM, 0, 0, 0, 0, w32.SWP_NOSIZE|w32.SWP_NOMOVE)
 }
 
 func (control *ControlBase) Pos() (x, y int) {
