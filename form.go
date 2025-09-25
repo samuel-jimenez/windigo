@@ -15,6 +15,37 @@ type LayoutManager interface {
 	Update()
 }
 
+type Window interface {
+	Controller
+	DockAllow
+
+	// DockAllow
+	// SetLayout(mng LayoutManager)
+	UpdateLayout()
+	NewMenu() *Menu
+	DisableIcon()
+	Maximise()
+	Minimise()
+	Restore()
+	Center()
+	Fullscreen()
+	UnFullscreen()
+	SetIcon(iconType int, icon *Icon)
+	EnableMaxButton(b bool)
+	EnableMinButton(b bool)
+	EnableSizable(b bool)
+	EnableDragMove(_ bool)
+	EnableTopMost(b bool)
+	AddShortcut(shortcut Shortcut, action func() bool)
+
+	// BaseController
+	// PreTranslateMessage(msg *w32.MSG) bool
+	// WndProc(msg uint32, wparam, lparam uintptr)
+
+	// ControlBase
+	RunMainLoop() int
+}
+
 // A Form is main window of the application.
 type Form struct {
 	ControlBase
