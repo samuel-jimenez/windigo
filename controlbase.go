@@ -77,6 +77,10 @@ func (control *ControlBase) ClipboardCopyText(text string) bool {
 
 	w32.EmptyClipboard()
 
+	if len(text) == 0 {
+		return true
+	}
+
 	//allocate and fill buffer
 	bufferSize := uint32(len(text)) * 16 //sizeof(TCHAR))
 	globalBuffer := w32.GlobalAlloc(w32.GMEM_MOVEABLE, bufferSize)
