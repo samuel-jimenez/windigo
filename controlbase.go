@@ -271,17 +271,11 @@ func (control *ControlBase) Height() int {
 }
 
 func (control *ControlBase) SetPos(x, y int) {
-	info := getMonitorInfo(control.hwnd)
-	workRect := info.RcWork
-
-	w32.SetWindowPos(control.hwnd, 0, int(workRect.Left)+x, int(workRect.Top)+y, 0, 0, w32.SWP_NOSIZE|w32.SWP_NOZORDER)
+	w32.SetWindowPos(control.hwnd, 0, x, y, 0, 0, w32.SWP_NOSIZE|w32.SWP_NOZORDER)
 }
 
 func (control *ControlBase) SetPosAfter(x, y int, after Dockable) {
-	info := getMonitorInfo(control.hwnd)
-	workRect := info.RcWork
-
-	w32.SetWindowPos(control.hwnd, after.Handle(), int(workRect.Left)+x, int(workRect.Top)+y, 0, 0, w32.SWP_NOSIZE)
+	w32.SetWindowPos(control.hwnd, after.Handle(), x, y, 0, 0, w32.SWP_NOSIZE)
 }
 
 func (control *ControlBase) SetZAfter(after Dockable) {
