@@ -70,13 +70,11 @@ type ControlBase struct {
 }
 
 func (control *ControlBase) ClipboardCopyText(text string) bool {
-
 	if !w32.OpenClipboard(control.hwnd) {
 		return false
 	}
 
 	w32.EmptyClipboard()
-
 	if len(text) == 0 {
 		w32.CloseClipboard()
 		return true
@@ -94,7 +92,6 @@ func (control *ControlBase) ClipboardCopyText(text string) bool {
 
 	// Close the clipboard.
 	w32.CloseClipboard()
-
 	return true
 }
 
