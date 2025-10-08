@@ -19,7 +19,9 @@ func genOFN(parent Controller, title, filter string, filterIndex uint, initialDi
 	ofn.Owner = parent.Handle()
 
 	if filter != "" {
-		filterBuf := make([]uint16, len(filter)+1)
+		// A buffer containing pairs of null-terminated filter strings.
+		// The last string in the buffer must be terminated by *two* NULL characters.
+		filterBuf := make([]uint16, len(filter)+2)
 		copy(filterBuf, syscall.StringToUTF16(filter))
 		// Replace '|' with the expected '\0'
 		for i, c := range filterBuf {
@@ -45,6 +47,9 @@ func genOFN(parent Controller, title, filter string, filterIndex uint, initialDi
 	return &ofn
 }
 
+// Open File Dialog
+// title: Dialog title
+// filter: Pairs of descriptors and match patterns separated by '|'
 func ShowOpenFileDlg(parent Controller, title, filter string, filterIndex uint, initialDir string) (filePath string, accepted bool) {
 	buf := make([]uint16, 1024)
 	ofn := genOFN(parent, title, filter, filterIndex, initialDir, buf)
@@ -55,6 +60,9 @@ func ShowOpenFileDlg(parent Controller, title, filter string, filterIndex uint, 
 	return
 }
 
+// Save File Dialog
+// title: Dialog title
+// filter: Pairs of descriptors and match patterns separated by '|'
 func ShowSaveFileDlg(parent Controller, title, filter string, filterIndex uint, initialDir string) (filePath string, accepted bool) {
 	buf := make([]uint16, 1024)
 	ofn := genOFN(parent, title, filter, filterIndex, initialDir, buf)

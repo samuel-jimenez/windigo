@@ -59,7 +59,7 @@ func main() {
 
 	addBtn.OnClick().Bind(func(e *windigo.Event) {
 		if filePath, ok := windigo.ShowOpenFileDlg(mainWindow,
-			"Select EDI X12 file", "All files (*.*)|*.*", 0, ""); ok {
+			"Select EDI X12 file", "EDI file|*.edi|All files (*.*)|*.*", 0, ""); ok {
 
 			if err := imgv.DrawImageFile(filePath); err != nil {
 				windigo.Errorf(mainWindow, "Error: %s", err)
