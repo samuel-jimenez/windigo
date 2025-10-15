@@ -178,6 +178,12 @@ func (control *ListView) AddColumn(caption string, width int) {
 	control.cols++
 }
 
+func (control *ListView) SetColumnWidth(col, width int) {
+	if w32.SendMessage(control.hwnd, w32.LVM_SETCOLUMNWIDTH, uintptr(col), uintptr(width)) == 0 {
+		//panic("LVM_SETCOLUMNWIDTH failed")
+	}
+}
+
 // StretchLastColumn makes the last column take up all remaining horizontal
 // space of the *ListView.
 // The effect of this is not persistent.
