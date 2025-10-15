@@ -184,6 +184,10 @@ func (control *ListView) SetColumnWidth(col, width int) {
 	}
 }
 
+func (control *ListView) GetNumColumns() int {
+	return control.cols
+}
+
 // StretchLastColumn makes the last column take up all remaining horizontal
 // space of the *ListView.
 // The effect of this is not persistent.
