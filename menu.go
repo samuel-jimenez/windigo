@@ -67,75 +67,75 @@ func NewContextMenu() *MenuItem {
 	return item
 }
 
-func (m *Menu) Dispose() {
-	if m.hMenu != 0 {
-		w32.DestroyMenu(m.hMenu)
-		m.hMenu = 0
+func (control *Menu) Dispose() {
+	if control.hMenu != 0 {
+		w32.DestroyMenu(control.hMenu)
+		control.hMenu = 0
 	}
 }
 
-func (m *Menu) IsDisposed() bool {
-	return m.hMenu == 0
+func (control *Menu) IsDisposed() bool {
+	return control.hMenu == 0
 }
 
-func initMenuItemInfoFromAction(mii *w32.MENUITEMINFO, a *MenuItem) {
-	mii.CbSize = uint32(unsafe.Sizeof(*mii))
-	mii.FMask = w32.MIIM_FTYPE | w32.MIIM_ID | w32.MIIM_STATE | w32.MIIM_STRING
-	if a.image != nil {
-		mii.FMask |= w32.MIIM_BITMAP
-		mii.HbmpItem = a.image.handle
+func initMenuItemInfoFromAction(item_info *w32.MENUITEMINFO, menu_item *MenuItem) {
+	item_info.CbSize = uint32(unsafe.Sizeof(*item_info))
+	item_info.FMask = w32.MIIM_FTYPE | w32.MIIM_ID | w32.MIIM_STATE | w32.MIIM_STRING
+	if menu_item.image != nil {
+		item_info.FMask |= w32.MIIM_BITMAP
+		item_info.HbmpItem = menu_item.image.handle
 	}
-	if a.IsSeparator() {
-		mii.FType = w32.MFT_SEPARATOR
+	if menu_item.IsSeparator() {
+		item_info.FType = w32.MFT_SEPARATOR
 	} else {
-		mii.FType = w32.MFT_STRING
+		item_info.FType = w32.MFT_STRING
 		var text string
-		if s := a.shortcut; s.Key != 0 {
-			text = fmt.Sprintf("%s\t%s", a.text, s.String())
-			shortcut2Action[a.shortcut] = a
+		if s := menu_item.shortcut; s.Key != 0 {
+			text = fmt.Sprintf("%s\t%s", menu_item.text, s.String())
+			shortcut2Action[menu_item.shortcut] = menu_item
 		} else {
-			text = a.text
+			text = menu_item.text
 		}
-		mii.DwTypeData = syscall.StringToUTF16Ptr(text)
-		mii.Cch = uint32(len([]rune(a.text)))
+		item_info.DwTypeData = syscall.StringToUTF16Ptr(text)
+		item_info.Cch = uint32(len([]rune(menu_item.text)))
 	}
-	mii.WID = uint32(a.id)
+	item_info.WID = uint32(menu_item.id)
 
-	if a.Enabled() {
-		mii.FState &^= w32.MFS_DISABLED
+	if menu_item.Enabled() {
+		item_info.FState &^= w32.MFS_DISABLED
 	} else {
-		mii.FState |= w32.MFS_DISABLED
+		item_info.FState |= w32.MFS_DISABLED
 	}
 
-	if a.Checkable() {
-		mii.FMask |= w32.MIIM_CHECKMARKS
+	if menu_item.Checkable() {
+		item_info.FMask |= w32.MIIM_CHECKMARKS
 	}
-	if a.Checked() {
-		mii.FState |= w32.MFS_CHECKED
+	if menu_item.Checked() {
+		item_info.FState |= w32.MFS_CHECKED
 	}
 
-	if a.hSubMenu != 0 {
-		mii.FMask |= w32.MIIM_SUBMENU
-		mii.HSubMenu = a.hSubMenu
+	if menu_item.hSubMenu != 0 {
+		item_info.FMask |= w32.MIIM_SUBMENU
+		item_info.HSubMenu = menu_item.hSubMenu
 	}
 }
 
 // Show menu on the main window.
-func (m *Menu) Show() {
+func (control *Menu) Show() {
 	initialised = true
 	updateRadioGroups()
-	if !w32.DrawMenuBar(m.hwnd) {
+	if !w32.DrawMenuBar(control.hwnd) {
 		panic("DrawMenuBar failed")
 	}
 }
 
 // AddSubMenu returns item that is used as submenu to perform AddItem(s).
-func (m *Menu) AddSubMenu(text string) *MenuItem {
+func (control *Menu) AddSubMenu(text string) *MenuItem {
 	hSubMenu := w32.CreateMenu()
 	if hSubMenu == 0 {
 		panic("failed CreateMenu")
 	}
-	return addMenuItem(m.hMenu, hSubMenu, text, Shortcut{}, nil, false)
+	return addMenuItem(control.hMenu, hSubMenu, text, Shortcut{}, nil, false)
 }
 
 // This method will iterate through the menu items, group radio items together, build a
@@ -199,43 +199,43 @@ func updateRadioGroups() {
 
 }
 
-func (mi *MenuItem) OnClick() *EventManager {
-	return &mi.onClick
+func (control *MenuItem) OnClick() *EventManager {
+	return &control.onClick
 }
 
-func (mi *MenuItem) AddSeparator() {
-	addMenuItem(mi.hSubMenu, 0, "-", Shortcut{}, nil, false)
+func (control *MenuItem) AddSeparator() {
+	addMenuItem(control.hSubMenu, 0, "-", Shortcut{}, nil, false)
 }
 
 // AddItem adds plain menu item.
-func (mi *MenuItem) AddItem(text string, shortcut Shortcut) *MenuItem {
-	return addMenuItem(mi.hSubMenu, 0, text, shortcut, nil, false)
+func (control *MenuItem) AddItem(text string, shortcut Shortcut) *MenuItem {
+	return addMenuItem(control.hSubMenu, 0, text, shortcut, nil, false)
 }
 
 // AddItemCheckable adds plain menu item that can have a checkmark.
-func (mi *MenuItem) AddItemCheckable(text string, shortcut Shortcut) *MenuItem {
-	return addMenuItem(mi.hSubMenu, 0, text, shortcut, nil, true)
+func (control *MenuItem) AddItemCheckable(text string, shortcut Shortcut) *MenuItem {
+	return addMenuItem(control.hSubMenu, 0, text, shortcut, nil, true)
 }
 
 // AddItemRadio adds plain menu item that can have a checkmark and is part of a radio group.
-func (mi *MenuItem) AddItemRadio(text string, shortcut Shortcut) *MenuItem {
-	menuItem := addMenuItem(mi.hSubMenu, 0, text, shortcut, nil, true)
+func (control *MenuItem) AddItemRadio(text string, shortcut Shortcut) *MenuItem {
+	menuItem := addMenuItem(control.hSubMenu, 0, text, shortcut, nil, true)
 	menuItem.isRadio = true
 	return menuItem
 }
 
 // AddItemWithBitmap adds menu item with shortcut and bitmap.
-func (mi *MenuItem) AddItemWithBitmap(text string, shortcut Shortcut, image *Bitmap) *MenuItem {
-	return addMenuItem(mi.hSubMenu, 0, text, shortcut, image, false)
+func (control *MenuItem) AddItemWithBitmap(text string, shortcut Shortcut, image *Bitmap) *MenuItem {
+	return addMenuItem(control.hSubMenu, 0, text, shortcut, image, false)
 }
 
 // AddSubMenu adds a submenu.
-func (mi *MenuItem) AddSubMenu(text string) *MenuItem {
+func (control *MenuItem) AddSubMenu(text string) *MenuItem {
 	hSubMenu := w32.CreatePopupMenu()
 	if hSubMenu == 0 {
 		panic("failed CreatePopupMenu")
 	}
-	return addMenuItem(mi.hSubMenu, hSubMenu, text, Shortcut{}, nil, false)
+	return addMenuItem(control.hSubMenu, hSubMenu, text, Shortcut{}, nil, false)
 }
 
 // AddItem to the menu, set text to "-" for separators.
@@ -256,20 +256,20 @@ func addMenuItem(hMenu, hSubMenu w32.HMENU, text string, shortcut Shortcut, imag
 	actionsByID[item.id] = item
 	menuItems[hMenu] = append(menuItems[hMenu], item)
 
-	var mii w32.MENUITEMINFO
-	initMenuItemInfoFromAction(&mii, item)
+	var item_info w32.MENUITEMINFO
+	initMenuItemInfoFromAction(&item_info, item)
 
 	index := -1
-	if !w32.InsertMenuItem(hMenu, uint32(index), true, &mii) {
+	if !w32.InsertMenuItem(hMenu, uint32(index), true, &item_info) {
 		panic("InsertMenuItem failed")
 	}
 	return item
 }
 
-func indexInObserver(a *MenuItem) int {
+func indexInObserver(menu_item *MenuItem) int {
 	var idx int
-	for _, mi := range menuItems[a.hMenu] {
-		if mi == a {
+	for _, control := range menuItems[menu_item.hMenu] {
+		if control == menu_item {
 			return idx
 		}
 		idx++
@@ -281,31 +281,31 @@ func findMenuItemByID(id int) *MenuItem {
 	return actionsByID[uint16(id)]
 }
 
-func (mi *MenuItem) update() {
-	var mii w32.MENUITEMINFO
-	initMenuItemInfoFromAction(&mii, mi)
+func (control *MenuItem) update() {
+	var controli w32.MENUITEMINFO
+	initMenuItemInfoFromAction(&controli, control)
 
-	if !w32.SetMenuItemInfo(mi.hMenu, uint32(indexInObserver(mi)), true, &mii) {
+	if !w32.SetMenuItemInfo(control.hMenu, uint32(indexInObserver(control)), true, &controli) {
 		panic("SetMenuItemInfo failed")
 	}
-	if mi.isRadio {
-		mi.updateRadioGroup()
+	if control.isRadio {
+		control.updateRadioGroup()
 	}
 }
 
-func (mi *MenuItem) IsSeparator() bool { return mi.text == "-" }
-func (mi *MenuItem) SetSeparator()     { mi.text = "-" }
+func (control *MenuItem) IsSeparator() bool { return control.text == "-" }
+func (control *MenuItem) SetSeparator()     { control.text = "-" }
 
-func (mi *MenuItem) Enabled() bool     { return mi.enabled }
-func (mi *MenuItem) SetEnabled(b bool) { mi.enabled = b; mi.update() }
+func (control *MenuItem) Enabled() bool     { return control.enabled }
+func (control *MenuItem) SetEnabled(b bool) { control.enabled = b; control.update() }
 
-func (mi *MenuItem) Checkable() bool     { return mi.checkable }
-func (mi *MenuItem) SetCheckable(b bool) { mi.checkable = b; mi.update() }
+func (control *MenuItem) Checkable() bool     { return control.checkable }
+func (control *MenuItem) SetCheckable(b bool) { control.checkable = b; control.update() }
 
-func (mi *MenuItem) Checked() bool { return mi.checked }
-func (mi *MenuItem) SetChecked(b bool) {
-	if mi.isRadio {
-		radioGroup := radioGroups[mi]
+func (control *MenuItem) Checked() bool { return control.checked }
+func (control *MenuItem) SetChecked(b bool) {
+	if control.isRadio {
+		radioGroup := radioGroups[control]
 		if radioGroup != nil {
 			for _, member := range radioGroup.members {
 				member.checked = false
@@ -313,25 +313,25 @@ func (mi *MenuItem) SetChecked(b bool) {
 		}
 
 	}
-	mi.checked = b
-	mi.update()
+	control.checked = b
+	control.update()
 }
 
-func (mi *MenuItem) Text() string     { return mi.text }
-func (mi *MenuItem) SetText(s string) { mi.text = s; mi.update() }
+func (control *MenuItem) Text() string     { return control.text }
+func (control *MenuItem) SetText(s string) { control.text = s; control.update() }
 
-func (mi *MenuItem) Image() *Bitmap     { return mi.image }
-func (mi *MenuItem) SetImage(b *Bitmap) { mi.image = b; mi.update() }
+func (control *MenuItem) Image() *Bitmap     { return control.image }
+func (control *MenuItem) SetImage(b *Bitmap) { control.image = b; control.update() }
 
-func (mi *MenuItem) ToolTip() string     { return mi.toolTip }
-func (mi *MenuItem) SetToolTip(s string) { mi.toolTip = s; mi.update() }
+func (control *MenuItem) ToolTip() string     { return control.toolTip }
+func (control *MenuItem) SetToolTip(s string) { control.toolTip = s; control.update() }
 
-func (mi *MenuItem) updateRadioGroup() {
-	radioGroup := radioGroups[mi]
+func (control *MenuItem) updateRadioGroup() {
+	radioGroup := radioGroups[control]
 	if radioGroup == nil {
 		return
 	}
 	startID := radioGroup.members[0].id
 	endID := radioGroup.members[len(radioGroup.members)-1].id
-	w32.SelectRadioMenuItem(mi.id, startID, endID, radioGroup.hwnd)
+	w32.SelectRadioMenuItem(control.id, startID, endID, radioGroup.hwnd)
 }

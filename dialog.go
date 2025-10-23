@@ -22,59 +22,59 @@ type Dialog struct {
 }
 
 func NewDialog(parent Controller) *Dialog {
-	dlg := new(Dialog)
+	control := new(Dialog)
 
-	dlg.isForm = true
-	dlg.isModal = true
+	control.isForm = true
+	control.isModal = true
 	RegClassOnlyOnce("windigo_Dialog")
 
-	dlg.hwnd = CreateWindow("windigo_Dialog", parent, w32.WS_EX_CONTROLPARENT, /* IMPORTANT */
+	control.hwnd = CreateWindow("windigo_Dialog", parent, w32.WS_EX_CONTROLPARENT, /* IMPORTANT */
 		w32.WS_SYSMENU|w32.WS_CAPTION|w32.WS_THICKFRAME /*|w32.WS_BORDER|w32.WS_POPUP*/)
-	dlg.parent = parent
+	control.parent = parent
 
-	// dlg might fail if icon resource is not embedded in the binary
+	// this might fail if icon resource is not embedded in the binary
 	if ico, err := NewIconFromResource(GetAppInstance(), uint16(AppIconID)); err == nil {
-		dlg.SetIcon(0, ico)
+		control.SetIcon(0, ico)
 	}
 
 	// Dlg forces display of focus rectangles, as soon as the user starts to type.
-	w32.SendMessage(dlg.hwnd, w32.WM_CHANGEUISTATE, w32.UIS_INITIALIZE, 0)
-	RegMsgHandler(dlg)
+	w32.SendMessage(control.hwnd, w32.WM_CHANGEUISTATE, w32.UIS_INITIALIZE, 0)
+	RegMsgHandler(control)
 
-	dlg.SetFont(DefaultFont)
-	dlg.SetText("Form")
-	dlg.SetSize(200, 100)
-	return dlg
+	control.SetFont(DefaultFont)
+	control.SetText("Form")
+	control.SetSize(200, 100)
+	return control
 }
 
-func (dlg *Dialog) SetModal(modal bool) {
-	dlg.isModal = modal
+func (control *Dialog) SetModal(modal bool) {
+	control.isModal = modal
 }
 
 // SetButtons wires up dialog events to buttons. btnCancel can be nil.
-func (dlg *Dialog) SetButtons(btnOk *PushButton, btnCancel *PushButton) {
-	dlg.btnOk = btnOk
-	dlg.btnOk.SetDefault()
-	dlg.btnCancel = btnCancel
+func (control *Dialog) SetButtons(btnOk *PushButton, btnCancel *PushButton) {
+	control.btnOk = btnOk
+	control.btnOk.SetDefault()
+	control.btnCancel = btnCancel
 }
 
 // Events
-func (dlg *Dialog) OnLoad() *EventManager {
-	return &dlg.onLoad
+func (control *Dialog) OnLoad() *EventManager {
+	return &control.onLoad
 }
 
-func (dlg *Dialog) OnOk() *EventManager {
-	return &dlg.onOk
+func (control *Dialog) OnOk() *EventManager {
+	return &control.onOk
 }
 
-func (dlg *Dialog) OnCancel() *EventManager {
-	return &dlg.onCancel
+func (control *Dialog) OnCancel() *EventManager {
+	return &control.onCancel
 }
 
 // PreTranslateMessage handles dialog specific messages. IMPORTANT.
-func (dlg *Dialog) PreTranslateMessage(msg *w32.MSG) bool {
+func (control *Dialog) PreTranslateMessage(msg *w32.MSG) bool {
 	if msg.Message >= w32.WM_KEYFIRST && msg.Message <= w32.WM_KEYLAST {
-		if w32.IsDialogMessage(dlg.hwnd, msg) {
+		if w32.IsDialogMessage(control.hwnd, msg) {
 			return true
 		}
 	}
@@ -82,53 +82,53 @@ func (dlg *Dialog) PreTranslateMessage(msg *w32.MSG) bool {
 }
 
 // Show dialog performs special setup for dialog windows.
-func (dlg *Dialog) Show() {
-	if dlg.isModal {
-		dlg.Parent().SetEnabled(false)
+func (control *Dialog) Show() {
+	if control.isModal {
+		control.Parent().SetEnabled(false)
 	}
-	dlg.onLoad.Fire(NewEvent(dlg, nil))
-	dlg.Form.Show()
+	control.onLoad.Fire(NewEvent(control, nil))
+	control.Form.Show()
 }
 
 // Close dialog when you done with it.
-func (dlg *Dialog) Close() {
-	if dlg.isModal {
-		dlg.Parent().SetEnabled(true)
+func (control *Dialog) Close() {
+	if control.isModal {
+		control.Parent().SetEnabled(true)
 	}
-	dlg.ControlBase.Close()
+	control.ControlBase.Close()
 }
 
-func (dlg *Dialog) cancel() {
-	if dlg.btnCancel != nil {
-		dlg.btnCancel.onClick.Fire(NewEvent(dlg.btnCancel, nil))
+func (control *Dialog) cancel() {
+	if control.btnCancel != nil {
+		control.btnCancel.onClick.Fire(NewEvent(control.btnCancel, nil))
 	}
-	dlg.onCancel.Fire(NewEvent(dlg, nil))
+	control.onCancel.Fire(NewEvent(control, nil))
 }
 
-func (dlg *Dialog) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
+func (control *Dialog) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 	switch msg {
 	case w32.WM_COMMAND:
 		switch w32.LOWORD(uint32(wparam)) {
 		case w32.IDOK:
-			if dlg.btnOk != nil {
-				dlg.btnOk.onClick.Fire(NewEvent(dlg.btnOk, nil))
+			if control.btnOk != nil {
+				control.btnOk.onClick.Fire(NewEvent(control.btnOk, nil))
 			}
-			dlg.onOk.Fire(NewEvent(dlg, nil))
+			control.onOk.Fire(NewEvent(control, nil))
 			return w32.TRUE
 
 		case w32.IDCANCEL:
-			dlg.cancel()
+			control.cancel()
 			return w32.TRUE
 		}
 
 	case w32.WM_CLOSE:
-		dlg.cancel() // use onCancel or dlg.btnCancel.OnClick to close
+		control.cancel() // use onCancel or control.btnCancel.OnClick to close
 		return 0
 
 	case w32.WM_DESTROY:
-		if dlg.isModal {
-			dlg.Parent().SetEnabled(true)
+		if control.isModal {
+			control.Parent().SetEnabled(true)
 		}
 	}
-	return w32.DefWindowProc(dlg.hwnd, msg, wparam, lparam)
+	return w32.DefWindowProc(control.hwnd, msg, wparam, lparam)
 }
