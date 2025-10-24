@@ -5,7 +5,9 @@
 
 package windigo
 
-import "github.com/samuel-jimenez/windigo/w32"
+import (
+	"github.com/samuel-jimenez/windigo/w32"
+)
 
 // Dialog displayed as z-order top window until closed.
 // It also disables parent window so it can not be clicked.
@@ -77,10 +79,24 @@ func (control *Dialog) OnCancel() *EventManager {
 
 // PreTranslateMessage handles dialog specific messages. IMPORTANT.
 func (control *Dialog) PreTranslateMessage(msg *w32.MSG) bool {
-	if msg.Message >= w32.WM_KEYFIRST && msg.Message <= w32.WM_KEYLAST {
-		if w32.IsDialogMessage(control.hwnd, msg) {
-			return true
+	switch msg.Message {
+	case w32.WM_KEYDOWN:
+		// Shortcut support.
+		key := Key(msg.WParam)
+		if uint32(msg.LParam)>>30 == 0 {
+			shortcut := Shortcut{ModifiersDown(), key}
+			if action, ok := control.local_shortcuts[shortcut]; ok {
+				return action()
+			} else if action, ok := shortcut2Action[shortcut]; ok { // Access menu shortcuts. This may not be what we want. TODO check isModal?
+				if action.Enabled() {
+					action.onClick.Fire(NewEvent(control, msg.Pt))
+					return true
+				}
+			}
 		}
+	}
+	if msg.Message >= w32.WM_KEYFIRST && msg.Message <= w32.WM_KEYLAST && w32.IsDialogMessage(control.hwnd, msg) {
+		return true
 	}
 	return false
 }
@@ -125,7 +141,6 @@ func (control *Dialog) WndProc(msg uint32, wparam, lparam uintptr) uintptr {
 			control.cancel()
 			return w32.TRUE
 		}
-
 	case w32.WM_CLOSE:
 		control.cancel() // use onCancel or control.btnCancel.OnClick to close
 		return 0

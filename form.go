@@ -245,10 +245,9 @@ func (control *Form) AddShortcut(shortcut Shortcut, action func() bool) {
 func (control *Form) PreTranslateMessage(msg *w32.MSG) bool {
 	switch msg.Message {
 	case w32.WM_KEYDOWN:
-		// Accelerator support.
+		// Shortcut support.
 		key := Key(msg.WParam)
 		if uint32(msg.LParam)>>30 == 0 {
-			// TODO TranslateAccelerators
 			shortcut := Shortcut{ModifiersDown(), key}
 			if action, ok := control.local_shortcuts[shortcut]; ok {
 				return action()
@@ -259,8 +258,6 @@ func (control *Form) PreTranslateMessage(msg *w32.MSG) bool {
 				}
 			}
 		}
-	case w32.WM_GETDLGCODE:
-		println("pretranslate, WM_GETDLGCODE")
 	}
 	return false
 }
