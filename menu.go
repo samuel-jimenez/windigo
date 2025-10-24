@@ -27,7 +27,7 @@ var NoShortcut = Shortcut{}
 // Most methods used for both main window menu and context menu.
 type Menu struct {
 	hMenu w32.HMENU
-	hwnd  w32.HWND // hwnd might be nil if it is context menu.
+	hwnd  w32.HWND // root window. hwnd might be nil if it is context menu.
 }
 
 type MenuItem struct {
@@ -282,10 +282,10 @@ func findMenuItemByID(id int) *MenuItem {
 }
 
 func (control *MenuItem) update() {
-	var controli w32.MENUITEMINFO
-	initMenuItemInfoFromAction(&controli, control)
+	var item_info w32.MENUITEMINFO
+	initMenuItemInfoFromAction(&item_info, control)
 
-	if !w32.SetMenuItemInfo(control.hMenu, uint32(indexInObserver(control)), true, &controli) {
+	if !w32.SetMenuItemInfo(control.hMenu, uint32(indexInObserver(control)), true, &item_info) {
 		panic("SetMenuItemInfo failed")
 	}
 	if control.isRadio {
