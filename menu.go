@@ -117,7 +117,20 @@ func initMenuItemInfoFromAction(item_info *w32.MENUITEMINFO, menu_item *MenuItem
 	if menu_item.hSubMenu != 0 {
 		item_info.FMask |= w32.MIIM_SUBMENU
 		item_info.HSubMenu = menu_item.hSubMenu
+		menu_item.onClick.Bind(menu_item.EventShow)
 	}
+}
+
+func (control *MenuItem) EventShow(e *Event) {
+	controller := e.Sender
+	pt := e.Data.(w32.POINT)
+	w32.TrackPopupMenuEx(
+		control.hSubMenu,
+		w32.TPM_CENTERALIGN|w32.TPM_TOPALIGN|w32.TPM_VERPOSANIMATION,
+		pt.X,
+		pt.Y,
+		controller.Handle(),
+		nil)
 }
 
 // Show menu on the main window.
@@ -136,6 +149,15 @@ func (control *Menu) AddSubMenu(text string) *MenuItem {
 		panic("failed CreateMenu")
 	}
 	return addMenuItem(control.hMenu, hSubMenu, text, Shortcut{}, nil, false)
+}
+
+// AddSubMenu_Shortcut returns item with a shortcut that is used as submenu to perform AddItem(s).
+func (control *Menu) AddSubMenu_Shortcut(text string, shortcut Shortcut) *MenuItem {
+	hSubMenu := w32.CreateMenu()
+	if hSubMenu == 0 {
+		panic("failed CreateMenu")
+	}
+	return addMenuItem(control.hMenu, hSubMenu, text, shortcut, nil, false)
 }
 
 // This method will iterate through the menu items, group radio items together, build a
@@ -236,6 +258,15 @@ func (control *MenuItem) AddSubMenu(text string) *MenuItem {
 		panic("failed CreatePopupMenu")
 	}
 	return addMenuItem(control.hSubMenu, hSubMenu, text, Shortcut{}, nil, false)
+}
+
+// AddSubMenu_Shortcut adds a submenu with a shortcut.
+func (control *MenuItem) AddSubMenu_Shortcut(text string, shortcut Shortcut) *MenuItem {
+	hSubMenu := w32.CreatePopupMenu()
+	if hSubMenu == 0 {
+		panic("failed CreatePopupMenu")
+	}
+	return addMenuItem(control.hSubMenu, hSubMenu, text, shortcut, nil, false)
 }
 
 // AddItem to the menu, set text to "-" for separators.

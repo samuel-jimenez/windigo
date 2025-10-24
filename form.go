@@ -254,7 +254,7 @@ func (control *Form) PreTranslateMessage(msg *w32.MSG) bool {
 				return action()
 			} else if action, ok := shortcut2Action[shortcut]; ok {
 				if action.Enabled() {
-					action.onClick.Fire(NewEvent(control, nil))
+					action.onClick.Fire(NewEvent(control, msg.Pt))
 					return true
 				}
 			}
