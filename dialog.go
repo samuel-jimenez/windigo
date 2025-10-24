@@ -11,7 +11,8 @@ import "github.com/samuel-jimenez/windigo/w32"
 // It also disables parent window so it can not be clicked.
 type Dialog struct {
 	Form
-	isModal bool
+	isModal,
+	isShown bool
 
 	btnOk     *PushButton
 	btnCancel *PushButton
@@ -31,6 +32,7 @@ func NewDialog(parent Controller) *Dialog {
 	control.hwnd = CreateWindow("windigo_Dialog", parent, w32.WS_EX_CONTROLPARENT, /* IMPORTANT */
 		w32.WS_SYSMENU|w32.WS_CAPTION|w32.WS_THICKFRAME /*|w32.WS_BORDER|w32.WS_POPUP*/)
 	control.parent = parent
+	control.local_shortcuts = make(map[Shortcut]func() bool)
 
 	// this might fail if icon resource is not embedded in the binary
 	if ico, err := NewIconFromResource(GetAppInstance(), uint16(AppIconID)); err == nil {
@@ -48,7 +50,9 @@ func NewDialog(parent Controller) *Dialog {
 }
 
 func (control *Dialog) SetModal(modal bool) {
-	control.isModal = modal
+	if !control.isShown {
+		control.isModal = modal
+	}
 }
 
 // SetButtons wires up dialog events to buttons. btnCancel can be nil.
@@ -86,6 +90,7 @@ func (control *Dialog) Show() {
 	if control.isModal {
 		control.Parent().SetEnabled(false)
 	}
+	control.isShown = true
 	control.onLoad.Fire(NewEvent(control, nil))
 	control.Form.Show()
 }
