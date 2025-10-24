@@ -380,7 +380,8 @@ var modifiers2string = map[Modifiers]string{
 	ModControl | ModShift:          "Ctrl+Shift",
 	ModAlt:                         "Alt",
 	ModAlt | ModShift:              "Alt+Shift",
-	ModAlt | ModControl | ModShift: "Alt+Ctrl+Shift",
+	ModAlt | ModControl:            "Ctrl+Alt",
+	ModAlt | ModControl | ModShift: "Ctrl+Alt+Shift",
 }
 
 const (
